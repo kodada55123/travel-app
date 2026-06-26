@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>交易日誌｜Trading Journal</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="data.js"></script>
+<style>
+:root{
+  --bg:#0d1117;--bg2:#161b22;--bg3:#21262d;
+  --border:#30363d;--text:#c9d1d9;--muted:#8b949e;
+  --green:#3fb950;--red:#f85149;--blue:#58a6ff;
+  --gold:#f0a832;--purple:#bc8cff;--teal:#56d364;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:14px;line-height:1.6;}
+a{color:var(--blue);text-decoration:none;}
+
+/* ── Layout ── */
+.container{max-width:1280px;margin:0 auto;padding:0 20px;}
+header{background:var(--bg2);border-bottom:1px solid var(--border);padding:14px 0;position:sticky;top:0;z-index:100;}
+.header-inner{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+.logo{font-size:18px;font-weight:600;color:#fff;}
+.logo span{color:var(--green);}
+.updated{font-size:12px;color:var(--muted);}
+.nav{display:flex;gap:4px;}
+.nav button{background:none;border:1px solid var(--border);color:var(--muted);padding:5px 14px;border-radius:6px;cursor:pointer;font-size:13px;transition:.15s;}
+.nav button.active,.nav button:hover{background:var(--bg3);color:var(--text);border-color:var(--blue);}
+
+/* ── Cards ── */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin:24px 0;}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:16px 18px;}
+.card-label{font-size:11px;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em;}
+.card-val{font-size:22px;font-weight:600;}
+.card-sub{font-size:12px;color:var(--muted);margin-top:2px;}
+.up{color:var(--green);}
+.dn{color:var(--red);}
+.neu{color:var(--text);}
+
+/* ── Section ── */
+.section{display:none;}
+.section.active{display:block;}
+h2{font-size:16px;font-weight:600;margin:24px 0 12px;color:#fff;border-left:3px solid var(--blue);padding-left:10px;}
+
+/* ── Table ── */
+.tbl-wrap{overflow-x:auto;border-radius:10px;border:1px solid var(--border);}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+th{background:var(--bg2);color:var(--muted);font-weight:500;padding:10px 12px;text-align:left;white-space:nowrap;border-bottom:1px solid var(--border);}
+td{padding:9px 12px;border-bottom:1px solid var(--border);vertical-align:middle;white-space:nowrap;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:rgba(255,255,255,.03);}
+.badge{display:inline-block;font-size:11px;padding:2px 8px;border-radius:4px;font-weight:600;}
+.b-buy{background:rgba(63,185,80,.15);color:var(--green);}
+.b-sell{background:rgba(248,81,73,.15);color:var(--red);}
+.b-etf{background:rgba(88,166,255,.15);color:var(--blue);}
+.b-stock{background:rgba(240,168,50,.15);color:var(--gold);}
+
+/* ── Charts ── */
+.charts{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px;margin:16px 0;}
+.chart-box{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:16px;}
+.chart-title{font-size:13px;color:var(--muted);margin-bottom:12px;}
+
+/* ── Filters ── */
+.filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;}
+.filters input,.filters select{background:var(--bg2);border:1px solid var(--border);color:var(--text);padding:6px 10px;border-radius:6px;font-size:13px;outline:none;}
+.filters input:focus,.filters select:focus{border-color:var(--blue);}
+
+/* ── Progress bar ── */
+.pbar{background:var(--bg3);border-radius:3px;height:5px;overflow:hidden;margin-top:4px;}
+.pbar-fill{height:100%;border-radius:3px;background:var(--green);}
+.pbar-fill.neg{background:var(--red);}
+
+/* ── Responsive ── */
+@media(max-width:600px){
+  .card-val{font-size:18px;}
+  .cards{grid-template-columns:repeat(2,1fr);}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <div class="header-inner">
+      <div class="logo">📊 <span>Trading</span> Journal</div>
+      <div class="nav">
+        <button class="active" onclick="showSection('dashboard',this)">總覽</button>
+        <button onclick="showSection('positions',this)">持倉</button>
+        <button onclick="showSection('realized',this)">已實現</button>
+        <button onclick="showSection('trades',this)">交易明細</button>
+      </div>
+      <div class="updated">更新：<span id="updated-date"></span></div>
+    </div>
+  </div>
+</header>
+
+<div class="container" style="padding-bottom:60px;">
+
+  <!-- ═════════ DASHBOARD ═════════ -->
+  <div id="section-dashboard" class="section active">
+    <div class="cards" id="summary-cards"></div>
+
+    <div class="charts">
+      <div class="chart-box" style="grid-column:1/-1;">
+        <div class="chart-title">損益結構（已實現 vs 未實現）</div>
+        <canvas id="chart-pnl" height="90"></canvas>
+      </div>
+      <div class="chart-box">
+        <div class="chart-title">持倉配置（市值佔比）</div>
+        <canvas id="chart-alloc" height="240"></canvas>
+      </div>
+      <div class="chart-box">
+        <div class="chart-title">月交易筆數</div>
+        <canvas id="chart-monthly" height="240"></canvas>
+      </div>
+    </div>
+
+    <h2>未實現持倉快照</h2>
+    <div class="tbl-wrap">
+      <table id="tbl-pos-dash"></table>
+    </div>
+  </div>
+
+  <!-- ═════════ POSITIONS ═════════ -->
+  <div id="section-positions" class="section">
+    <h2>未實現持倉明細</h2>
+    <div class="tbl-wrap">
+      <table id="tbl-positions"></table>
+    </div>
+  </div>
+
+  <!-- ═════════ REALIZED ═════════ -->
+  <div id="section-realized" class="section">
+    <h2>已實現損益摘要</h2>
+    <div class="tbl-wrap">
+      <table id="tbl-realized"></table>
+    </div>
+  </div>
+
+  <!-- ═════════ TRADES ═════════ -->
+  <div id="section-trades" class="section">
+    <h2>交易明細</h2>
+    <div class="filters">
+      <input type="text" id="filter-stock" placeholder="搜尋股票名稱…" oninput="renderTrades()">
+      <select id="filter-action" onchange="renderTrades()">
+        <option value="">全部方向</option>
+        <option value="BUY">買進</option>
+        <option value="SELL">賣出</option>
+      </select>
+      <select id="filter-month" onchange="renderTrades()">
+        <option value="">全部月份</option>
+        <option value="2026-06">2026-06</option>
+        <option value="2026-05">2026-05</option>
+        <option value="2026-04">2026-04</option>
+        <option value="2026-03">2026-03</option>
+        <option value="2026-02">2026-02</option>
+        <option value="2026-01">2026-01</option>
+      </select>
+    </div>
+    <div class="tbl-wrap">
+      <table id="tbl-trades"></table>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ──────────────────────────────────────────────
+// Helpers
+// ──────────────────────────────────────────────
+const fmt  = n => Number(n).toLocaleString("zh-TW",{maximumFractionDigits:0});
+const fmtD = n => Number(n).toLocaleString("zh-TW",{minimumFractionDigits:2,maximumFractionDigits:2});
+const sign = n => n >= 0 ? "+" : "";
+const cls  = n => n >= 0 ? "up" : "dn";
+
+function showSection(id, btn) {
+  document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
+  document.querySelectorAll(".nav button").forEach(b => b.classList.remove("active"));
+  document.getElementById("section-"+id).classList.add("active");
+  if(btn) btn.classList.add("active");
+}
+
+// ──────────────────────────────────────────────
+// Init
+// ──────────────────────────────────────────────
+document.getElementById("updated-date").textContent = LAST_UPDATED;
+
+const totalUnrealized   = POSITIONS.reduce((s,p) => s + p.pnl, 0);
+const totalValue        = POSITIONS.reduce((s,p) => s + p.value, 0);
+const totalCost         = POSITIONS.reduce((s,p) => s + (p.value - p.pnl), 0);
+const realizedWinPnl    = REALIZED.filter(r=>r.pnl>0).reduce((s,r)=>s+r.pnl,0);
+const realizedLossPnl   = REALIZED.filter(r=>r.pnl<0).reduce((s,r)=>s+r.pnl,0);
+const totalRealizedPnl  = REALIZED.reduce((s,r)=>s+r.pnl,0);
+const totalPnl          = totalUnrealized + totalRealizedPnl;
+const winCount          = REALIZED.filter(r=>r.pnl>0).length;
+const winRate           = Math.round(winCount / REALIZED.length * 100);
+
+// ── Summary Cards ────────────────────────────
+const cards = [
+  { label:"投資組合現值",    val:"$"+fmt(totalValue)+" 元",   sub:"未實現倉位",  color:"neu" },
+  { label:"未實現獲利",      val:sign(totalUnrealized)+"$"+fmt(totalUnrealized), sub:fmtD(totalUnrealized/totalCost*100)+"%", color:cls(totalUnrealized) },
+  { label:"已實現獲利（估）",val:sign(totalRealizedPnl)+"$"+fmt(totalRealizedPnl), sub:"本期進出場", color:cls(totalRealizedPnl) },
+  { label:"合計總獲利（估）",val:sign(totalPnl)+"$"+fmt(totalPnl), sub:"實現＋未實現", color:cls(totalPnl) },
+  { label:"勝率",           val:winRate+"%", sub:winCount+" 勝 / "+REALIZED.length+" 筆", color:winRate>=50?"up":"dn" },
+  { label:"交易標的數",      val:[...new Set(TRADES.map(t=>t.stock))].length+" 檔", sub:"本期累計", color:"neu" },
+];
+document.getElementById("summary-cards").innerHTML = cards.map(c=>`
+  <div class="card">
+    <div class="card-label">${c.label}</div>
+    <div class="card-val ${c.color}">${c.val}</div>
+    <div class="card-sub">${c.sub}</div>
+  </div>`).join("");
+
+// ── Positions Table (dashboard) ───────────────
+function posRow(p, compact=false) {
+  const pct = fmtD(Math.abs(p.pct));
+  const bar = Math.min(Math.abs(p.pct),150)/150*100;
+  return `<tr>
+    <td><strong>${p.stock}</strong><br><span style="color:var(--muted);font-size:11px;">${p.code}</span></td>
+    <td><span class="badge ${p.type==="ETF"?"b-etf":"b-stock"}">${p.type}</span></td>
+    <td>${fmt(p.shares)}</td>
+    <td>${fmtD(p.avgCost)}</td>
+    <td>${fmtD(p.price)}</td>
+    <td>${fmt(p.value)}</td>
+    <td class="${cls(p.pnl)}">${sign(p.pnl)}${fmt(p.pnl)}</td>
+    <td class="${cls(p.pnl)}">${sign(p.pct)}${pct}%
+      <div class="pbar"><div class="pbar-fill${p.pct<0?" neg":""}" style="width:${bar}%"></div></div>
+    </td>
+  </tr>`;
+}
+const posHead = `<thead><tr>
+  <th>股票</th><th>類別</th><th>股數</th><th>均價</th><th>市價</th><th>現值</th><th>未實現損益</th><th>報酬率</th>
+</tr></thead>`;
+const posSort = [...POSITIONS].sort((a,b)=>b.pnl-a.pnl);
+document.getElementById("tbl-pos-dash").innerHTML = posHead + "<tbody>" + posSort.map(p=>posRow(p)).join("") + "</tbody>";
+document.getElementById("tbl-positions").innerHTML = posHead + "<tbody>" + posSort.map(p=>posRow(p)).join("") + `
+  <tr style="font-weight:600;background:var(--bg3);">
+    <td colspan="5">合計</td>
+    <td>${fmt(totalValue)}</td>
+    <td class="${cls(totalUnrealized)}">${sign(totalUnrealized)}${fmt(totalUnrealized)}</td>
+    <td class="${cls(totalUnrealized)}">${fmtD(totalUnrealized/totalCost*100)}%</td>
+  </tr>` + "</tbody>";
+
+// ── Realized Table ────────────────────────────
+const realHead = `<thead><tr>
+  <th>股票</th><th>買入日</th><th>賣出日</th><th>損益（估）</th><th>報酬率</th><th>備註</th>
+</tr></thead>`;
+document.getElementById("tbl-realized").innerHTML = realHead + "<tbody>" +
+  [...REALIZED].sort((a,b)=>b.pnl-a.pnl).map(r=>`<tr>
+    <td><strong>${r.stock}</strong></td>
+    <td style="color:var(--muted);">${r.buyDate}</td>
+    <td style="color:var(--muted);">${r.sellDate}</td>
+    <td class="${cls(r.pnl)}">${sign(r.pnl)}${fmt(r.pnl)}</td>
+    <td class="${cls(r.pnl)}">${r.pct?sign(r.pct)+fmtD(r.pct)+"%":"—"}</td>
+    <td style="color:var(--muted);font-size:12px;">${r.note}</td>
+  </tr>`).join("") +
+  `<tr style="font-weight:600;background:var(--bg3);">
+    <td colspan="3">合計</td>
+    <td class="${cls(totalRealizedPnl)}">${sign(totalRealizedPnl)}${fmt(totalRealizedPnl)}</td>
+    <td colspan="2"></td>
+  </tr>` + "</tbody>";
+
+// ── Trades Table ─────────────────────────────
+function renderTrades() {
+  const q = document.getElementById("filter-stock").value.toLowerCase();
+  const a = document.getElementById("filter-action").value;
+  const m = document.getElementById("filter-month").value;
+  const filtered = [...TRADES]
+    .filter(t => !q || t.stock.toLowerCase().includes(q))
+    .filter(t => !a || t.action === a)
+    .filter(t => !m || t.date.startsWith(m))
+    .sort((a,b) => b.date.localeCompare(a.date));
+  const thead = `<thead><tr>
+    <th>日期</th><th>股票</th><th>方向</th><th>價格</th><th>股數</th>
+    <th>金額</th><th>手續費</th><th>交易稅</th><th>備註</th>
+  </tr></thead>`;
+  document.getElementById("tbl-trades").innerHTML = thead + "<tbody>" +
+    filtered.map(t=>`<tr>
+      <td style="color:var(--muted);">${t.date}</td>
+      <td><strong>${t.stock}</strong></td>
+      <td><span class="badge ${t.action==="BUY"?"b-buy":"b-sell"}">${t.action==="BUY"?"買進":"賣出"}</span></td>
+      <td>${fmtD(t.price)}</td>
+      <td>${fmt(t.shares)}</td>
+      <td class="${cls(t.net)}">${sign(t.net)}${fmt(Math.abs(t.net))}</td>
+      <td style="color:var(--muted);">${t.fee}</td>
+      <td style="color:var(--muted);">${t.tax}</td>
+      <td style="color:var(--muted);font-size:12px;max-width:200px;white-space:normal;">${t.note}</td>
+    </tr>`).join("") + "</tbody>";
+}
+renderTrades();
+
+// ──────────────────────────────────────────────
+// Charts
+// ──────────────────────────────────────────────
+const CDARK = { color:"#8b949e", gridColor:"rgba(255,255,255,.06)" };
+
+// Chart 1: P&L bar
+new Chart(document.getElementById("chart-pnl"),{
+  type:"bar",
+  data:{
+    labels:["未實現獲利","已實現獲利（估）","合計總獲利（估）"],
+    datasets:[{
+      data:[totalUnrealized, totalRealizedPnl, totalPnl],
+      backgroundColor:["rgba(63,185,80,.6)","rgba(88,166,255,.6)","rgba(240,168,50,.8)"],
+      borderColor:["#3fb950","#58a6ff","#f0a832"],
+      borderWidth:1,borderRadius:5
+    }]
+  },
+  options:{
+    responsive:true,plugins:{legend:{display:false},tooltip:{callbacks:{label:v=>" "+sign(v.raw)+fmt(v.raw)+" 元"}}},
+    scales:{
+      x:{ticks:{color:CDARK.color},grid:{color:CDARK.gridColor}},
+      y:{ticks:{color:CDARK.color,callback:v=>(v>=0?"+":"")+fmt(v)},grid:{color:CDARK.gridColor}}
+    }
+  }
+});
+
+// Chart 2: Allocation donut
+const allocColors = ["#58a6ff","#3fb950","#f0a832","#bc8cff","#f85149","#56d364","#ffa657","#d2a8ff","#79c0ff","#ff7b72"];
+new Chart(document.getElementById("chart-alloc"),{
+  type:"doughnut",
+  data:{
+    labels: posSort.map(p=>p.stock),
+    datasets:[{data:posSort.map(p=>p.value), backgroundColor:allocColors, borderWidth:0}]
+  },
+  options:{
+    responsive:true,
+    plugins:{
+      legend:{position:"right",labels:{color:"#c9d1d9",font:{size:11},boxWidth:12}},
+      tooltip:{callbacks:{label:v=>` ${v.label}: ${fmt(v.raw)} (${fmtD(v.raw/totalValue*100)}%)`}}
+    }
+  }
+});
+
+// Chart 3: Monthly trades
+const monthMap = {};
+TRADES.forEach(t=>{
+  const m = t.date.slice(0,7);
+  monthMap[m] = (monthMap[m]||0)+1;
+});
+const months = Object.keys(monthMap).sort();
+new Chart(document.getElementById("chart-monthly"),{
+  type:"bar",
+  data:{
+    labels:months,
+    datasets:[{
+      label:"交易筆數",data:months.map(m=>monthMap[m]),
+      backgroundColor:"rgba(88,166,255,.5)",borderColor:"#58a6ff",borderWidth:1,borderRadius:4
+    }]
+  },
+  options:{
+    responsive:true,
+    plugins:{legend:{display:false}},
+    scales:{
+      x:{ticks:{color:CDARK.color},grid:{display:false}},
+      y:{ticks:{color:CDARK.color},grid:{color:CDARK.gridColor}}
+    }
+  }
+});
+</script>
+</body>
+</html>
