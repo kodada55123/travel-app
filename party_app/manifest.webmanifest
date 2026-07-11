@@ -1,0 +1,9 @@
+{
+  "name": "路見不秤 ➤ 拔雕相見",
+  "short_name": "拔雕相見",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#062a3d",
+  "theme_color": "#062a3d",
+  "icons": []
+}

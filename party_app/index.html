@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#062a3d">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>路見不秤 ➤ 拔雕相見｜配對任務</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app">
+
+  <!-- ═══ 登入頁 ═══ -->
+  <section id="screen-login" class="screen">
+    <div class="hero">
+      <img id="poster" src="assets/poster.png" alt="活動海報"
+           onerror="this.parentElement.classList.add('no-poster')">
+      <div class="hero-text">
+        <p class="hero-date">10/17 – 10/18 · 水尾民宿</p>
+        <h1>路見不秤 ➤ 拔雕相見</h1>
+        <p class="hero-sub">找到你的神秘配對朋友，解鎖他的 IG！</p>
+      </div>
+    </div>
+    <div class="panel">
+      <label class="field-label" for="who">你是哪位？</label>
+      <select id="who">
+        <option value="" disabled selected>— 選擇你的暱稱 —</option>
+      </select>
+      <button id="btn-login" class="btn btn-primary" disabled>開始任務 🍻</button>
+      <p class="fine-print">登入後身分會記在這支手機，斷線也不會消失。</p>
+    </div>
+  </section>
+
+  <!-- ═══ 個人名片頁 ═══ -->
+  <section id="screen-card" class="screen hidden">
+    <header class="topbar">
+      <span class="topbar-title">我的名片</span>
+      <button id="btn-logout" class="btn-ghost">換人登入</button>
+    </header>
+    <div class="card">
+      <div class="card-stripe"></div>
+      <p class="card-event">路見不秤 ➤ 拔雕相見 · 10/17–10/18</p>
+      <h2 id="card-name"></h2>
+      <p id="card-meta" class="card-meta"></p>
+      <div id="card-qr" class="qr-box"></div>
+      <a id="card-ig" class="ig-handle" target="_blank" rel="noopener"></a>
+      <p class="card-hint">掃我 QR Code，追蹤我的 IG 📸</p>
+    </div>
+    <div id="card-status" class="status-chip"></div>
+  </section>
+
+  <!-- ═══ 配對猜謎頁 ═══ -->
+  <section id="screen-quest" class="screen hidden">
+    <header class="topbar"><span class="topbar-title">配對任務</span></header>
+    <div class="panel">
+      <p class="quest-label">🕵️ 你的配對朋友是誰？線索：</p>
+      <blockquote id="quest-hint"></blockquote>
+      <form id="quest-form" autocomplete="off">
+        <input id="guess" type="text" inputmode="text" enterkeyhint="go"
+               placeholder="輸入他／她的暱稱" list="names-dl">
+        <datalist id="names-dl"></datalist>
+        <button type="submit" class="btn btn-primary">確認答案</button>
+      </form>
+      <div class="quest-foot">
+        <span>錯誤次數</span>
+        <span id="wrong-count" class="wrong-badge">0</span>
+      </div>
+      <p id="quest-msg" class="quest-msg"></p>
+    </div>
+  </section>
+
+  <!-- ═══ 恭喜完成頁 ═══ -->
+  <section id="screen-done" class="screen hidden">
+    <div class="confetti" aria-hidden="true"></div>
+    <div class="done-card">
+      <div class="done-badge">🏆</div>
+      <h2>任務完成！</h2>
+      <p class="done-sub">你找到了你的配對朋友</p>
+      <p id="done-target" class="done-target"></p>
+      <a id="done-ig" class="btn btn-ig" target="_blank" rel="noopener"></a>
+      <dl class="done-stats">
+        <div><dt>解鎖者</dt><dd id="done-me"></dd></div>
+        <div><dt>錯誤次數</dt><dd id="done-wrong"></dd></div>
+        <div><dt>完成時間</dt><dd id="done-time"></dd></div>
+      </dl>
+      <p class="done-proof">此畫面即為完成證明，出示給主辦即可 ✅</p>
+    </div>
+  </section>
+
+  <!-- ═══ 底部導覽 ═══ -->
+  <nav id="tabbar" class="tabbar hidden">
+    <button data-nav="card" class="tab active"><span>🪪</span>名片</button>
+    <button data-nav="quest" class="tab"><span>🧩</span>任務</button>
+  </nav>
+</div>
+
+<script src="qrcode.js"></script>
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

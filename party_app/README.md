@@ -1,0 +1,67 @@
+# 路見不秤 ➤ 拔雕相見｜配對任務 Web App
+
+10/17–10/18 水尾民宿活動用的手機互動網頁：53 位參與者各自登入、拿到數位名片（IG QR Code），
+依提示猜出自己的「配對朋友」，答對解鎖對方 IG 並取得完成證明。
+
+## 技術選型（為什麼不是 React + Firebase）
+
+兩天一夜、53 人、山區民宿收訊不穩 → 最重要的是**打得開、斷線也能玩**：
+
+- **純靜態 HTML/CSS/JS**：無建置流程、無框架、無後端帳號，直接丟 GitHub Pages（本 repo 已在用）。
+- **資料直接打包成 `data.js`**：53 筆資料僅約 24KB，不需要資料庫查詢；載入一次後完全離線可玩。
+- **Service Worker 離線快取**：進過一次頁面後，之後沒網路也能開。
+- **進度存 localStorage**：換頁、重整、斷線都不會掉。
+- **解鎖狀態回報用 Google Apps Script + 試算表**（可選）：你本來就用 Google Sheet 管名單，
+  試算表就是即時儀表板，免 Firebase/Supabase 開帳號設金鑰。
+
+React/Vue + Firebase 適合要「長期營運、雙向即時同步」的場景；這種一次性活動，越少依賴越穩。
+
+## 檔案結構
+
+```
+party_app/
+├── index.html            四個畫面：登入 / 名片 / 猜謎 / 完成
+├── style.css             泳池派對主題（手機優先，最寬 480px 置中）
+├── app.js                邏輯 + 狀態管理 + 回報佇列（CONFIG 在最上方）
+├── data.js               由試算表產生（勿手改）
+├── qrcode.js             QR Code 產生（qrcode-generator，MIT）
+├── sw.js                 離線快取
+├── assets/poster.png     活動海報（放上正式檔即自動顯示，缺檔則顯示漸層背景）
+└── tools/
+    ├── generate_data.py  試算表 CSV → data.js
+    ├── game.csv          目前使用的名單快照
+    └── apps_script.gs    解鎖狀態回報端點（含部署步驟）
+```
+
+## 名單更新流程
+
+1. 改 Drive 上的「遊戲」試算表。
+2. 檔案 > 下載 > CSV，存成 `tools/game.csv`。
+3. `python3 tools/generate_data.py tools/game.csv > data.js`
+4. 重新部署（git push）。
+
+產生器會做的事：
+- 答案不落明文——存 SHA-256（加鹽），對方暱稱/IG 用答案衍生金鑰加密，看原始碼抄不到答案。
+- 暱稱容錯——`NortonWu （翊羣/小祥）` 輸入 `nortonwu`、`翊羣`、`小祥` 都算對；
+  會撞名的別名（例如兩個 William 的 `william`）自動剔除，此時需輸入全名。
+- 已知修正：試算表 Deacon 的配對朋友寫「彩霖」，名單上是「彥霖」，產生器自動修正
+  （建議回試算表改掉，並從 `generate_data.py` 移除 `TARGET_FIXES`）。
+
+## 解鎖狀態回報（選用，建議開）
+
+照 `tools/apps_script.gs` 開頭的四個步驟部署，把網址貼進 `app.js` 的 `CONFIG.SYNC_URL`。
+之後每次登入／答錯／解鎖都會回報到試算表「狀態」分頁：暱稱、已解鎖、錯誤次數、解鎖時間。
+
+**離線處理**：回報進 localStorage 佇列，送達才移除；斷線時保留，恢復連線（online 事件、
+每 30 秒、下次操作）自動重送。就算整場沒網路，遊戲照玩，證明就是完成頁畫面。
+
+## 部署
+
+推上 GitHub Pages 後網址為 `https://<帳號>.github.io/<repo>/party_app/`，
+做成 QR Code 貼在民宿入口讓大家掃碼即玩。HTTPS 下 Service Worker 與 QR 掃描皆可用。
+
+## 已知取捨
+
+- 登入採「自選暱稱」信任制，無密碼——派對場景以低門檻優先。
+- 有心人可打開主控台對 53 個名字逐一試雜湊來作弊；鹽值只防「直接看原始碼抄答案」。
+  派對遊戲夠用，要更嚴可改成答案送 Apps Script 驗證（但斷線就不能玩了，不建議）。
