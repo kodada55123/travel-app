@@ -90,10 +90,40 @@
     </div>
   </section>
 
+  <!-- ═══ 人類賓果頁 ═══ -->
+  <section id="screen-bingo" class="screen hidden">
+    <header class="topbar">
+      <span class="topbar-title">人類賓果</span>
+      <span id="bingo-lines" class="lines-badge">0 條線</span>
+    </header>
+    <p class="bingo-rule">走去聊天，找到符合條件的人填進格子。<b>同一個人只能用一格</b>，連線就 BINGO 🎉</p>
+    <div id="bingo-grid" class="bingo-grid"></div>
+    <p class="bingo-foot">🔒 生日星座類由系統驗證；其他請把手機拿給對方，由<b>本人按確認</b>。</p>
+  </section>
+
+  <!-- ═══ 賓果格子彈窗 ═══ -->
+  <div id="bingo-modal" class="modal hidden">
+    <div class="modal-sheet">
+      <p id="bm-cond" class="bm-cond"></p>
+      <div id="bm-step-input">
+        <input id="bm-name" type="text" placeholder="他／她的暱稱" list="names-dl" autocomplete="off">
+        <button id="bm-next" class="btn btn-primary">填入 ✍️</button>
+      </div>
+      <div id="bm-step-confirm" class="hidden">
+        <p class="bm-handoff">📲 把手機拿給對方——</p>
+        <button id="bm-confirm" class="btn btn-confirm"></button>
+      </div>
+      <p id="bm-msg" class="quest-msg"></p>
+      <button id="bm-remove" class="btn-ghost hidden">移除這格重填</button>
+      <button id="bm-close" class="btn-ghost">關閉</button>
+    </div>
+  </div>
+
   <!-- ═══ 底部導覽 ═══ -->
   <nav id="tabbar" class="tabbar hidden">
     <button data-nav="card" class="tab active"><span>🪪</span>名片</button>
     <button data-nav="quest" class="tab"><span>🧩</span>任務</button>
+    <button data-nav="bingo" class="tab"><span>🎯</span>賓果</button>
   </nav>
 </div>
 

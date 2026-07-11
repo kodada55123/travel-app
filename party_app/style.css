@@ -139,6 +139,57 @@ blockquote {
 .confetti i { position: absolute; top: -12px; width: 9px; height: 14px; opacity: .9; animation: drop linear infinite; }
 @keyframes drop { to { transform: translateY(105vh) rotate(660deg); } }
 
+/* ── 人類賓果 ── */
+.bingo-rule { font-size: .88rem; color: var(--ink-dim); margin-bottom: 14px; line-height: 1.6; }
+.bingo-rule b, .bingo-foot b { color: var(--coral); }
+.lines-badge { padding: 5px 14px; border-radius: 999px; font-weight: 800; font-size: .85rem; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.2); color: var(--ink-dim); }
+.lines-badge.hot { background: rgba(62,230,216,.16); border-color: var(--aqua); color: var(--aqua); }
+.bingo-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.bingo-cell {
+  aspect-ratio: 1;
+  display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 6px;
+  padding: 8px 6px;
+  border-radius: 14px;
+  border: 1.5px solid rgba(62,230,216,.3);
+  background: rgba(255,255,255,.06);
+  color: var(--ink);
+  font-family: inherit; font-size: .74rem; line-height: 1.35; font-weight: 600;
+  cursor: pointer;
+  transition: transform .08s ease;
+}
+.bingo-cell:active { transform: scale(.95); }
+.bingo-cell .bc-text { display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
+.bingo-cell .bc-who { font-size: .72rem; font-weight: 800; color: #04382e; min-height: 1em; word-break: break-all; }
+.bingo-cell.claimed { background: linear-gradient(150deg, var(--aqua), var(--aqua-dim)); border-color: var(--aqua); color: #04382e; box-shadow: 0 4px 14px rgba(62,230,216,.35); }
+.bingo-foot { margin-top: 14px; font-size: .8rem; color: var(--ink-dim); line-height: 1.6; }
+
+/* ── 賓果彈窗 ── */
+.modal { position: fixed; inset: 0; z-index: 50; background: rgba(2,20,30,.7); backdrop-filter: blur(3px); display: flex; align-items: flex-end; justify-content: center; }
+.modal-sheet {
+  width: 100%; max-width: 480px;
+  background: linear-gradient(180deg, #0f4a66, #0b3d57);
+  border-radius: 22px 22px 0 0;
+  border-top: 1.5px solid var(--aqua);
+  padding: 22px 20px calc(24px + env(safe-area-inset-bottom));
+  animation: slideup .25s ease;
+}
+@keyframes slideup { from { transform: translateY(40%); opacity: 0; } }
+.bm-cond { font-size: 1.1rem; font-weight: 800; margin-bottom: 16px; line-height: 1.5; }
+.bm-handoff { text-align: center; color: var(--ink-dim); margin-bottom: 4px; }
+.btn-confirm { background: linear-gradient(135deg, var(--aqua), var(--aqua-dim)); color: #04382e; }
+.modal-sheet .btn-ghost { display: block; width: 100%; margin-top: 12px; padding: 10px; }
+.bingo-toast {
+  position: fixed; top: 18%; left: 50%; transform: translateX(-50%);
+  z-index: 60; width: min(88vw, 380px);
+  background: linear-gradient(135deg, var(--coral), var(--coral-deep));
+  color: #fff; text-align: center;
+  border-radius: 18px; padding: 20px 16px;
+  box-shadow: 0 14px 40px rgba(244,96,47,.5);
+  animation: pop .5s cubic-bezier(.2,1.6,.4,1);
+}
+.bingo-toast b { display: block; font-size: 1.5rem; margin-bottom: 4px; }
+.bingo-toast span { font-size: .95rem; }
+
 /* ── 底部導覽 ── */
 .tabbar {
   position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
