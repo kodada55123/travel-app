@@ -12,7 +12,7 @@
  * 每位參與者一列，依暱稱 upsert；試算表本身就是主辦即時儀表板。
  */
 const SHEET_NAME = "狀態";
-const HEADERS = ["暱稱", "已解鎖", "錯誤次數", "解鎖時間", "賓果線數", "最後更新", "最後事件"];
+const HEADERS = ["暱稱", "已解鎖", "錯誤次數", "解鎖時間", "賓果線數", "名片冊", "最後更新", "最後事件"];
 
 function doPost(e) {
   const lock = LockService.getScriptLock();
@@ -30,6 +30,7 @@ function doPost(e) {
       d.wrong || 0,
       d.doneAt ? new Date(d.doneAt) : "",
       d.lines || 0,
+      d.meets || 0,
       new Date(d.ts || Date.now()),
       d.type || "",
     ]]);

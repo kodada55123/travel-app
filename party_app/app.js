@@ -21,8 +21,9 @@ function loadState() {
   } catch (e) { /* 私密瀏覽等情況：退化為記憶體狀態 */ }
   return { me: null, wrong: 0, done: false, doneAt: null, reveal: null, queue: [] };
 }
-// 舊版狀態補上賓果欄位
+// 舊版狀態補上賓果／名片冊欄位
 state.bingo = state.bingo || { claims: {}, lines: 0, lineAt: null, fullAt: null };
+state.meets = state.meets || [];
 function saveState() {
   try { localStorage.setItem(CONFIG.STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
 }
@@ -57,7 +58,7 @@ function track(type) {
   state.queue.push({
     type, name: state.me, wrong: state.wrong,
     done: state.done, doneAt: state.doneAt,
-    lines: state.bingo.lines, ts: Date.now(),
+    lines: state.bingo.lines, meets: state.meets.length, ts: Date.now(),
   });
   saveState();
   flushQueue();
@@ -121,7 +122,7 @@ function initLogin() {
   $("#btn-logout").addEventListener("click", () => {
     if (!confirm("換人登入會清除這支手機上的進度，確定？")) return;
     state = { me: null, wrong: 0, done: false, doneAt: null, reveal: null, queue: [],
-      bingo: { claims: {}, lines: 0, lineAt: null, fullAt: null } };
+      bingo: { claims: {}, lines: 0, lineAt: null, fullAt: null }, meets: [] };
     saveState();
     sel.value = "";
     $("#btn-login").disabled = true;
@@ -140,7 +141,14 @@ function zodiacOf(birthday) {
 }
 function renderCard() {
   const p = me();
-  $("#card-name").textContent = p.name;
+  $("#card-name").innerHTML = "";
+  $("#card-name").append(p.name);
+  if (p.new) {
+    const b = document.createElement("span");
+    b.className = "new-badge";
+    b.textContent = "🌱 新朋友";
+    $("#card-name").appendChild(b);
+  }
   const z = zodiacOf(p.birthday);
   $("#card-meta").textContent = `🎂 ${p.birthday}${z ? " · " + z : ""}`;
   const url = "https://www.instagram.com/" + p.ig;
@@ -150,9 +158,41 @@ function renderCard() {
   qr.addData(url);
   qr.make();
   $("#card-qr").innerHTML = qr.createSvgTag({ cellSize: 5, margin: 3, scalable: true });
+  const topics = $("#card-topics");
+  topics.innerHTML = "";
+  (p.topics || []).forEach((t) => {
+    const chip = document.createElement("span");
+    chip.className = "topic-chip";
+    chip.textContent = t;
+    topics.appendChild(chip);
+  });
   const chip = $("#card-status");
   chip.textContent = state.done ? "✅ 配對任務已完成" : "🧩 配對任務進行中";
   chip.classList.toggle("ok", state.done);
+  renderMeets();
+}
+
+// ═══ 名片冊：認識 3 位新朋友（新朋友本人則是認識任 3 位）═══
+const MEET_GOAL = 3;
+function meetTargetsAreNew() { return !me().new; }
+function renderMeets() {
+  const panel = $("#meet-panel");
+  if (!PEOPLE.some((p) => p.new)) return panel.classList.add("hidden");
+  panel.classList.remove("hidden");
+  const n = state.meets.length;
+  const who = meetTargetsAreNew() ? "新朋友" : "朋友";
+  $("#meet-title").textContent = n >= MEET_GOAL
+    ? `📇 名片冊完成！你認識了 ${n} 位${who} 🎉`
+    : `📇 名片冊任務：認識 ${n}/${MEET_GOAL} 位${who}`;
+  const slots = $("#meet-slots");
+  slots.innerHTML = "";
+  for (let i = 0; i < Math.max(MEET_GOAL, n); i++) {
+    const el = document.createElement("button");
+    el.className = "meet-slot" + (state.meets[i] ? " got" : "");
+    el.textContent = state.meets[i] || "＋";
+    el.addEventListener("click", () => openMeet(i));
+    slots.appendChild(el);
+  }
 }
 
 // ═══ 猜謎頁 ═══
@@ -180,6 +220,7 @@ function initQuest() {
     saveState();
     track("wrong");
     $("#wrong-count").textContent = state.wrong;
+    renderRescue(quest);
     const known = PEOPLE.some((p) => norm(p.name) === a);
     setMsg(known ? "有這位朋友，但不是你要找的人 😜" : "名單上沒有這個暱稱，檢查一下錯字？", "err");
     const panel = $("#screen-quest .panel");
@@ -210,7 +251,33 @@ function renderQuest() {
   }
   $("#quest-hint").textContent = p.quest.hint;
   $("#wrong-count").textContent = state.wrong;
+  renderRescue(p.quest);
   setMsg("答對才會解鎖對方的 IG ✨", "info");
+}
+// 卡關救援：答錯 5 次解鎖第二提示、10 次解鎖 IG 開頭
+const RESCUE_AT = [5, 10];
+function renderRescue(quest) {
+  const box = $("#rescue");
+  box.innerHTML = "";
+  const items = [
+    { at: RESCUE_AT[0], text: quest.r1 },
+    { at: RESCUE_AT[1], text: quest.r2 },
+  ];
+  let lockedShown = false;   // 鎖住的提示只顯示最近的一條
+  items.forEach(({ at, text }) => {
+    if (!text) return;
+    const el = document.createElement("p");
+    if (state.wrong >= at) {
+      el.className = "rescue-line open";
+      el.textContent = "🆘 " + text;
+    } else {
+      if (lockedShown) return;
+      lockedShown = true;
+      el.className = "rescue-line";
+      el.textContent = `🔒 再答錯 ${at - state.wrong} 次自動解鎖加碼提示`;
+    }
+    box.appendChild(el);
+  });
 }
 function renderDatalist() {
   const dl = $("#names-dl");
@@ -381,7 +448,25 @@ function renderBingo() {
 }
 
 let modalIdx = null;
+let modalMode = "bingo";   // "bingo" | "meet"（共用同一個彈窗）
+function openMeet(i) {
+  modalMode = "meet";
+  modalIdx = i;
+  const claimed = state.meets[i];
+  $("#bm-cond").textContent = meetTargetsAreNew()
+    ? "📇 找一位「🌱 新朋友」聊聊天，交換名片"
+    : "📇 找一位朋友聊聊天，交換名片";
+  $("#bm-msg").textContent = "";
+  $("#bm-msg").className = "quest-msg";
+  $("#bm-step-input").classList.toggle("hidden", !!claimed);
+  $("#bm-step-confirm").classList.add("hidden");
+  $("#bm-remove").classList.toggle("hidden", !claimed);
+  if (claimed) setBmMsg(`已收到「${claimed}」的名片 ✅`, "info");
+  else $("#bm-name").value = "";
+  $("#bingo-modal").classList.remove("hidden");
+}
 function openCell(i) {
+  modalMode = "bingo";
   modalIdx = i;
   const cell = bingoCard[i];
   $("#bm-cond").textContent = cell.text;
@@ -409,10 +494,17 @@ $("#bingo-modal").addEventListener("click", (e) => {
   if (e.target.id === "bingo-modal") $("#bingo-modal").classList.add("hidden");
 });
 $("#bm-next").addEventListener("click", () => {
-  const cell = bingoCard[modalIdx];
   const person = findPerson($("#bm-name").value);
   if (!person) return setBmMsg("名單上沒有這個暱稱 🤔", "err");
   if (person.name === state.me) return setBmMsg("不能填自己啦 😂", "err");
+  if (modalMode === "meet") {
+    if (state.meets.includes(person.name))
+      return setBmMsg(`「${person.name}」的名片你已經收過了！`, "err");
+    if (meetTargetsAreNew() && !person.new)
+      return setBmMsg(`「${person.name}」不是新朋友，找掛著 🌱 徽章的人！`, "err");
+    return showConfirmStep(person, `我是 ${person.name}，我們聊過了 ✋`);
+  }
+  const cell = bingoCard[modalIdx];
   if (cell.fixed && person.name !== cell.fixed) return setBmMsg(`這格只能找 ${cell.fixed} 喔`, "err");
   if (!cell.fixed && person.name === HOST && state.me !== HOST)
     return setBmMsg(`${HOST} 保留給中央那格 🍻，這格找別人吧`, "err");
@@ -422,23 +514,42 @@ $("#bm-next").addEventListener("click", () => {
     if (!cell.check(person)) return setBmMsg(`「${person.name}」不符合這個條件，再問問別人 🔍`, "err");
     return claimCell(person.name);
   }
-  // 真人確認
+  showConfirmStep(person, `我是 ${person.name} 本人，屬實 ✋`);
+});
+function showConfirmStep(person, label) {
   $("#bm-step-input").classList.add("hidden");
   $("#bm-step-confirm").classList.remove("hidden");
-  $("#bm-confirm").textContent = `我是 ${person.name} 本人，屬實 ✋`;
+  $("#bm-confirm").textContent = label;
   $("#bm-confirm").dataset.name = person.name;
   setBmMsg("");
-});
+}
 $("#bm-confirm").addEventListener("click", () => {
-  claimCell($("#bm-confirm").dataset.name);
+  const name = $("#bm-confirm").dataset.name;
+  if (modalMode === "meet") return claimMeet(name);
+  claimCell(name);
 });
 $("#bm-remove").addEventListener("click", () => {
-  delete state.bingo.claims[modalIdx];
-  state.bingo.lines = countLines();
+  if (modalMode === "meet") {
+    state.meets.splice(modalIdx, 1);
+  } else {
+    delete state.bingo.claims[modalIdx];
+    state.bingo.lines = countLines();
+  }
   saveState();
   renderBingo();
+  renderMeets();
   $("#bingo-modal").classList.add("hidden");
 });
+function claimMeet(name) {
+  state.meets[modalIdx] = name;
+  state.meets = state.meets.filter(Boolean);
+  saveState();
+  track(state.meets.length >= MEET_GOAL ? "meet_done" : "meet");
+  renderMeets();
+  $("#bingo-modal").classList.add("hidden");
+  if (state.meets.length === MEET_GOAL)
+    celebrateBingo("📇 名片冊集滿！", "你已經認識 3 位新朋友，去跟主辦領獎～");
+}
 function countLines() {
   return LINES.filter((l) => l.every((i) => state.bingo.claims[i])).length;
 }

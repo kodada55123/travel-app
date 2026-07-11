@@ -139,6 +139,44 @@ blockquote {
 .confetti i { position: absolute; top: -12px; width: 9px; height: 14px; opacity: .9; animation: drop linear infinite; }
 @keyframes drop { to { transform: translateY(105vh) rotate(660deg); } }
 
+/* ── 新朋友徽章與破冰話題 ── */
+.new-badge {
+  display: inline-block; vertical-align: middle;
+  margin-left: 8px; padding: 3px 10px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #7ee787, #2bb84f);
+  color: #06300f; font-size: .7rem; font-weight: 800; letter-spacing: .05em;
+}
+.topics { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin-top: 12px; }
+.topic-chip {
+  padding: 6px 12px; border-radius: 999px;
+  background: #eafcfb; border: 1px solid #9adfd8;
+  color: #0b5a52; font-size: .78rem; font-weight: 700;
+}
+
+/* ── 名片冊 ── */
+.meet-panel { margin-top: 16px; }
+.meet-slots { display: flex; gap: 8px; margin-top: 12px; }
+.meet-slot {
+  flex: 1; min-height: 56px;
+  border-radius: 12px;
+  border: 1.5px dashed rgba(62,230,216,.45);
+  background: rgba(255,255,255,.05);
+  color: var(--ink-dim); font-size: 1.2rem; font-weight: 800;
+  font-family: inherit; cursor: pointer;
+  word-break: break-all; padding: 4px;
+}
+.meet-slot.got {
+  border-style: solid;
+  background: linear-gradient(150deg, var(--aqua), var(--aqua-dim));
+  color: #04382e; font-size: .82rem;
+}
+
+/* ── 卡關救援 ── */
+.rescue { margin-top: 10px; }
+.rescue-line { font-size: .84rem; color: var(--ink-dim); padding: 6px 0; }
+.rescue-line.open { color: #ffd166; font-weight: 700; animation: fade .4s ease; }
+
 /* ── 人類賓果 ── */
 .bingo-rule { font-size: .88rem; color: var(--ink-dim); margin-bottom: 14px; line-height: 1.6; }
 .bingo-rule b, .bingo-foot b { color: var(--coral); }

@@ -3,15 +3,18 @@
 把「遊戲」試算表匯出的 CSV 轉成 party_app/data.js。
 
 用法：
-    python3 tools/generate_data.py <game.csv> > data.js
+    python3 tools/generate_data.py <game.csv> [replies.csv] > data.js
 
-CSV 欄位：暱稱, 生日, 另一半或是朋友, ＩＧ, 配對朋友, 配對朋友的提示
+game.csv 欄位：暱稱, 生日, 另一半或是朋友, ＩＧ, 配對朋友, 配對朋友的提示[, 新朋友]
+（新朋友欄非空白即視為新朋友）
+replies.csv（選用）：報名表單回覆，取「喝酒」「特殊技能」欄產生名片破冰話題。
 
 安全設計：
 - 配對答案不以明文存在前端，改存 SHA-256(SALT + 正規化暱稱)。
 - 對方暱稱與 IG 以答案衍生的 XOR 金鑰流加密，答對才解得開。
 - 每人接受多組「別名」（例：NortonWu（翊羣/小祥）可輸入 nortonwu / 翊羣 / 小祥），
   若別名會對到兩個以上不同的人則自動剔除，避免歧義。
+- 卡關救援提示（星座月份 / IG 開頭）為明文，屬刻意設計的體驗保底。
 """
 import csv
 import hashlib
@@ -23,8 +26,69 @@ from base64 import b64encode
 
 SALT = "pa1017-shuiwei"
 
-# 試算表手誤修正：配對朋友欄位 -> 名單上的正確暱稱
-TARGET_FIXES = {"彩霖": "彥霖"}
+# 試算表手誤修正：配對朋友欄位 -> 名單上的正確暱稱（目前無）
+TARGET_FIXES = {}
+
+ZODIAC = [("摩羯", 120), ("水瓶", 219), ("雙魚", 321), ("牡羊", 420), ("金牛", 521), ("雙子", 621),
+          ("巨蟹", 723), ("獅子", 823), ("處女", 923), ("天秤", 1023), ("天蠍", 1122), ("射手", 1222),
+          ("摩羯", 1232)]
+
+GENERIC_TOPICS = [
+    "🌍 問我最近一次出國去哪",
+    "🎬 問我最近在追的劇或動漫",
+    "🏖️ 問我今年最想去的地方",
+    "🍜 問我的口袋美食名單",
+    "🎶 問我 KTV 必點歌單",
+    "📸 問我手機相簿最新一張照片",
+]
+
+SKIP_SKILL = {"無", "沒有", "没有", "no", "nope", "沒", "沒有哈哈"}
+
+
+def zodiac_of(birthday: str) -> str:
+    m, d = (int(x) for x in birthday.split("/")[1:3])
+    md = m * 100 + d
+    return next(n for n, until in ZODIAC if md < until)
+
+
+def load_replies(path):
+    """報名表 -> {正規化暱稱: {'alcohol':…, 'skill':…}}"""
+    rows = list(csv.reader(open(path, encoding="utf-8")))
+    h = rows[0]
+    i_name = 1
+    i_alc = next((i for i, c in enumerate(h) if "喝酒" in c), None)
+    i_skill = next((i for i, c in enumerate(h) if "特殊技能" in c), None)
+    out = {}
+    for r in rows[1:]:
+        if len(r) <= i_name or not r[i_name].strip():
+            continue
+        out[norm(r[i_name])] = {
+            "alcohol": r[i_alc].strip() if i_alc is not None and len(r) > i_alc else "",
+            "skill": r[i_skill].strip() if i_skill is not None and len(r) > i_skill else "",
+        }
+    return out
+
+
+def topics_for(p, reply, rng_seed):
+    """名片破冰話題：技能 / 酒量 / 星座，補足 3 條。"""
+    t = []
+    if p.get("new"):
+        t.append("🌱 我是新朋友，快來跟我聊")
+    skill = (reply or {}).get("skill", "")
+    if skill and skill.lower() not in SKIP_SKILL and len(skill) <= 14:
+        t.append(f"🎯 我的隱藏技能：{skill}")
+    alc = (reply or {}).get("alcohol", "")
+    if "爛醉" in alc:
+        t.append("🍻 我超會喝，敢跟我拚嗎？")
+    elif "不碰酒" in alc:
+        t.append("🧃 我不喝酒，聊天不用灌我")
+    if len(t) < 3:
+        t.append(f"✨ {zodiac_of(p['birthday'])}座本人，測試我準不準")
+    i = rng_seed
+    while len(t) < 3:
+        t.append(GENERIC_TOPICS[i % len(GENERIC_TOPICS)])
+        i += 1
+    return t[:3]
 
 
 def norm(s: str) -> str:
@@ -64,15 +128,17 @@ def encrypt(payload: dict, alias_norm: str) -> str:
     return b64encode(bytes(a ^ b for a, b in zip(data, ks))).decode("ascii")
 
 
-def main(csv_path: str):
+def main(csv_path, replies_path=None):
     with open(csv_path, encoding="utf-8") as f:
         rows = [r for r in csv.reader(f)][1:]
+    replies = load_replies(replies_path) if replies_path else {}
     people = []
     for r in rows:
         name, birthday, _friends, ig, target, hint = (c.strip() for c in r[:6])
         target = TARGET_FIXES.get(target, target)
         people.append({"name": name, "birthday": birthday, "ig": ig,
-                       "target": target, "hint": hint})
+                       "target": target, "hint": hint,
+                       "new": bool(len(r) > 6 and r[6].strip())})
 
     names = {p["name"] for p in people}
     canon = {}
@@ -99,8 +165,15 @@ def main(csv_path: str):
                     aliases_of[o].append(a)
 
     out = []
-    for p in people:
+    matched = 0
+    for idx, p in enumerate(people):
         entry = {"name": p["name"], "birthday": p["birthday"], "ig": p["ig"]}
+        if p["new"]:
+            entry["new"] = True
+        reply = replies.get(norm(p["name"]))
+        if reply:
+            matched += 1
+        entry["topics"] = topics_for(p, reply, idx)
         if p["target"]:
             assert p["target"] in names, f"配對朋友不在名單中: {p['target']}"
             t = next(q for q in people if q["name"] == p["target"])
@@ -109,6 +182,9 @@ def main(csv_path: str):
                 "hint": p["hint"],
                 "answers": [{"h": sha256_hex(SALT + a), "p": encrypt(payload, a)}
                             for a in sorted(aliases_of[t["name"]])],
+                # 卡關救援：答錯 5 次 / 10 次由前端顯示
+                "r1": f"他是{zodiac_of(t['birthday'])}座、{int(t['birthday'].split('/')[1])} 月壽星",
+                "r2": f"IG 帳號開頭是「{t['ig'][:3]}…」",
             }
         out.append(entry)
 
@@ -117,8 +193,10 @@ def main(csv_path: str):
     print("window.PARTY_PEOPLE = " +
           json.dumps(out, ensure_ascii=False, indent=1) + ";")
     ok = sum(1 for p in out if "quest" in p)
-    print(f"// {len(out)} 位參與者，{ok} 位有配對任務", file=sys.stderr)
+    nf = sum(1 for p in out if p.get("new"))
+    print(f"// {len(out)} 位參與者，{ok} 位有配對任務，{nf} 位新朋友，"
+          f"{matched} 位對上報名表話題", file=sys.stderr)
 
 
 if __name__ == "__main__":
-    main(sys.argv[1])
+    main(sys.argv[1], sys.argv[2] if len(sys.argv) > 2 else None)
