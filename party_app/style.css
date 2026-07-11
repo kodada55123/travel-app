@@ -217,14 +217,15 @@ blockquote {
 .btn-confirm { background: linear-gradient(135deg, var(--aqua), var(--aqua-dim)); color: #04382e; }
 .modal-sheet .btn-ghost { display: block; width: 100%; margin-top: 12px; padding: 10px; }
 .bingo-toast {
-  position: fixed; top: 18%; left: 50%; transform: translateX(-50%);
+  position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
   z-index: 60; width: min(88vw, 380px);
   background: linear-gradient(135deg, var(--coral), var(--coral-deep));
   color: #fff; text-align: center;
   border-radius: 18px; padding: 20px 16px;
   box-shadow: 0 14px 40px rgba(244,96,47,.5);
-  animation: pop .5s cubic-bezier(.2,1.6,.4,1);
+  animation: pop-center .5s cubic-bezier(.2,1.6,.4,1);
 }
+@keyframes pop-center { from { transform: translate(-50%, -50%) scale(0); } }
 .bingo-toast b { display: block; font-size: 1.5rem; margin-bottom: 4px; }
 .bingo-toast span { font-size: .95rem; }
 
