@@ -3,9 +3,15 @@
 
 // ═══ 設定 ═══
 const CONFIG = {
-  // 貼上 Google Apps Script Web App 的網址即可啟用「解鎖狀態回報」；留空 = 純離線模式
+  // 貼上 Google Apps Script Web App 的網址即可啟用「解鎖狀態回報／排行榜／匿名紙條」；留空 = 純離線模式
   SYNC_URL: "",
   STORAGE_KEY: "party_state_v1",
+  // 快閃任務時間表（手機時間到自動全螢幕跳出）：at 為開始時間、min 為持續分鐘
+  FLASH: [
+    { at: "2026-10-17T21:00", min: 15, text: "10 分鐘內找 3 個人組隊，到泳池邊拍一張跳躍照，傳到大群組！📸" },
+    { at: "2026-10-17T23:00", min: 15, text: "找到跟你「同一間房」的所有人，全員乾一杯！🍻" },
+    { at: "2026-10-18T10:00", min: 20, text: "跟一位昨天才認識的朋友合照，貼到限動並 tag 他！🌱" },
+  ],
 };
 
 const SALT = window.PARTY_SALT;
@@ -21,9 +27,12 @@ function loadState() {
   } catch (e) { /* 私密瀏覽等情況：退化為記憶體狀態 */ }
   return { me: null, wrong: 0, done: false, doneAt: null, reveal: null, queue: [] };
 }
-// 舊版狀態補上賓果／名片冊欄位
+// 舊版狀態補上賓果／名片冊／拼圖／快閃欄位
 state.bingo = state.bingo || { claims: {}, lines: 0, lineAt: null, fullAt: null };
 state.meets = state.meets || [];
+state.puzzleAt = state.puzzleAt || null;
+state.flashSeen = state.flashSeen || {};
+state.noteAt = state.noteAt || 0;
 function saveState() {
   try { localStorage.setItem(CONFIG.STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
 }
@@ -86,7 +95,7 @@ setInterval(flushQueue, 30_000);
 
 // ═══ 畫面切換 ═══
 const $ = (sel) => document.querySelector(sel);
-const screens = ["login", "card", "quest", "done", "bingo"];
+const screens = ["login", "card", "quest", "done", "bingo", "fun", "board"];
 function show(name) {
   screens.forEach((s) => $("#screen-" + s).classList.toggle("hidden", s !== name));
   $("#tabbar").classList.toggle("hidden", name === "login");
@@ -98,6 +107,8 @@ document.querySelectorAll(".tab").forEach((t) =>
   t.addEventListener("click", () => {
     if (t.dataset.nav === "quest") return state.done ? renderDone() : show("quest");
     if (t.dataset.nav === "bingo") renderBingo();
+    if (t.dataset.nav === "fun") renderFun();
+    if (t.dataset.nav === "board") renderBoard();
     show(t.dataset.nav);
   }));
 
@@ -122,7 +133,8 @@ function initLogin() {
   $("#btn-logout").addEventListener("click", () => {
     if (!confirm("換人登入會清除這支手機上的進度，確定？")) return;
     state = { me: null, wrong: 0, done: false, doneAt: null, reveal: null, queue: [],
-      bingo: { claims: {}, lines: 0, lineAt: null, fullAt: null }, meets: [] };
+      bingo: { claims: {}, lines: 0, lineAt: null, fullAt: null }, meets: [],
+      puzzleAt: null, flashSeen: {}, noteAt: 0 };
     saveState();
     sel.value = "";
     $("#btn-login").disabled = true;
@@ -582,6 +594,229 @@ function celebrateBingo(title, sub) {
   setTimeout(() => el.remove(), 4200);
 }
 
+// ═══ 真心話輪盤 ═══
+const TRUTHS = [
+  "說出你對「在場某一位」的第一印象，並指出是誰",
+  "今晚到目前為止，你覺得最好看的人是誰？",
+  "你 IG 最後一個搜尋的帳號是什麼？給大家看",
+  "手機相簿最新一張照片直接公開",
+  "你被右邊的人告白會考慮嗎？誠實回答",
+  "說一件你今天本來不打算告訴任何人的事",
+  "在場有你曾經滑到過的交友軟體照片嗎？",
+  "你昨天洗澡的時候在想什麼？",
+  "說出一個你到現在還會想起來的前任瞬間",
+  "你覺得自己最性感的部位是哪裡？",
+  "今晚你最想跟誰同房？說實話",
+  "你人生做過最叛逆的事是什麼？",
+  "現在打開你的 LINE，唸出最新一則訊息",
+  "你第一眼注意到別人的哪個部位？",
+  "在場誰最像你的菜？可以只說特徵",
+  "你有沒有偷偷觀察過在場的某個人？誰？",
+  "如果必須跟在場一位交換人生一天，選誰？",
+  "說出你這輩子撒過最大的謊",
+  "你手機裡最捨不得刪的照片是什麼？",
+  "大聲說出你現在最想做的事",
+];
+const DARES = [
+  "跟你右邊的人十指緊扣 30 秒，深情對視",
+  "模仿在場任何一個人 10 秒，大家猜是誰",
+  "讓左邊的人翻你的 IG 珍藏 10 秒",
+  "對著全場用氣音說「我今晚超辣」",
+  "找一位今天才認識的人，稱讚他三個優點",
+  "做 10 下伏地挺身，邊做邊喊編號",
+  "打給通訊錄第 5 個人說「我在山上想你」然後掛掉",
+  "用最誘惑的聲音唸出「小柯請喝酒」",
+  "跟在場最高的人貼臉自拍一張",
+  "被右邊的人在你手機隨便輸入一則限動文字（可審核）",
+  "表演你的招牌舞步 15 秒，沒有就即興",
+  "讓對面的人餵你喝一口飲料",
+  "用屁股寫出自己的名字",
+  "接下來 3 輪你講話都要加「喵」結尾",
+  "跟任何一位交換一件身上的配件直到下一輪",
+  "公主抱或背起你左邊的人繞桌一圈",
+  "對窗外大喊「埔里我來了！」",
+  "拿出手機自拍一張醜照設成大頭貼 10 分鐘",
+  "讓大家輪流看你的手機桌布和 app 排列",
+  "即興唱一段歌，指定下一位接唱",
+];
+let wheelAngle = 0;
+let spinning = false;
+$("#btn-spin").addEventListener("click", () => {
+  if (spinning) return;
+  spinning = true;
+  wheelAngle += 1800 + Math.floor(Math.random() * 720);
+  const wheel = $("#wheel");
+  wheel.style.transform = `rotate(${wheelAngle}deg)`;
+  setTimeout(() => {
+    spinning = false;
+    const landed = (360 - (wheelAngle % 360)) % 360;   // 指針在正上方
+    const isTruth = Math.floor(landed / 45) % 2 === 0;
+    const bank = isTruth ? TRUTHS : DARES;
+    $("#wm-type").textContent = isTruth ? "💬 真心話" : "🔥 大冒險";
+    $("#wm-type").className = "wm-type " + (isTruth ? "truth" : "dare");
+    $("#wm-q").textContent = bank[Math.floor(Math.random() * bank.length)];
+    $("#wheel-modal").classList.remove("hidden");
+  }, 3600);
+});
+["#wm-ok", "#wm-drink"].forEach((s) =>
+  $(s).addEventListener("click", () => $("#wheel-modal").classList.add("hidden")));
+
+// ═══ 分組拼圖 ═══
+function renderPuzzle() {
+  const z = me().puzzle;
+  const box = $("#puzzle-body");
+  if (!z) { box.innerHTML = "<p class='fun-sub'>本場沒有拼圖任務</p>"; return; }
+  box.innerHTML = `
+    <p class="fun-sub">全場分成 9 隊。找到跟你<b>同隊徽</b>的隊友，把大家的字卡按編號排好，
+    就是通關暗號——任一隊員輸入暗號，全隊到主辦那領獎！</p>
+    <div class="puzzle-piece">
+      <span class="pz-team"></span>
+      <span class="pz-char"></span>
+      <span class="pz-pos"></span>
+    </div>`;
+  box.querySelector(".pz-team").textContent = `${z.team} 隊 · 共 ${z.size} 人`;
+  box.querySelector(".pz-char").textContent = z.char;
+  box.querySelector(".pz-pos").textContent = `第 ${z.pos} 字`;
+  if (state.puzzleAt) {
+    const done = document.createElement("p");
+    done.className = "puzzle-done";
+    done.textContent = "✅ 你們這隊已解鎖！去找主辦領獎";
+    box.appendChild(done);
+    return;
+  }
+  const form = document.createElement("form");
+  form.innerHTML = `
+    <input id="pz-guess" type="text" placeholder="輸入 ${z.size} 個字的通關暗號" autocomplete="off">
+    <button type="submit" class="btn btn-primary">解鎖 🔓</button>
+    <p id="pz-msg" class="quest-msg"></p>`;
+  box.appendChild(form);
+  form.addEventListener("submit", async (ev) => {
+    ev.preventDefault();
+    const guess = form.querySelector("#pz-guess").value.trim();
+    if (!guess) return;
+    const h = await sha256Hex(SALT + norm(guess));
+    const msg = form.querySelector("#pz-msg");
+    if (h === z.h) {
+      state.puzzleAt = Date.now();
+      saveState();
+      track("puzzle");
+      celebrateBingo("🧩 拼圖解鎖！", `${z.team} 隊集合，去跟主辦領獎～`);
+      renderPuzzle();
+    } else {
+      msg.textContent = "暗號不對，再對一次字卡順序 🤔";
+      msg.className = "quest-msg err";
+    }
+  });
+}
+
+// ═══ 匿名紙條 ═══
+const NOTE_COOLDOWN = 60_000;
+function renderNote() {
+  const sel = $("#note-to");
+  if (sel.options.length <= 1) {
+    PEOPLE.filter((p) => p.name !== state.me).forEach((p) => {
+      const o = document.createElement("option");
+      o.value = p.name; o.textContent = p.name;
+      sel.appendChild(o);
+    });
+  }
+  $("#note-body").classList.toggle("disabled", !CONFIG.SYNC_URL);
+  $("#note-msg").textContent = CONFIG.SYNC_URL ? "" : "（主辦還沒開通紙條箱，晚點再來）";
+}
+$("#btn-note").addEventListener("click", () => {
+  const to = $("#note-to").value;
+  const text = $("#note-text").value.trim();
+  const msg = $("#note-msg");
+  if (!CONFIG.SYNC_URL) return;
+  if (!to || !text) { msg.textContent = "收件人跟內容都要填喔"; msg.className = "quest-msg err"; return; }
+  if (Date.now() - state.noteAt < NOTE_COOLDOWN) {
+    msg.textContent = "喘口氣，一分鐘後再投下一張 😌"; msg.className = "quest-msg err"; return;
+  }
+  state.noteAt = Date.now();
+  state.queue.push({ type: "note", from: state.me, to, text, ts: Date.now() });
+  saveState();
+  flushQueue();
+  $("#note-text").value = "";
+  $("#note-to").value = "";
+  msg.textContent = "已投進紙條箱 💌（斷線時會自動補送）";
+  msg.className = "quest-msg info";
+});
+
+function renderFun() {
+  renderPuzzle();
+  renderNote();
+}
+
+// ═══ 排行榜 ═══
+async function renderBoard() {
+  const box = $("#board-body");
+  if (!CONFIG.SYNC_URL) {
+    box.innerHTML = "<p class='fun-sub'>主辦部署 Apps Script 後這裡會出現即時排行榜 🏆</p>";
+    return;
+  }
+  box.innerHTML = "<p class='fun-sub'>載入中…</p>";
+  try {
+    const res = await fetch(CONFIG.SYNC_URL);
+    const data = await res.json();
+    const solved = data.filter((r) => r.done && r.doneAt).sort((a, b) => a.doneAt - b.doneAt);
+    const bingo = data.filter((r) => r.lines > 0).sort((a, b) => b.lines - a.lines);
+    const meets = data.filter((r) => r.meets >= 3);
+    const section = (title, rows) => rows.length
+      ? `<div class="board-sec"><p class="quest-label">${title}</p><ol class="board-list">` +
+        rows.map((r) => `<li><span>${esc(r.name)}</span><em>${r.extra}</em></li>`).join("") +
+        "</ol></div>"
+      : "";
+    box.innerHTML =
+      section("🧩 配對最速榜", solved.slice(0, 10).map((r) => ({
+        name: r.name,
+        extra: new Date(r.doneAt).toLocaleTimeString("zh-TW", { hour: "2-digit", minute: "2-digit" }) + `｜錯 ${r.wrong} 次`,
+      }))) +
+      section("🎯 賓果連線榜", bingo.slice(0, 10).map((r) => ({ name: r.name, extra: r.lines + " 條線" }))) +
+      section("📇 名片冊達人", meets.map((r) => ({ name: r.name, extra: "完成 ✅" }))) ||
+      "<p class='fun-sub'>還沒有人上榜，衝第一個！🚀</p>";
+  } catch (e) {
+    box.innerHTML = "<p class='fun-sub'>讀不到排行榜（網路不穩？），待會再試 📡</p>";
+  }
+}
+function esc(s) { const d = document.createElement("div"); d.textContent = s; return d.innerHTML; }
+$("#btn-board-refresh").addEventListener("click", renderBoard);
+
+// ═══ 快閃任務 ═══
+function parseAt(s) { return new Date(s).getTime(); }
+function checkFlash() {
+  if (!state.me) return;
+  const now = Date.now();
+  for (const f of CONFIG.FLASH) {
+    const start = parseAt(f.at);
+    if (now >= start && now < start + f.min * 60_000 && !state.flashSeen[f.at]) {
+      showFlash(f);
+      return;
+    }
+  }
+  // 測試用：網址加 ?flash=demo 立刻跳一個示範任務
+  if (new URLSearchParams(location.search).get("flash") === "demo" && !state.flashSeen.demo) {
+    showFlash({ at: "demo", min: 10, text: "這是快閃任務示範：跟離你最近的人擊掌！🙌" });
+  }
+}
+function showFlash(f) {
+  $("#flash-text").textContent = f.text;
+  $("#flash-timer").textContent = `限時 ${f.min} 分鐘`;
+  $("#flash-overlay").classList.remove("hidden");
+  if (navigator.vibrate) navigator.vibrate([200, 100, 200, 100, 400]);
+  $("#flash-done").onclick = () => {
+    state.flashSeen[f.at] = "done";
+    saveState();
+    track("flash_done");
+    $("#flash-overlay").classList.add("hidden");
+  };
+  $("#flash-skip").onclick = () => {
+    state.flashSeen[f.at] = "skip";
+    saveState();
+    $("#flash-overlay").classList.add("hidden");
+  };
+}
+setInterval(checkFlash, 20_000);
+
 // ═══ 啟動 ═══
 function enter() {
   bingoCard = null;
@@ -590,6 +825,7 @@ function enter() {
   renderDatalist();
   show("card");
   flushQueue();
+  checkFlash();
 }
 initLogin();
 initQuest();

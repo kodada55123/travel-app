@@ -9,7 +9,14 @@ window.PARTY_PEOPLE = [
    "✨ 摩羯座本人，測試我準不準",
    "🌍 問我最近一次出國去哪",
    "🎬 問我最近在追的劇或動漫"
-  ]
+  ],
+  "puzzle": {
+   "team": "🐨",
+   "size": 6,
+   "pos": 3,
+   "char": "不",
+   "h": "7e87f10254489f2d4a65342ef6a802aea6896d46c646255575223464a0de1250"
+  }
  },
  {
   "name": "Tyler",
@@ -20,6 +27,13 @@ window.PARTY_PEOPLE = [
    "🎬 問我最近在追的劇或動漫",
    "🏖️ 問我今年最想去的地方"
   ],
+  "puzzle": {
+   "team": "🐯",
+   "size": 6,
+   "pos": 4,
+   "char": "池",
+   "h": "177124cc9c1f6b6278882548bf0a2b1760a04633dc172c922cc5083807e328ef"
+  },
   "quest": {
    "hint": "到底是誰二月去台南，慶祝我們快十年的友誼？",
    "answers": [
@@ -41,6 +55,13 @@ window.PARTY_PEOPLE = [
    "🍻 我超會喝，敢跟我拚嗎？",
    "✨ 牡羊座本人，測試我準不準"
   ],
+  "puzzle": {
+   "team": "🐨",
+   "size": 6,
+   "pos": 1,
+   "char": "路",
+   "h": "7e87f10254489f2d4a65342ef6a802aea6896d46c646255575223464a0de1250"
+  },
   "quest": {
    "hint": "誰的IG最後一篇停在2017年，在中壢吃雞吃到不要不要的？",
    "answers": [
@@ -62,6 +83,13 @@ window.PARTY_PEOPLE = [
    "✨ 處女座本人，測試我準不準",
    "🍜 問我的口袋美食名單"
   ],
+  "puzzle": {
+   "team": "🦊",
+   "size": 6,
+   "pos": 6,
+   "char": "亮",
+   "h": "1fc85aa772ec4d986904819580713e8d63cf952f6fbc7e06c9844cdbab873682"
+  },
   "quest": {
    "hint": "哪位中壢小肥宅五月底去草漯吹風沙，發文說「欸 我還活著」？",
    "answers": [
@@ -83,6 +111,13 @@ window.PARTY_PEOPLE = [
    "🎶 問我 KTV 必點歌單",
    "📸 問我手機相簿最新一張照片"
   ],
+  "puzzle": {
+   "team": "🦄",
+   "size": 5,
+   "pos": 5,
+   "char": "來",
+   "h": "1d3edf2e7d85895c28a091d03ba9c5d6c096a7865996f729a852f954c184934f"
+  },
   "quest": {
    "hint": "哪位181公分的工程師博士，置頂是襯衫領帶的街拍帥照？",
    "answers": [
@@ -104,6 +139,13 @@ window.PARTY_PEOPLE = [
    "📸 問我手機相簿最新一張照片",
    "🌍 問我最近一次出國去哪"
   ],
+  "puzzle": {
+   "team": "🐨",
+   "size": 6,
+   "pos": 2,
+   "char": "見",
+   "h": "7e87f10254489f2d4a65342ef6a802aea6896d46c646255575223464a0de1250"
+  },
   "quest": {
    "hint": "哪位會塔羅和草本球舒壓的桃園人，新年許願身材工作都要加油？如果要泰式龍筋可以找我幫忙",
    "answers": [
@@ -126,6 +168,13 @@ window.PARTY_PEOPLE = [
    "🎯 我的隱藏技能：喜歡唱歌算嗎 （？",
    "✨ 天秤座本人，測試我準不準"
   ],
+  "puzzle": {
+   "team": "🐯",
+   "size": 6,
+   "pos": 5,
+   "char": "派",
+   "h": "177124cc9c1f6b6278882548bf0a2b1760a04633dc172c922cc5083807e328ef"
+  },
   "quest": {
    "hint": "哪位台南木地板業務愛環遊世界，置頂在健身房發肉照找健友？",
    "answers": [
@@ -147,6 +196,13 @@ window.PARTY_PEOPLE = [
    "🎬 問我最近在追的劇或動漫",
    "🏖️ 問我今年最想去的地方"
   ],
+  "puzzle": {
+   "team": "🦁",
+   "size": 6,
+   "pos": 5,
+   "char": "之",
+   "h": "21ffa4cf7ca6c0bd5a4ea84562c5774735fc7ccf3cc0862ee2efb2e073b7e56d"
+  },
   "quest": {
    "hint": "哪位玩LARP又練西洋劍的ENFP，射箭到手破皮也不放棄？",
    "answers": [
@@ -169,6 +225,13 @@ window.PARTY_PEOPLE = [
    "✨ 雙魚座本人，測試我準不準",
    "🏖️ 問我今年最想去的地方"
   ],
+  "puzzle": {
+   "team": "🐨",
+   "size": 6,
+   "pos": 5,
+   "char": "相",
+   "h": "7e87f10254489f2d4a65342ef6a802aea6896d46c646255575223464a0de1250"
+  },
   "quest": {
    "hint": "哪位ISTJ去華山看哆啦A夢展超開心，蒐集各種表情包？",
    "answers": [
@@ -190,6 +253,13 @@ window.PARTY_PEOPLE = [
    "🍜 問我的口袋美食名單",
    "🎶 問我 KTV 必點歌單"
   ],
+  "puzzle": {
+   "team": "🐰",
+   "size": 6,
+   "pos": 4,
+   "char": "全",
+   "h": "6dc37595a3e79085ff2862487fc07e6a90ec88588537c4b38dffab9e33cad67a"
+  },
   "quest": {
    "hint": "哪位愛攝影電影電玩的小傑，IG搬新家連一篇貼文都還沒發？",
    "answers": [
@@ -211,6 +281,13 @@ window.PARTY_PEOPLE = [
    "🎶 問我 KTV 必點歌單",
    "📸 問我手機相簿最新一張照片"
   ],
+  "puzzle": {
+   "team": "🐯",
+   "size": 6,
+   "pos": 2,
+   "char": "尾",
+   "h": "177124cc9c1f6b6278882548bf0a2b1760a04633dc172c922cc5083807e328ef"
+  },
   "quest": {
    "hint": "哪位酷哥家的柴柴明明是女生，卻取名超陽剛的「吳柏浚」？",
    "answers": [
@@ -232,6 +309,13 @@ window.PARTY_PEOPLE = [
    "📸 問我手機相簿最新一張照片",
    "🌍 問我最近一次出國去哪"
   ],
+  "puzzle": {
+   "team": "🦊",
+   "size": 6,
+   "pos": 5,
+   "char": "天",
+   "h": "1fc85aa772ec4d986904819580713e8d63cf952f6fbc7e06c9844cdbab873682"
+  },
   "quest": {
    "hint": "哪位想變成中等漂亮的寵物醫師男友，置頂在大港開唱當堂堂正正台灣人？",
    "answers": [
@@ -254,6 +338,13 @@ window.PARTY_PEOPLE = [
    "✨ 摩羯座本人，測試我準不準",
    "🌍 問我最近一次出國去哪"
   ],
+  "puzzle": {
+   "team": "🐸",
+   "size": 6,
+   "pos": 3,
+   "char": "不",
+   "h": "6b749be326d2fe5033015aded263c7a9ad01ba4b6d81025017b278cc8ad0d9ba"
+  },
   "quest": {
    "hint": "哪位增肌不減脂的怪東西攝影師，穿韓服在景福宮當戰鬼？",
    "answers": [
@@ -275,6 +366,13 @@ window.PARTY_PEOPLE = [
    "🎬 問我最近在追的劇或動漫",
    "🏖️ 問我今年最想去的地方"
   ],
+  "puzzle": {
+   "team": "🦄",
+   "size": 5,
+   "pos": 3,
+   "char": "還",
+   "h": "1d3edf2e7d85895c28a091d03ba9c5d6c096a7865996f729a852f954c184934f"
+  },
   "quest": {
    "hint": "哪位ISTJ看完動物方城市2，苦練兩堂課終於跳完Zoo舞？",
    "answers": [
@@ -297,6 +395,13 @@ window.PARTY_PEOPLE = [
    "🧃 我不喝酒，聊天不用灌我",
    "✨ 雙子座本人，測試我準不準"
   ],
+  "puzzle": {
+   "team": "🐺",
+   "size": 6,
+   "pos": 5,
+   "char": "偷",
+   "h": "ac63de31b00bc2046b55c6cf5b03eafc8684f26efd0a90e8d4e860b3b7f32f9d"
+  },
   "quest": {
    "hint": "哪位愛吃愛玩愛健身的攝影小隻馬，去大巨蛋幫阿妹壓力測試？",
    "answers": [
@@ -323,6 +428,13 @@ window.PARTY_PEOPLE = [
    "✨ 牡羊座本人，測試我準不準",
    "🍜 問我的口袋美食名單"
   ],
+  "puzzle": {
+   "team": "🐯",
+   "size": 6,
+   "pos": 1,
+   "char": "水",
+   "h": "177124cc9c1f6b6278882548bf0a2b1760a04633dc172c922cc5083807e328ef"
+  },
   "quest": {
    "hint": "哪位ENTJ房仲和男友還有柴柴，一家三口駛過三年四季風景？",
    "answers": [
@@ -352,6 +464,13 @@ window.PARTY_PEOPLE = [
    "🎶 問我 KTV 必點歌單",
    "📸 問我手機相簿最新一張照片"
   ],
+  "puzzle": {
+   "team": "🦄",
+   "size": 5,
+   "pos": 4,
+   "char": "要",
+   "h": "1d3edf2e7d85895c28a091d03ba9c5d6c096a7865996f729a852f954c184934f"
+  },
   "quest": {
    "hint": "哪位ENFP自潛仔重返綠島，還當水下郵差投遞明信片？（新朋友）",
    "answers": [
@@ -386,6 +505,13 @@ window.PARTY_PEOPLE = [
    "✨ 金牛座本人，測試我準不準",
    "📸 問我手機相簿最新一張照片"
   ],
+  "puzzle": {
+   "team": "🦁",
+   "size": 6,
+   "pos": 1,
+   "char": "深",
+   "h": "21ffa4cf7ca6c0bd5a4ea84562c5774735fc7ccf3cc0862ee2efb2e073b7e56d"
+  },
   "quest": {
    "hint": "哪位做貸款信託的ENFP，泡野溪溫泉才發現忘了帶泳褲？聽說今年股票賺了500W",
    "answers": [
@@ -408,6 +534,13 @@ window.PARTY_PEOPLE = [
    "🍻 我超會喝，敢跟我拚嗎？",
    "✨ 天蠍座本人，測試我準不準"
   ],
+  "puzzle": {
+   "team": "🐨",
+   "size": 6,
+   "pos": 4,
+   "char": "秤",
+   "h": "7e87f10254489f2d4a65342ef6a802aea6896d46c646255575223464a0de1250"
+  },
   "quest": {
    "hint": "哪位新竹健身小菜雞，七月第一次去福隆玩水就整個大曬傷？",
    "answers": [
@@ -429,6 +562,13 @@ window.PARTY_PEOPLE = [
    "🎬 問我最近在追的劇或動漫",
    "🏖️ 問我今年最想去的地方"
   ],
+  "puzzle": {
+   "team": "🐨",
+   "size": 6,
+   "pos": 6,
+   "char": "見",
+   "h": "7e87f10254489f2d4a65342ef6a802aea6896d46c646255575223464a0de1250"
+  },
   "quest": {
    "hint": "哪位愛貓攝影師六月和多年好友首次出國，去濟州島慶祝30而立？",
    "answers": [
@@ -459,6 +599,13 @@ window.PARTY_PEOPLE = [
    "✨ 摩羯座本人，測試我準不準",
    "🏖️ 問我今年最想去的地方"
   ],
+  "puzzle": {
+   "team": "🐰",
+   "size": 6,
+   "pos": 6,
+   "char": "要",
+   "h": "6dc37595a3e79085ff2862487fc07e6a90ec88588537c4b38dffab9e33cad67a"
+  },
   "quest": {
    "hint": "哪位登山咖的置頂是萬里無雲的大霸尖山，美到直呼好美啦？留美的大帥哥",
    "answers": [
@@ -488,6 +635,13 @@ window.PARTY_PEOPLE = [
    "✨ 水瓶座本人，測試我準不準",
    "🍜 問我的口袋美食名單"
   ],
+  "puzzle": {
+   "team": "🐸",
+   "size": 6,
+   "pos": 5,
+   "char": "亂",
+   "h": "6b749be326d2fe5033015aded263c7a9ad01ba4b6d81025017b278cc8ad0d9ba"
+  },
   "quest": {
    "hint": "哪位麵魂山魂花魂三魂俱全的人，置頂是北海道旭川初見面？",
    "answers": [
@@ -513,6 +667,13 @@ window.PARTY_PEOPLE = [
    "🎶 問我 KTV 必點歌單",
    "📸 問我手機相簿最新一張照片"
   ],
+  "puzzle": {
+   "team": "🐰",
+   "size": 6,
+   "pos": 5,
+   "char": "都",
+   "h": "6dc37595a3e79085ff2862487fc07e6a90ec88588537c4b38dffab9e33cad67a"
+  },
   "quest": {
    "hint": "哪位不是在吃就是在吃的路上的人，家有白柴木屐和蕃薯？運動健身按摩可以找我幫忙！",
    "answers": [
@@ -534,6 +695,13 @@ window.PARTY_PEOPLE = [
    "📸 問我手機相簿最新一張照片",
    "🌍 問我最近一次出國去哪"
   ],
+  "puzzle": {
+   "team": "🦊",
+   "size": 6,
+   "pos": 1,
+   "char": "今",
+   "h": "1fc85aa772ec4d986904819580713e8d63cf952f6fbc7e06c9844cdbab873682"
+  },
   "quest": {
    "hint": "哪位愛唱歌的獸醫師，置頂在廢墟拍情侶照還引用Butterfly？",
    "answers": [
@@ -559,6 +727,13 @@ window.PARTY_PEOPLE = [
    "✨ 摩羯座本人，測試我準不準",
    "🌍 問我最近一次出國去哪"
   ],
+  "puzzle": {
+   "team": "🐺",
+   "size": 6,
+   "pos": 2,
+   "char": "杯",
+   "h": "ac63de31b00bc2046b55c6cf5b03eafc8684f26efd0a90e8d4e860b3b7f32f9d"
+  },
   "quest": {
    "hint": "哪位在旅展衝動買下人生第一趟郵輪，去沖繩石垣島還暈船？",
    "answers": [
@@ -580,6 +755,13 @@ window.PARTY_PEOPLE = [
    "🎬 問我最近在追的劇或動漫",
    "🏖️ 問我今年最想去的地方"
   ],
+  "puzzle": {
+   "team": "🐸",
+   "size": 6,
+   "pos": 1,
+   "char": "泳",
+   "h": "6b749be326d2fe5033015aded263c7a9ad01ba4b6d81025017b278cc8ad0d9ba"
+  },
   "quest": {
    "hint": "哪位電玩健身仔去香港三天兩夜，驚呼港片場景就在眼前？話說鋼彈相關知識都可以問我",
    "answers": [
@@ -601,6 +783,13 @@ window.PARTY_PEOPLE = [
    "✨ 處女座本人，測試我準不準",
    "🏖️ 問我今年最想去的地方"
   ],
+  "puzzle": {
+   "team": "🐰",
+   "size": 6,
+   "pos": 2,
+   "char": "夜",
+   "h": "6dc37595a3e79085ff2862487fc07e6a90ec88588537c4b38dffab9e33cad67a"
+  },
   "quest": {
    "hint": "哪位愛力獅在博多看櫻花，大病初癒說再破的病還是會好？南港的空氣還是比較好聞",
    "answers": [
@@ -622,6 +811,13 @@ window.PARTY_PEOPLE = [
    "🍜 問我的口袋美食名單",
    "🎶 問我 KTV 必點歌單"
   ],
+  "puzzle": {
+   "team": "🐼",
+   "size": 6,
+   "pos": 5,
+   "char": "集",
+   "h": "6ed2570286349927fc14837dc34629da87a3c8af35cca2b69731f72fed28fa41"
+  },
   "quest": {
    "hint": "哪位座右銘Why not now的人，五月藉工作之餘遊北京還喝了不少？",
    "answers": [
@@ -643,6 +839,13 @@ window.PARTY_PEOPLE = [
    "🎶 問我 KTV 必點歌單",
    "📸 問我手機相簿最新一張照片"
   ],
+  "puzzle": {
+   "team": "🐼",
+   "size": 6,
+   "pos": 2,
+   "char": "雕",
+   "h": "6ed2570286349927fc14837dc34629da87a3c8af35cca2b69731f72fed28fa41"
+  },
   "quest": {
    "hint": "哪位六月和男友在花蓮SEA民宿，慶祝一週年紀念日？",
    "answers": [
@@ -664,6 +867,13 @@ window.PARTY_PEOPLE = [
    "✨ 金牛座本人，測試我準不準",
    "📸 問我手機相簿最新一張照片"
   ],
+  "puzzle": {
+   "team": "🐺",
+   "size": 6,
+   "pos": 6,
+   "char": "跑",
+   "h": "ac63de31b00bc2046b55c6cf5b03eafc8684f26efd0a90e8d4e860b3b7f32f9d"
+  },
   "quest": {
    "hint": "哪位一年只發一次文的人，生命很短，老了還想移民新加坡？",
    "answers": [
@@ -685,6 +895,13 @@ window.PARTY_PEOPLE = [
    "✨ 處女座本人，測試我準不準",
    "🌍 問我最近一次出國去哪"
   ],
+  "puzzle": {
+   "team": "🐼",
+   "size": 6,
+   "pos": 3,
+   "char": "英",
+   "h": "6ed2570286349927fc14837dc34629da87a3c8af35cca2b69731f72fed28fa41"
+  },
   "quest": {
    "hint": "哪位INTP最愛蠟筆小新和一切可愛事物，但最討厭騙子？",
    "answers": [
@@ -707,6 +924,13 @@ window.PARTY_PEOPLE = [
    "✨ 金牛座本人，測試我準不準",
    "🎬 問我最近在追的劇或動漫"
   ],
+  "puzzle": {
+   "team": "🦁",
+   "size": 6,
+   "pos": 4,
+   "char": "果",
+   "h": "21ffa4cf7ca6c0bd5a4ea84562c5774735fc7ccf3cc0862ee2efb2e073b7e56d"
+  },
   "quest": {
    "hint": "哪位愛排球羽球唱歌桌遊的台北人，剛與男友慶祝一週年？",
    "answers": [
@@ -729,6 +953,13 @@ window.PARTY_PEOPLE = [
    "🎯 我的隱藏技能：占卜、二胡",
    "✨ 摩羯座本人，測試我準不準"
   ],
+  "puzzle": {
+   "team": "🦊",
+   "size": 6,
+   "pos": 3,
+   "char": "喝",
+   "h": "1fc85aa772ec4d986904819580713e8d63cf952f6fbc7e06c9844cdbab873682"
+  },
   "quest": {
    "hint": "哪隻土地銀行的企鵝，夏天抱著波加曼泳圈泡宜蘭泳池？此企鵝是唯一正常的企鵝",
    "answers": [
@@ -751,6 +982,13 @@ window.PARTY_PEOPLE = [
    "✨ 雙子座本人，測試我準不準",
    "🍜 問我的口袋美食名單"
   ],
+  "puzzle": {
+   "team": "🐺",
+   "size": 6,
+   "pos": 1,
+   "char": "乾",
+   "h": "ac63de31b00bc2046b55c6cf5b03eafc8684f26efd0a90e8d4e860b3b7f32f9d"
+  },
   "quest": {
    "hint": "哪位ENFP玩家去給數碼寶貝老師簽卡，緊張到手抖？聽說手上的寶可夢卡足矣退休了。",
    "answers": [
@@ -785,6 +1023,13 @@ window.PARTY_PEOPLE = [
    "✨ 射手座本人，測試我準不準",
    "🎶 問我 KTV 必點歌單"
   ],
+  "puzzle": {
+   "team": "🐼",
+   "size": 6,
+   "pos": 4,
+   "char": "雄",
+   "h": "6ed2570286349927fc14837dc34629da87a3c8af35cca2b69731f72fed28fa41"
+  },
   "quest": {
    "hint": "哪位每天靠柴柴照治癒的半個宜蘭人，跑過夸父追日接力賽？喜熊豬不喜豬熊",
    "answers": [
@@ -806,6 +1051,13 @@ window.PARTY_PEOPLE = [
    "📸 問我手機相簿最新一張照片",
    "🌍 問我最近一次出國去哪"
   ],
+  "puzzle": {
+   "team": "🐸",
+   "size": 6,
+   "pos": 2,
+   "char": "褲",
+   "h": "6b749be326d2fe5033015aded263c7a9ad01ba4b6d81025017b278cc8ad0d9ba"
+  },
   "quest": {
    "hint": "哪位通訊工程師兼酒吧服務生，五月露營重返國小三年級？",
    "answers": [
@@ -827,6 +1079,13 @@ window.PARTY_PEOPLE = [
    "🌍 問我最近一次出國去哪",
    "🎬 問我最近在追的劇或動漫"
   ],
+  "puzzle": {
+   "team": "🐸",
+   "size": 6,
+   "pos": 4,
+   "char": "能",
+   "h": "6b749be326d2fe5033015aded263c7a9ad01ba4b6d81025017b278cc8ad0d9ba"
+  },
   "quest": {
    "hint": "哪位1月1日生的士林INFJ，在新北燈會嘆糊裡糊塗又過一年？",
    "answers": [
@@ -848,6 +1107,13 @@ window.PARTY_PEOPLE = [
    "✨ 牡羊座本人，測試我準不準",
    "🎬 問我最近在追的劇或動漫"
   ],
+  "puzzle": {
+   "team": "🐰",
+   "size": 6,
+   "pos": 3,
+   "char": "我",
+   "h": "6dc37595a3e79085ff2862487fc07e6a90ec88588537c4b38dffab9e33cad67a"
+  },
   "quest": {
    "hint": "哪位用Pixel的軟體工程師，置頂是精英溫泉孤樹的野溪照？人稱北台灣熊族天菜",
    "answers": [
@@ -870,6 +1136,13 @@ window.PARTY_PEOPLE = [
    "✨ 水瓶座本人，測試我準不準",
    "🏖️ 問我今年最想去的地方"
   ],
+  "puzzle": {
+   "team": "🐯",
+   "size": 6,
+   "pos": 6,
+   "char": "對",
+   "h": "177124cc9c1f6b6278882548bf0a2b1760a04633dc172c922cc5083807e328ef"
+  },
   "quest": {
    "hint": "哪位ISFP自稱超不會開話題的浪人，經營大遊大吃大唱？",
    "answers": [
@@ -904,6 +1177,13 @@ window.PARTY_PEOPLE = [
    "✨ 天秤座本人，測試我準不準",
    "🍜 問我的口袋美食名單"
   ],
+  "puzzle": {
+   "team": "🐰",
+   "size": 6,
+   "pos": 1,
+   "char": "宵",
+   "h": "6dc37595a3e79085ff2862487fc07e6a90ec88588537c4b38dffab9e33cad67a"
+  },
   "quest": {
    "hint": "哪位牡羊座游泳教練愛YOASOBI和數碼寶貝，歡迎找他上課？",
    "answers": [
@@ -926,6 +1206,13 @@ window.PARTY_PEOPLE = [
    "🎯 我的隱藏技能：吉他",
    "✨ 牡羊座本人，測試我準不準"
   ],
+  "puzzle": {
+   "team": "🦄",
+   "size": 5,
+   "pos": 2,
+   "char": "年",
+   "h": "1d3edf2e7d85895c28a091d03ba9c5d6c096a7865996f729a852f954c184934f"
+  },
   "quest": {
    "hint": "哪位人畜無害的童話故事主角，棚拍被要求挑眉邪笑卻好尬？記得跟我要棚拍照片看一下，我記得好像有裸拍誒",
    "answers": [
@@ -955,6 +1242,13 @@ window.PARTY_PEOPLE = [
    "📸 問我手機相簿最新一張照片",
    "🌍 問我最近一次出國去哪"
   ],
+  "puzzle": {
+   "team": "🐼",
+   "size": 6,
+   "pos": 6,
+   "char": "結",
+   "h": "6ed2570286349927fc14837dc34629da87a3c8af35cca2b69731f72fed28fa41"
+  },
   "quest": {
    "hint": "哪位新竹壽星生日願望是大家股市賺錢，還開放報名台積電老公？請年薪超過三百再來跟我配對吧",
    "answers": [
@@ -977,6 +1271,13 @@ window.PARTY_PEOPLE = [
    "✨ 金牛座本人，測試我準不準",
    "🌍 問我最近一次出國去哪"
   ],
+  "puzzle": {
+   "team": "🐸",
+   "size": 6,
+   "pos": 6,
+   "char": "脫",
+   "h": "6b749be326d2fe5033015aded263c7a9ad01ba4b6d81025017b278cc8ad0d9ba"
+  },
   "quest": {
    "hint": "哪位清邁富士山都去過的人，逛當代館說藝術好難懂拍美照就好？人生就該花時間找弟弟玩。",
    "answers": [
@@ -998,6 +1299,13 @@ window.PARTY_PEOPLE = [
    "✨ 牡羊座本人，測試我準不準",
    "🎬 問我最近在追的劇或動漫"
   ],
+  "puzzle": {
+   "team": "🦊",
+   "size": 6,
+   "pos": 4,
+   "char": "到",
+   "h": "1fc85aa772ec4d986904819580713e8d63cf952f6fbc7e06c9844cdbab873682"
+  },
   "quest": {
    "hint": "哪位愛大自然的健身咖，置頂寫著起步慢的人沒有偷懶餘地？希望這次趁我難男友沒來可以多玩玩",
    "answers": [
@@ -1019,6 +1327,13 @@ window.PARTY_PEOPLE = [
    "🏖️ 問我今年最想去的地方",
    "🍜 問我的口袋美食名單"
   ],
+  "puzzle": {
+   "team": "🐼",
+   "size": 6,
+   "pos": 1,
+   "char": "拔",
+   "h": "6ed2570286349927fc14837dc34629da87a3c8af35cca2b69731f72fed28fa41"
+  },
   "quest": {
    "hint": "哪位台中人追孫燕姿追了25年，五月終於在大巨蛋圓夢？",
    "answers": [
@@ -1049,6 +1364,13 @@ window.PARTY_PEOPLE = [
    "✨ 天秤座本人，測試我準不準",
    "🍜 問我的口袋美食名單"
   ],
+  "puzzle": {
+   "team": "🐺",
+   "size": 6,
+   "pos": 3,
+   "char": "不",
+   "h": "ac63de31b00bc2046b55c6cf5b03eafc8684f26efd0a90e8d4e860b3b7f32f9d"
+  },
   "quest": {
    "hint": "哪位彈吉他的ENFJ自稱手很小，是一隻小爪水獺？",
    "answers": [
@@ -1078,6 +1400,13 @@ window.PARTY_PEOPLE = [
    "✨ 獅子座本人，測試我準不準",
    "🎶 問我 KTV 必點歌單"
   ],
+  "puzzle": {
+   "team": "🦄",
+   "size": 5,
+   "pos": 1,
+   "char": "明",
+   "h": "1d3edf2e7d85895c28a091d03ba9c5d6c096a7865996f729a852f954c184934f"
+  },
   "quest": {
    "hint": "哪位新北飛機技師INFP，佛系運動又愛迷因廢片和EDM？",
    "answers": [
@@ -1100,6 +1429,13 @@ window.PARTY_PEOPLE = [
    "🎯 我的隱藏技能：吃東西",
    "✨ 牡羊座本人，測試我準不準"
   ],
+  "puzzle": {
+   "team": "🦁",
+   "size": 6,
+   "pos": 3,
+   "char": "賓",
+   "h": "21ffa4cf7ca6c0bd5a4ea84562c5774735fc7ccf3cc0862ee2efb2e073b7e56d"
+  },
   "quest": {
    "hint": "哪位水系男子剛衝綠島考AOW潛水證照，嫌行程太趕要再去？",
    "answers": [
@@ -1121,6 +1457,13 @@ window.PARTY_PEOPLE = [
    "🌍 問我最近一次出國去哪",
    "🎬 問我最近在追的劇或動漫"
   ],
+  "puzzle": {
+   "team": "🦊",
+   "size": 6,
+   "pos": 2,
+   "char": "晚",
+   "h": "1fc85aa772ec4d986904819580713e8d63cf952f6fbc7e06c9844cdbab873682"
+  },
   "quest": {
    "hint": "哪位愛可愛東西的水瓶座，在機場閒到整理巴黎照片慢慢發？",
    "answers": [
@@ -1142,6 +1485,13 @@ window.PARTY_PEOPLE = [
    "🎬 問我最近在追的劇或動漫",
    "🏖️ 問我今年最想去的地方"
   ],
+  "puzzle": {
+   "team": "🐯",
+   "size": 6,
+   "pos": 3,
+   "char": "泳",
+   "h": "177124cc9c1f6b6278882548bf0a2b1760a04633dc172c922cc5083807e328ef"
+  },
   "quest": {
    "hint": "哪位六月首爾行餵羊駝，還跟穿著PRADA的惡魔2合照？我的前世因為太多孽緣了，今生我要專心賺錢",
    "answers": [
@@ -1175,6 +1525,13 @@ window.PARTY_PEOPLE = [
    "🍻 我超會喝，敢跟我拚嗎？",
    "✨ 天秤座本人，測試我準不準"
   ],
+  "puzzle": {
+   "team": "🦁",
+   "size": 6,
+   "pos": 2,
+   "char": "夜",
+   "h": "21ffa4cf7ca6c0bd5a4ea84562c5774735fc7ccf3cc0862ee2efb2e073b7e56d"
+  },
   "quest": {
    "hint": "哪位養貓的超派雙子座，頭貼是可達鴨還愛在更衣室拍照？",
    "answers": [
@@ -1197,6 +1554,13 @@ window.PARTY_PEOPLE = [
    "🎯 我的隱藏技能：射箭",
    "✨ 天秤座本人，測試我準不準"
   ],
+  "puzzle": {
+   "team": "🐺",
+   "size": 6,
+   "pos": 4,
+   "char": "准",
+   "h": "ac63de31b00bc2046b55c6cf5b03eafc8684f26efd0a90e8d4e860b3b7f32f9d"
+  },
   "quest": {
    "hint": "哪位愛沙灘海洋的北部人，四月玩胡志明市玩到想退休定居？我只知道我的男友屌很大。",
    "answers": [
@@ -1218,6 +1582,13 @@ window.PARTY_PEOPLE = [
    "✨ 天秤座本人，測試我準不準",
    "🎶 問我 KTV 必點歌單"
   ],
+  "puzzle": {
+   "team": "🦁",
+   "size": 6,
+   "pos": 6,
+   "char": "王",
+   "h": "21ffa4cf7ca6c0bd5a4ea84562c5774735fc7ccf3cc0862ee2efb2e073b7e56d"
+  },
   "quest": {
    "hint": "哪位IG舊帳號被Ban還被Meta限制追蹤，直呼我真的不是詐隙？請不要被我的奶狗眼給迷走了！",
    "answers": [

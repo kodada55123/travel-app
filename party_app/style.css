@@ -229,6 +229,113 @@ blockquote {
 .bingo-toast b { display: block; font-size: 1.5rem; margin-bottom: 4px; }
 .bingo-toast span { font-size: .95rem; }
 
+/* ── 玩樂場 ── */
+.fun-panel { margin-bottom: 16px; }
+.fun-sub { font-size: .84rem; color: var(--ink-dim); line-height: 1.6; margin-bottom: 10px; }
+.fun-sub b { color: var(--coral); }
+
+/* 輪盤 */
+.wheel-wrap { position: relative; width: 230px; margin: 10px auto 16px; }
+.wheel-pointer { position: absolute; top: -14px; left: 50%; transform: translateX(-50%); font-size: 1.5rem; color: var(--coral); z-index: 2; text-shadow: 0 2px 6px rgba(0,0,0,.5); }
+.wheel {
+  width: 230px; height: 230px; border-radius: 50%;
+  border: 5px solid rgba(255,255,255,.85);
+  box-shadow: 0 10px 30px rgba(0,0,0,.4), inset 0 0 20px rgba(0,0,0,.25);
+  background: conic-gradient(
+    var(--aqua) 0 45deg, var(--coral) 45deg 90deg,
+    var(--aqua) 90deg 135deg, var(--coral) 135deg 180deg,
+    var(--aqua) 180deg 225deg, var(--coral) 225deg 270deg,
+    var(--aqua) 270deg 315deg, var(--coral) 315deg 360deg);
+  transition: transform 3.5s cubic-bezier(.15, .9, .25, 1);
+  position: relative;
+}
+.wheel .wl { position: absolute; top: 50%; left: 50%; font-size: 1.3rem; }
+.wl0 { transform: translate(-50%,-50%) rotate(22.5deg) translateY(-82px); }
+.wl1 { transform: translate(-50%,-50%) rotate(67.5deg) translateY(-82px); }
+.wl2 { transform: translate(-50%,-50%) rotate(112.5deg) translateY(-82px); }
+.wl3 { transform: translate(-50%,-50%) rotate(157.5deg) translateY(-82px); }
+.wl4 { transform: translate(-50%,-50%) rotate(202.5deg) translateY(-82px); }
+.wl5 { transform: translate(-50%,-50%) rotate(247.5deg) translateY(-82px); }
+.wl6 { transform: translate(-50%,-50%) rotate(292.5deg) translateY(-82px); }
+.wl7 { transform: translate(-50%,-50%) rotate(337.5deg) translateY(-82px); }
+.wheel-sheet { text-align: center; }
+.wm-type { font-size: 1.3rem; font-weight: 900; margin-bottom: 10px; }
+.wm-type.truth { color: var(--aqua); }
+.wm-type.dare { color: var(--coral); }
+.wm-q { font-size: 1.12rem; line-height: 1.7; min-height: 3em; }
+
+/* 拼圖 */
+.puzzle-piece {
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  margin: 12px auto; padding: 18px;
+  width: 170px; border-radius: 18px;
+  background: linear-gradient(160deg, #ffffff, #eafcfb);
+  color: #08303f;
+  box-shadow: 0 10px 26px rgba(0,0,0,.35);
+}
+.pz-team { font-size: .82rem; font-weight: 800; color: #4b7f8d; }
+.pz-char { font-size: 3.2rem; font-weight: 900; line-height: 1.2; }
+.pz-pos { font-size: .8rem; font-weight: 800; color: var(--coral-deep); }
+.puzzle-done { color: var(--aqua); font-weight: 800; text-align: center; margin-top: 8px; }
+#puzzle-body form .btn { margin-top: 10px; }
+
+/* 紙條 */
+#note-body textarea {
+  width: 100%; margin-top: 10px;
+  font-size: 1rem; font-family: inherit;
+  padding: 12px; border-radius: 12px;
+  border: 1.5px solid rgba(62,230,216,.35);
+  background: rgba(6,42,61,.75); color: var(--ink);
+  resize: none; outline: none;
+}
+#note-body.disabled { opacity: .55; pointer-events: none; }
+
+/* ── 排行榜 ── */
+.board-sec { margin-bottom: 20px; }
+.board-list { list-style: none; counter-reset: rank; }
+.board-list li {
+  counter-increment: rank;
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px; margin-bottom: 6px;
+  border-radius: 12px;
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(62,230,216,.18);
+}
+.board-list li::before {
+  content: counter(rank);
+  min-width: 26px; height: 26px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(62,230,216,.15); color: var(--aqua);
+  font-weight: 800; font-size: .85rem;
+}
+.board-list li:nth-child(1)::before { content: "🥇"; background: none; }
+.board-list li:nth-child(2)::before { content: "🥈"; background: none; }
+.board-list li:nth-child(3)::before { content: "🥉"; background: none; }
+.board-list span { flex: 1; font-weight: 700; word-break: break-all; }
+.board-list em { font-style: normal; font-size: .8rem; color: var(--ink-dim); }
+
+/* ── 快閃任務 ── */
+.flash-overlay {
+  position: fixed; inset: 0; z-index: 80;
+  background: rgba(2,14,22,.88); backdrop-filter: blur(6px);
+  display: flex; align-items: center; justify-content: center;
+  padding: 24px;
+}
+.flash-card {
+  width: min(92vw, 400px);
+  background: linear-gradient(150deg, #3a1a05, #7a2d08);
+  border: 2px solid #ffd166;
+  border-radius: 24px;
+  padding: 28px 22px;
+  text-align: center;
+  box-shadow: 0 0 60px rgba(255,209,102,.45);
+  animation: flashpulse 1.2s ease infinite alternate;
+}
+@keyframes flashpulse { to { box-shadow: 0 0 90px rgba(255,209,102,.7); } }
+.flash-title { font-size: 1.4rem; font-weight: 900; color: #ffd166; letter-spacing: .1em; }
+.flash-text { font-size: 1.12rem; line-height: 1.7; margin: 14px 0 6px; }
+.flash-timer { color: #ffd166; font-weight: 800; margin-bottom: 8px; }
+
 /* ── 底部導覽 ── */
 .tabbar {
   position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);

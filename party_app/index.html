@@ -128,11 +128,79 @@
     </div>
   </div>
 
+  <!-- ═══ 玩樂頁：輪盤 / 拼圖 / 紙條 ═══ -->
+  <section id="screen-fun" class="screen hidden">
+    <header class="topbar"><span class="topbar-title">玩樂場</span></header>
+
+    <div class="panel fun-panel">
+      <p class="quest-label">🎡 真心話輪盤</p>
+      <p class="fun-sub">不敢做就罰一杯 🍺（全桌公認規則）</p>
+      <div class="wheel-wrap">
+        <div class="wheel-pointer">▼</div>
+        <div id="wheel" class="wheel">
+          <span class="wl wl0">💬</span><span class="wl wl1">🔥</span>
+          <span class="wl wl2">💬</span><span class="wl wl3">🔥</span>
+          <span class="wl wl4">💬</span><span class="wl wl5">🔥</span>
+          <span class="wl wl6">💬</span><span class="wl wl7">🔥</span>
+        </div>
+      </div>
+      <button id="btn-spin" class="btn btn-primary">轉起來 🎡</button>
+    </div>
+
+    <div class="panel fun-panel">
+      <p class="quest-label">🧩 分組拼圖</p>
+      <div id="puzzle-body"></div>
+    </div>
+
+    <div class="panel fun-panel">
+      <p class="quest-label">💌 匿名紙條</p>
+      <p class="fun-sub">悄悄寫給某個人，主辦挑安全的在早餐時公開唸出來。<br>對大家匿名，但主辦看得到寄件人，別亂來 😏</p>
+      <div id="note-body">
+        <select id="note-to"><option value="" disabled selected>— 寫給誰 —</option></select>
+        <textarea id="note-text" rows="3" maxlength="100" placeholder="想說的話（100 字內）"></textarea>
+        <button id="btn-note" class="btn btn-primary">投進紙條箱 💌</button>
+        <p id="note-msg" class="quest-msg"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ 排行榜頁 ═══ -->
+  <section id="screen-board" class="screen hidden">
+    <header class="topbar">
+      <span class="topbar-title">排行榜</span>
+      <button id="btn-board-refresh" class="btn-ghost">重新整理</button>
+    </header>
+    <div id="board-body"><p class="fun-sub">載入中…</p></div>
+  </section>
+
+  <!-- ═══ 輪盤結果彈窗 ═══ -->
+  <div id="wheel-modal" class="modal hidden">
+    <div class="modal-sheet wheel-sheet">
+      <p id="wm-type" class="wm-type"></p>
+      <p id="wm-q" class="wm-q"></p>
+      <button id="wm-ok" class="btn btn-primary">接受挑戰 ✅</button>
+      <button id="wm-drink" class="btn-ghost">孬了，罰一杯 🍺</button>
+    </div>
+  </div>
+
+  <!-- ═══ 快閃任務覆蓋層 ═══ -->
+  <div id="flash-overlay" class="flash-overlay hidden">
+    <div class="flash-card">
+      <p class="flash-title">⚡ 快閃任務 ⚡</p>
+      <p id="flash-text" class="flash-text"></p>
+      <p id="flash-timer" class="flash-timer"></p>
+      <button id="flash-done" class="btn btn-primary">完成了！🙌</button>
+      <button id="flash-skip" class="btn-ghost">先跳過</button>
+    </div>
+  </div>
+
   <!-- ═══ 底部導覽 ═══ -->
   <nav id="tabbar" class="tabbar hidden">
     <button data-nav="card" class="tab active"><span>🪪</span>名片</button>
     <button data-nav="quest" class="tab"><span>🧩</span>任務</button>
     <button data-nav="bingo" class="tab"><span>🎯</span>賓果</button>
+    <button data-nav="fun" class="tab"><span>🎪</span>玩樂</button>
+    <button data-nav="board" class="tab"><span>🏆</span>排行</button>
   </nav>
 </div>
 

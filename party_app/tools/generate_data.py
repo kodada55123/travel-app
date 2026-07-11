@@ -44,6 +44,38 @@ GENERIC_TOPICS = [
 
 SKIP_SKILL = {"無", "沒有", "没有", "no", "nope", "沒", "沒有哈哈"}
 
+# 分組拼圖：隊徽 + 通關暗號（依隊伍人數取同長度的暗號，人數改變時自動重分）
+PUZZLE_EMBLEMS = ["🦊", "🐯", "🐼", "🦁", "🐸", "🐺", "🐨", "🐰", "🦄", "🐙", "🦖", "🐳"]
+PUZZLE_PHRASES = {
+    5: ["明年還要來", "小柯請喝酒", "埔里山傳說"],
+    6: ["今晚喝到天亮", "水尾泳池派對", "拔雕英雄集結", "深夜賓果之王",
+        "泳褲不能亂脫", "乾杯不准偷跑", "路見不秤相見", "宵夜我全都要",
+        "帥哥配酒配山"],
+}
+
+
+def build_puzzle(people, rng):
+    """seeded 洗牌 -> 均分成隊 -> 每人拿暗號的一個字。回傳 {暱稱: puzzle資訊}"""
+    names = [p["name"] for p in people]
+    rng.shuffle(names)
+    n = len(names)
+    n_groups = (n + 5) // 6
+    base, extra = divmod(n, n_groups)      # extra 組多 1 人
+    sizes = [base + 1] * extra + [base] * (n_groups - extra)
+    pools = {k: list(v) for k, v in PUZZLE_PHRASES.items()}
+    out, i = {}, 0
+    for g, size in enumerate(sizes):
+        assert pools.get(size), f"缺少 {size} 字的拼圖暗號，請在 PUZZLE_PHRASES 補充"
+        phrase = pools[size].pop(0)
+        assert len(phrase) == size
+        h = sha256_hex(SALT + norm(phrase))
+        emblem = PUZZLE_EMBLEMS[g % len(PUZZLE_EMBLEMS)]
+        for pos, name in enumerate(names[i:i + size]):
+            out[name] = {"team": emblem, "size": size, "pos": pos + 1,
+                         "char": phrase[pos], "h": h}
+        i += size
+    return out
+
 
 def zodiac_of(birthday: str) -> str:
     m, d = (int(x) for x in birthday.split("/")[1:3])
@@ -164,6 +196,9 @@ def main(csv_path, replies_path=None):
                 if a == norm(o):  # 本名不可被剔除
                     aliases_of[o].append(a)
 
+    import random
+    puzzle = build_puzzle(people, random.Random(SALT + "|puzzle"))
+
     out = []
     matched = 0
     for idx, p in enumerate(people):
@@ -174,6 +209,7 @@ def main(csv_path, replies_path=None):
         if reply:
             matched += 1
         entry["topics"] = topics_for(p, reply, idx)
+        entry["puzzle"] = puzzle[p["name"]]
         if p["target"]:
             assert p["target"] in names, f"配對朋友不在名單中: {p['target']}"
             t = next(q for q in people if q["name"] == p["target"])
