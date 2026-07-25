@@ -26,6 +26,21 @@ const LIABILITIES = [
   { bank: "國泰世華銀行", type: "房貸", name: "房屋抵押貸款", amount: 7568916, currency: "TWD" }
 ];
 
+// ── 不動產房地產 (實價登錄估值) ─────────────────────────────────
+const REAL_ESTATE = [
+  {
+    community: "御藏",
+    address: "桃園市八德區仁德路153號11樓",
+    type: "住宅大樓 (中高樓層)",
+    estimatedUnitUnitPrice: "34.5 ~ 36.5 萬/坪",
+    estimatedValue: 14000000,
+    mortgage: 7568916,
+    netEquity: 6431084,
+    currency: "TWD"
+  }
+];
+
+
 // ── 未實現持倉 ────────────────────────────────────────────────
 const US_POSITIONS = [
   { stock:"Amkor Technology", code:"AMKR", type:"股票", shares:30, avgCost:72.46, price:64.96, value:1948.8, pnl:-225.0, pct:-10.35, currency:"USD" },

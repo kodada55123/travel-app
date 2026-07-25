@@ -349,6 +349,9 @@ tr:hover td{background:rgba(255,255,255,.03);}
     <h2 style="margin-top:32px;">💵 台幣現金存款與流動資金</h2>
     <div class="tbl-wrap"><table id="tbl-cash"></table></div>
 
+    <h2 style="margin-top:32px;">🏢 不動產房地產 (實價登錄估值)</h2>
+    <div class="tbl-wrap"><table id="tbl-realestate"></table></div>
+
     <h2 style="margin-top:32px;">🏠 負債與房屋抵押貸款</h2>
     <div class="tbl-wrap"><table id="tbl-liabilities"></table></div>
   </div>
@@ -782,14 +785,16 @@ function renderAll() {
   const _INSURANCE = (typeof INSURANCE_POSITIONS !== 'undefined') ? INSURANCE_POSITIONS : [];
   const _CASH_ACCOUNTS = (typeof CASH_ACCOUNTS !== 'undefined') ? CASH_ACCOUNTS : [];
   const _LIABILITIES = (typeof LIABILITIES !== 'undefined') ? LIABILITIES : [];
+  const _REAL_ESTATE = (typeof REAL_ESTATE !== 'undefined') ? REAL_ESTATE : [];
 
   const insuranceTotal = _INSURANCE.reduce((s,p) => s + p.value, 0);
   const insurancePremium = _INSURANCE.reduce((s,p) => s + p.premium, 0);
   const insurancePnl = insuranceTotal - insurancePremium;
   const cashTotal = _CASH_ACCOUNTS.reduce((s,c) => s + c.amount, 0);
   const liabilitiesTotal = _LIABILITIES.reduce((s,l) => s + l.amount, 0);
+  const realEstateTotal = _REAL_ESTATE.reduce((s,r) => s + r.estimatedValue, 0);
 
-  if (_US_POSITIONS.length > 0 || _US_CASH > 0 || _INSURANCE.length > 0 || cashTotal > 0) {
+  if (_US_POSITIONS.length > 0 || _US_CASH > 0 || _INSURANCE.length > 0 || cashTotal > 0 || realEstateTotal > 0) {
     const usVal = _US_POSITIONS.reduce((s,p) => s + p.value, 0);
     const usCost = _US_POSITIONS.reduce((s,p) => s + (p.shares * p.avgCost), 0);
     const usPnl = usVal - usCost;
@@ -797,7 +802,7 @@ function renderAll() {
     const usTotalAsset = usVal + _US_CASH;
     const usTotalTWD = Math.round(usTotalAsset * _USD_TWD);
     const investmentTotal = Math.round(totalValue) + usTotalTWD + insuranceTotal;
-    const grossAssets = investmentTotal + cashTotal;
+    const grossAssets = investmentTotal + cashTotal + realEstateTotal;
     const netWorth = grossAssets - liabilitiesTotal;
 
     cards.unshift({
@@ -810,11 +815,20 @@ function renderAll() {
     cards.splice(1, 0, {
       label: "🌐 個人總資產 (總台幣價值)",
       val: "NT$ " + grossAssets.toLocaleString('zh-TW') + " 元",
-      sub: "投資 $" + investmentTotal.toLocaleString() + " ＋ 現金存款 $" + cashTotal.toLocaleString(),
+      sub: "金融投資 $" + investmentTotal.toLocaleString() + " ＋ 現金 $" + cashTotal.toLocaleString() + " ＋ 房地產 $" + realEstateTotal.toLocaleString(),
       color: "neu"
     });
 
-    cards.splice(2, 0, {
+    if (realEstateTotal > 0) {
+      cards.splice(2, 0, {
+        label: "🏢 不動產實價登錄估值",
+        val: "NT$ " + realEstateTotal.toLocaleString('zh-TW') + " 元",
+        sub: "桃園八德「御藏」11樓 (約 34.5 ~ 36.5 萬/坪)",
+        color: "neu"
+      });
+    }
+
+    cards.splice(3, 0, {
       label: "💵 台幣現金與流動資金",
       val: "NT$ " + cashTotal.toLocaleString('zh-TW') + " 元",
       sub: "包含 LINE Bank 口袋帳戶 $50萬 ＋ 證券活存 $79.8萬 等 5 個帳戶",
@@ -822,7 +836,7 @@ function renderAll() {
     });
 
     if (liabilitiesTotal > 0) {
-      cards.splice(3, 0, {
+      cards.splice(4, 0, {
         label: "🏠 房屋抵押貸款 (房貸負債)",
         val: "NT$ " + liabilitiesTotal.toLocaleString('zh-TW') + " 元",
         sub: "國泰世華房貸本金餘額",
@@ -980,6 +994,30 @@ function renderAll() {
         `<tr style="font-weight:600;background:var(--bg3);">
           <td colspan="3">現金與流動資金總計</td>
           <td>NT$ ${cashTotal.toLocaleString('zh-TW')}</td>
+        </tr></tbody>`;
+    }
+  }
+
+  // Real Estate Table
+  if (_REAL_ESTATE.length > 0) {
+    const reHead = `<thead><tr>
+      <th>社區名稱</th><th>物件地址</th><th>房屋型態</th><th>實價登錄單價行情</th><th>預估市場現值</th><th>房屋淨權益 (扣除房貸)</th>
+    </tr></thead>`;
+    const reRows = _REAL_ESTATE.map(r => `<tr>
+      <td><strong>${r.community}</strong></td>
+      <td style="color:var(--muted);">${r.address}</td>
+      <td><span class="badge b-stock">${r.type}</span></td>
+      <td>${r.estimatedUnitUnitPrice}</td>
+      <td style="font-weight:600;">NT$ ${r.estimatedValue.toLocaleString('zh-TW')}</td>
+      <td class="${cls(r.netEquity)}">NT$ ${r.netEquity.toLocaleString('zh-TW')}</td>
+    </tr>`).join("");
+    const reElem = document.getElementById("tbl-realestate");
+    if (reElem) {
+      reElem.innerHTML = reHead + "<tbody>" + reRows +
+        `<tr style="font-weight:600;background:var(--bg3);">
+          <td colspan="4">不動產估值總計</td>
+          <td>NT$ ${realEstateTotal.toLocaleString('zh-TW')}</td>
+          <td class="up">NT$ ${(_REAL_ESTATE.reduce((s,r)=>s+r.netEquity,0)).toLocaleString('zh-TW')}</td>
         </tr></tbody>`;
     }
   }
