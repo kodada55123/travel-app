@@ -1022,11 +1022,16 @@
                             <i class="ph-fill ph-buildings"></i>
                             <span>${f.airline} ‧ 經濟艙來回含稅</span>
                         </div>
-                        <div class="price-tag">
-                            <span class="price-label">含稅總價 / 人</span>
-                            <div>
-                                <span class="price-value">$${f.price.toLocaleString()}</span>
-                                <span class="price-unit">${f.currency}</span>
+                        <div style="display: flex; align-items: center; gap: 16px;">
+                            <a href="https://www.google.com/travel/flights?q=Flights%20from%20TPE%20to%20${f.destCode}%20on%20${f.departDate}%20through%20${f.returnDate}" target="_blank" class="btn btn-primary" style="font-size: 12px; padding: 6px 14px; text-decoration: none;">
+                                <i class="ph-bold ph-arrow-square-out"></i> Google Flights 實時查價/訂票
+                            </a>
+                            <div class="price-tag">
+                                <span class="price-label">含稅總價 / 人</span>
+                                <div>
+                                    <span class="price-value">$${f.price.toLocaleString()}</span>
+                                    <span class="price-unit">${f.currency}</span>
+                                </div>
                             </div>
                         </div>
                     </div>
