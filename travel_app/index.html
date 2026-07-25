@@ -873,7 +873,7 @@
                     const baseDate = new Date(m.key + '-01');
                     
                     if (dest.code === 'PEK') {
-                        // 台北 ✈️ 北京 (PEK)：長榮航空 (BR716) 實質最優惠直飛航班
+                        // 台北 ✈️ 北京 (PEK)：長榮航空 BR716 / BR715 實質最優惠直飛來回
                         let departDateStr, returnDateStr;
                         if (m.key === '2026-09') {
                             departDateStr = '2026-09-10';
@@ -894,19 +894,22 @@
                             flag: '🇨🇳',
                             departDate: departDateStr,
                             returnDate: returnDateStr,
-                            departTime: '09:15 TPE',
-                            arrivalTime: '12:40 PEK',
                             tripDays: 5,
                             isDirect: true,
-                            airline: '長榮航空 (BR716)',
                             isLCC: false,
                             price: 11700 + (m.monthsAhead * 150),
                             currency: 'TWD',
                             monthKey: m.key,
-                            lccWarning: null
+                            lccWarning: null,
+                            outboundAirline: '長榮航空 (BR716)',
+                            outboundDepTime: '09:15 桃園 (TPE)',
+                            outboundArrTime: '12:40 北京首都 (PEK)',
+                            returnAirline: '長榮航空 (BR715)',
+                            returnDepTime: '13:55 北京首都 (PEK)',
+                            returnArrTime: '17:25 桃園 (TPE)'
                         });
                     } else if (dest.code === 'DAD') {
-                        // 台北 ✈️ 峴港 (DAD)：台灣虎航 (IT551)
+                        // 台北 ✈️ 峴港 (DAD)：台灣虎航 IT551 / IT552 直飛來回
                         let departDateStr, returnDateStr;
                         if (m.key === '2026-08') {
                             departDateStr = '2026-08-13';
@@ -929,16 +932,19 @@
                                 flag: '🇻🇳',
                                 departDate: departDateStr,
                                 returnDate: returnDateStr,
-                                departTime: '09:45 TPE',
-                                arrivalTime: '11:35 DAD',
                                 tripDays: 5,
                                 isDirect: true,
-                                airline: '長榮航空 (BR383) / 星宇航空 (JX703)',
                                 isLCC: false,
                                 price: 15857,
                                 currency: 'TWD',
                                 monthKey: m.key,
-                                lccWarning: `⚠️ 廉航 (台灣虎航 IT / 越捷 VJ) 在 ${m.label} 尚未開賣，預估飛行前 3-4 個月開放`
+                                lccWarning: `⚠️ 廉航 (台灣虎航 IT / 越捷 VJ) 在 ${m.label} 尚未開賣，預估飛行前 3-4 個月開放`,
+                                outboundAirline: '長榮航空 BR383 / 星宇 JX703',
+                                outboundDepTime: '09:45 桃園 (TPE)',
+                                outboundArrTime: '11:35 峴港 (DAD)',
+                                returnAirline: '長榮航空 BR384 / 星宇 JX704',
+                                returnDepTime: '12:35 峴港 (DAD)',
+                                returnArrTime: '16:25 桃園 (TPE)'
                             });
                         } else {
                             flights.push({
@@ -948,20 +954,23 @@
                                 flag: '🇻🇳',
                                 departDate: departDateStr,
                                 returnDate: returnDateStr,
-                                departTime: '16:35 TPE',
-                                arrivalTime: '18:10 DAD',
                                 tripDays: 5,
                                 isDirect: true,
-                                airline: '台灣虎航 (IT551)',
                                 isLCC: true,
                                 price: m.key === '2026-08' ? 12492 : (12492 + (m.monthsAhead * 200)),
                                 currency: 'TWD',
                                 monthKey: m.key,
-                                lccWarning: null
+                                lccWarning: null,
+                                outboundAirline: '台灣虎航 (IT551)',
+                                outboundDepTime: '16:35 桃園 (TPE)',
+                                outboundArrTime: '18:10 峴港 (DAD)',
+                                returnAirline: '台灣虎航 (IT552)',
+                                returnDepTime: '19:10 峴港 (DAD)',
+                                returnArrTime: '22:45 桃園 (TPE)'
                             });
                         }
                     } else if (dest.code === 'SGN') {
-                        // 台北 ✈️ 胡志明市 (SGN)：越捷航空 (VJ853) / 越南航空 (VN571)
+                        // 台北 ✈️ 胡志明市 (SGN)：越捷航空 VJ853 / VJ852
                         const depart = new Date(baseDate.getFullYear(), baseDate.getMonth(), 12);
                         while (depart.getDay() !== 5) { depart.setDate(depart.getDate() + 1); }
                         const ret = new Date(depart);
@@ -974,21 +983,22 @@
                             flag: '🇻🇳',
                             departDate: depart.toISOString().split('T')[0],
                             returnDate: ret.toISOString().split('T')[0],
-                            departTime: '06:25 TPE',
-                            arrivalTime: '08:50 SGN',
                             tripDays: 5,
                             isDirect: true,
-                            airline: '越捷航空 (VJ853) 廉航 / 越南航空 (VN571)',
                             isLCC: true,
                             price: 6500 + (m.monthsAhead * 180),
                             currency: 'TWD',
                             monthKey: m.key,
-                            lccWarning: null
+                            lccWarning: null,
+                            outboundAirline: '越捷航空 (VJ853)',
+                            outboundDepTime: '06:25 桃園 (TPE)',
+                            outboundArrTime: '08:50 新山一 (SGN)',
+                            returnAirline: '越捷航空 (VJ852)',
+                            returnDepTime: '13:35 新山一 (SGN)',
+                            returnArrTime: '18:00 桃園 (TPE)'
                         });
                     } else if (dest.code === 'PVG') {
-                        // 台北 ✈️ 上海 (PVG/SHA)：
-                        // 1. 春秋航空 (9C8952) 廉航來回底價約 NT$6,800
-                        // 2. 中國東方航空 (MU5008) / 長榮 (BR712) 傳統航空 (含行李) 來回約 NT$9,800
+                        // 台北 ✈️ 上海 (PVG)：中國東方航空 MU5008 / MU5007 (含行李)
                         const depart = new Date(baseDate.getFullYear(), baseDate.getMonth(), 11);
                         while (depart.getDay() !== 4) { depart.setDate(depart.getDate() + 1); }
                         const ret = new Date(depart);
@@ -1001,16 +1011,19 @@
                             flag: '🇨🇳',
                             departDate: depart.toISOString().split('T')[0],
                             returnDate: ret.toISOString().split('T')[0],
-                            departTime: '11:45 TPE',
-                            arrivalTime: '13:50 PVG',
                             tripDays: 5,
                             isDirect: true,
-                            airline: '中國東方航空 (MU5008) / 春秋航空 (9C8952)',
                             isLCC: false,
                             price: 9800 + (m.monthsAhead * 150),
                             currency: 'TWD',
                             monthKey: m.key,
-                            lccWarning: null
+                            lccWarning: null,
+                            outboundAirline: '中國東方航空 (MU5008)',
+                            outboundDepTime: '15:00 桃園 (TPE)',
+                            outboundArrTime: '16:50 浦東 (PVG)',
+                            returnAirline: '中國東方航空 (MU5007)',
+                            returnDepTime: '12:00 浦東 (PVG)',
+                            returnArrTime: '13:50 桃園 (TPE)'
                         });
                     }
                 });
@@ -1081,7 +1094,7 @@
                             <span class="city-badge">${f.flag}</span>
                             <div class="route-text">
                                 <h3>台北 (TPE) ✈️ ${f.destName} (${f.destCode})</h3>
-                                <p>${f.departDate}（五）～ ${f.returnDate} (${f.tripDays === 5 ? '二' : '三'}) ‧ 來回 ${f.tripDays} 天</p>
+                                <p>${f.departDate} ～ ${f.returnDate} ‧ 來回 ${f.tripDays} 天 (橫跨六日)</p>
                             </div>
                         </div>
                         <div class="badges">
@@ -1092,21 +1105,14 @@
                         </div>
                     </div>
 
-                    <div class="card-middle">
-                        <div class="time-box">
-                            <h4>${f.departTime}</h4>
-                            <p>桃園國際機場 (TPE)</p>
+                    <div style="background: rgba(255,255,255,0.03); border-radius: 8px; padding: 12px 16px; margin: 12px 0; font-size: 13px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 8px; border-bottom: 1px dashed rgba(255,255,255,0.1);">
+                            <span>🛫 <b>去程直飛</b> ‧ ${f.outboundAirline}</span>
+                            <span style="color: var(--accent-blue); font-weight: 600;">${f.outboundDepTime} ➔ ${f.outboundArrTime}</span>
                         </div>
-                        <div class="flight-path">
-                            <span class="duration-tag">${f.tripDays} 天直飛來回</span>
-                            <div class="path-line">
-                                <i class="ph-fill ph-airplane"></i>
-                            </div>
-                            <span class="duration-tag">包含完整週六日</span>
-                        </div>
-                        <div class="time-box" style="text-align: right;">
-                            <h4>${f.arrivalTime}</h4>
-                            <p>${f.destName}國際機場 (${f.destCode})</p>
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 8px;">
+                            <span>🛬 <b>回程直飛</b> ‧ ${f.returnAirline}</span>
+                            <span style="color: var(--accent-green); font-weight: 600;">${f.returnDepTime} ➔ ${f.returnArrTime}</span>
                         </div>
                     </div>
 
@@ -1120,7 +1126,7 @@
                     <div class="card-bottom">
                         <div class="airline-info">
                             <i class="ph-fill ph-buildings"></i>
-                            <span>${f.airline} ‧ 經濟艙來回含稅</span>
+                            <span>去回程均為直飛 ‧ 含稅來回總價</span>
                         </div>
                         <div style="display: flex; align-items: center; gap: 16px;">
                             <a href="https://www.google.com/travel/flights?q=Flights%20from%20TPE%20to%20${f.destCode}%20on%20${f.departDate}%20through%20${f.returnDate}" target="_blank" class="btn btn-primary" style="font-size: 12px; padding: 6px 14px; text-decoration: none;">
