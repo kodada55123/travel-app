@@ -26,6 +26,14 @@ jobs:
       - name: 📥 Checkout Repository
         uses: actions/checkout@v4
 
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: 🔄 Update Daily Flight Data
+        run: node scripts/update-flights.js
+
       - name: ⚙️ Setup Pages
         uses: actions/configure-pages@v4
 
