@@ -1051,8 +1051,8 @@
 
                     <div class="card-middle">
                         <div class="time-box">
-                            <h4>${f.departTime || '08:45 TPE'}</h4>
-                            <p>桃園國際機場 T1</p>
+                            <h4>${f.departTime}</h4>
+                            <p>桃園國際機場 (TPE)</p>
                         </div>
                         <div class="flight-path">
                             <span class="duration-tag">${f.tripDays} 天直飛來回</span>
@@ -1062,8 +1062,8 @@
                             <span class="duration-tag">包含完整週六日</span>
                         </div>
                         <div class="time-box" style="text-align: right;">
-                            <h4>${f.arrivalTime || ('12:15 ' + f.destCode)}</h4>
-                            <p>${f.destName}國際機場</p>
+                            <h4>${f.arrivalTime}</h4>
+                            <p>${f.destName}國際機場 (${f.destCode})</p>
                         </div>
                     </div>
 
