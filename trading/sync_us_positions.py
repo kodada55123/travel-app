@@ -2,7 +2,7 @@
 """
 美股持股同步腳本
 從 us_backtest/config.py 讀取 Firstrade 美股持股，
-並更新 trading/data.js 中的 US_POSITIONS。
+並更新 trading/data.js 中的 US_POSITIONS、LAST_UPDATED 與 DATA_TS。
 """
 import os
 import re
@@ -10,6 +10,7 @@ import json
 import ssl
 import sys
 import urllib.request
+from datetime import datetime, timezone
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 GOOGLE_DIR = os.path.dirname(BASE_DIR)
@@ -78,6 +79,14 @@ print(f"💵 美股持股總市值: ${total_val:,.2f} USD, 總損益: ${total_va
 with open(DATA_JS_PATH, 'r', encoding='utf-8') as f:
     content = f.read()
 
+# 升級時間戳，強制覆蓋網頁端快取
+now_utc = datetime.now(timezone.utc)
+today_str = now_utc.strftime('%Y-%m-%d')
+iso_ts = now_utc.isoformat()
+
+content = re.sub(r'const LAST_UPDATED = ".*?";', f'const LAST_UPDATED = "{today_str}";', content)
+content = re.sub(r'const DATA_TS = ".*?";', f'const DATA_TS = "{iso_ts}";', content)
+
 # 格式化 US_POSITIONS JS 程式碼
 js_lines = ["const US_POSITIONS = ["]
 for item in us_positions:
@@ -95,4 +104,4 @@ else:
 with open(DATA_JS_PATH, 'w', encoding='utf-8') as f:
     f.write(content)
 
-print("✅ 成功將美股持股同步至 trading/data.js！")
+print(f"✅ 成功更新時間戳 (DATA_TS={iso_ts}) 並將美股持股同步至 trading/data.js！")
