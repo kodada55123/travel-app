@@ -1,0 +1,31 @@
+{
+  "name": "flight-tracker-server",
+  "version": "1.0.0",
+  "description": "Automated Flight Tracker Backend",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "@duffel/api": "^3.12.0",
+    "@fastify/cors": "^9.0.1",
+    "bullmq": "^5.7.8",
+    "dotenv": "^16.4.5",
+    "fastify": "^4.27.0",
+    "firebase-admin": "^12.1.1",
+    "ioredis": "^5.4.1",
+    "node-cron": "^3.0.3",
+    "pg": "^8.12.0",
+    "uuid": "^10.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.12.12",
+    "@types/node-cron": "^3.0.11",
+    "@types/pg": "^8.11.6",
+    "@types/uuid": "^9.0.8",
+    "tsx": "^4.11.0",
+    "typescript": "^5.4.5"
+  }
+}

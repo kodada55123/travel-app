@@ -4,7 +4,13 @@
 const US_CASH = 1504.81;
 const USD_TWD = 32.34;
 const LAST_UPDATED = "2026-07-25";
-const DATA_TS = "2026-07-25T04:34:27.541670+00:00"; // 資料時間戳，用於新舊判斷
+const DATA_TS = "2026-07-25T14:30:00.000000+00:00"; // 資料時間戳，用於新舊判斷
+
+// ── 投資型保單 ────────────────────────────────────────────────
+const INSURANCE_POSITIONS = [
+  { name:"投資型保單 A", startDate:"2025-01-20", premium:300000, value:296873, distribution:38465, currency:"TWD" },
+  { name:"投資型保單 B", startDate:"2024-12-28", premium:1000000, value:1109741, distribution:133223, currency:"TWD" },
+];
 
 // ── 未實現持倉 ────────────────────────────────────────────────
 const US_POSITIONS = [
