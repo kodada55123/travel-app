@@ -2,7 +2,8 @@
 """
 美股持股同步腳本
 從 us_backtest/config.py 讀取 Firstrade 美股持股與現金餘額，
-並更新 trading/data.js 中的 US_POSITIONS、US_CASH、LAST_UPDATED 與 DATA_TS。
+抓取即時美股價格與 USD/TWD 匯率，
+並更新 trading/data.js 中的 US_POSITIONS、US_CASH、USD_TWD、LAST_UPDATED 與 DATA_TS。
 """
 import os
 import re
@@ -32,6 +33,19 @@ print(f"📦 讀取到 {len(HOLDINGS)} 檔美股持股，現金餘額: ${us_cash
 ctx = ssl.create_default_context()
 ctx.check_hostname = False
 ctx.verify_mode = ssl.CERT_NONE
+
+# 抓取 USD/TWD 匯率
+usd_twd = 32.34
+try:
+    url_rate = 'https://query1.finance.yahoo.com/v8/finance/chart/USDTWD=X'
+    req_rate = urllib.request.Request(url_rate, headers={'User-Agent': 'Mozilla/5.0'})
+    with urllib.request.urlopen(req_rate, context=ctx, timeout=5) as r:
+        d_rate = json.loads(r.read().decode('utf-8'))
+        usd_twd = round(d_rate['chart']['result'][0]['meta']['regularMarketPrice'], 2)
+except Exception as e:
+    print(f"⚠️ 無法取得 USD/TWD 匯率，使用預設值 32.34: {e}")
+
+print(f"💱 當前 USD/TWD 匯率: {usd_twd}")
 
 us_positions = []
 total_val = 0
@@ -76,23 +90,30 @@ for code, info in HOLDINGS.items():
     })
 
 total_account_us = round(total_val + us_cash, 2)
-print(f"💵 美股持股市值: ${total_val:,.2f} USD | 現金餘額: ${us_cash:,.2f} USD | 帳戶總資產: ${total_account_us:,.2f} USD")
+total_us_twd = round(total_account_us * usd_twd)
+print(f"💵 美股持股市值: ${total_val:,.2f} USD | 現金餘額: ${us_cash:,.2f} USD | 美股總資產: ${total_account_us:,.2f} USD (折合 NT$ {total_us_twd:,})")
 
 # 讀取現有 data.js
 with open(DATA_JS_PATH, 'r', encoding='utf-8') as f:
     content = f.read()
 
-# 升級時間戳，強制覆蓋網頁端快取
+# 升級時間戳
 now_utc = datetime.now(timezone.utc)
 today_str = now_utc.strftime('%Y-%m-%d')
 iso_ts = now_utc.isoformat()
 
 content = re.sub(r'const LAST_UPDATED = ".*?";', f'const LAST_UPDATED = "{today_str}";', content)
 content = re.sub(r'const DATA_TS = ".*?";', f'const DATA_TS = "{iso_ts}";', content)
+
 if 'const US_CASH =' in content:
     content = re.sub(r'const US_CASH = [\d.]+;', f'const US_CASH = {us_cash};', content)
 else:
     content = content.replace('const LAST_UPDATED =', f'const US_CASH = {us_cash};\nconst LAST_UPDATED =')
+
+if 'const USD_TWD =' in content:
+    content = re.sub(r'const USD_TWD = [\d.]+;', f'const USD_TWD = {usd_twd};', content)
+else:
+    content = content.replace('const LAST_UPDATED =', f'const USD_TWD = {usd_twd};\nconst LAST_UPDATED =')
 
 # 格式化 US_POSITIONS JS 程式碼
 js_lines = ["const US_POSITIONS = ["]
@@ -102,7 +123,6 @@ for item in us_positions:
 js_lines.append("];")
 js_code = "\n".join(js_lines)
 
-# 若 data.js 中已存在 US_POSITIONS 則替換，否則加在 POSITIONS 之後
 if 'const US_POSITIONS =' in content:
     content = re.sub(r'const US_POSITIONS = \[.*?\];', js_code, content, flags=re.DOTALL)
 else:
@@ -111,4 +131,4 @@ else:
 with open(DATA_JS_PATH, 'w', encoding='utf-8') as f:
     f.write(content)
 
-print(f"✅ 成功將美股持股與現金餘額 (${us_cash:,.2f}) 同步至 trading/data.js！")
+print(f"✅ 成功將美股持股、現金 (${us_cash:,.2f}) 與匯率 ({usd_twd}) 同步至 trading/data.js！")

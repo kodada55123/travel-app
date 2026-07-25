@@ -805,6 +805,7 @@ function renderAll() {
     { label:"交易標的數",      val:[...new Set(yearTrades().map(t=>t.stock))].length+" 檔",
                                sub:THIS_YEAR+" 年累計",                           color:"neu" },
   ];
+  const _USD_TWD = (typeof USD_TWD !== 'undefined') ? USD_TWD : 32.34;
   const _US_POSITIONS = (typeof US_POSITIONS !== 'undefined') ? US_POSITIONS : [];
   const _US_CASH = (typeof US_CASH !== 'undefined') ? US_CASH : 0;
   if (_US_POSITIONS.length > 0 || _US_CASH > 0) {
@@ -813,10 +814,20 @@ function renderAll() {
     const usPnl = usVal - usCost;
     const usPct = usCost ? (usPnl / usCost * 100) : 0;
     const usTotalAsset = usVal + _US_CASH;
-    cards.splice(1, 0, {
+    const usTotalTWD = Math.round(usTotalAsset * _USD_TWD);
+    const globalTotalTWD = totalValue + usTotalTWD;
+
+    cards.unshift({
+      label: "🌐 全球總資產 (總台幣價值)",
+      val: "NT$ " + globalTotalTWD.toLocaleString('zh-TW') + " 元",
+      sub: "台股 $" + Math.round(totalValue).toLocaleString() + " ＋ 美股折合 NT$ " + usTotalTWD.toLocaleString() + " (匯率 " + _USD_TWD + ")",
+      color: "neu"
+    });
+
+    cards.splice(2, 0, {
       label: "🇺🇸 美股總資產 (含現金)",
       val: "$" + usTotalAsset.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2}) + " USD",
-      sub: "股票: $" + usVal.toLocaleString('en-US', {minimumFractionDigits:2}) + " ＋ 現金: $" + _US_CASH.toLocaleString('en-US', {minimumFractionDigits:2}),
+      sub: "約 NT$ " + usTotalTWD.toLocaleString() + " 元 (股票 $" + usVal.toLocaleString('en-US', {minimumFractionDigits:2}) + " ＋ 現金 $" + _US_CASH.toLocaleString('en-US', {minimumFractionDigits:2}) + ")",
       color: cls(usPnl)
     });
   }
