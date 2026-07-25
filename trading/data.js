@@ -30,12 +30,12 @@ const LIABILITIES = [
 const REAL_ESTATE = [
   {
     community: "御藏",
-    address: "桃園市八德區仁德路153號11樓",
-    type: "住宅大樓 (中高樓層)",
-    estimatedUnitUnitPrice: "34.5 ~ 36.5 萬/坪",
-    estimatedValue: 14000000,
+    address: "桃園市八德區仁德路153號11樓 (含 B2 坡道平面車位)",
+    type: "住宅大樓 ＋ B2 車位",
+    estimatedUnitUnitPrice: "房屋 35 萬/坪 ＋ B2車位 150萬",
+    estimatedValue: 15500000,
     mortgage: 7568916,
-    netEquity: 6431084,
+    netEquity: 7931084,
     currency: "TWD"
   }
 ];
