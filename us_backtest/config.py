@@ -15,8 +15,9 @@ CFG = dict(
     SLIPPAGE=0.0005,             # 滑價 0.05%（單邊）
 
     # 資金管理
+    CASH_BALANCE=1504.81,        # 未投入現金餘額 USD (Firstrade)
     MAX_CAP=30_000,              # 初始資金 USD
-    RISK_PCT=0.01,               # 單筆風險 = 帳戶 1%（$300）
+    RISK_PCT=0.01,               # 單筆風險 = 帳戶總淨值 1%（約 $305）
     MAX_POSITIONS=5,             # 最多同時持倉檔數
     MAX_SINGLE_PCT=0.25,         # 單檔最大部位 = 帳戶 25%
 

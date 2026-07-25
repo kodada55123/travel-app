@@ -602,21 +602,26 @@ def cmd_check(args):
         print(f'{ticker:<8} ${cost:>7.2f} ${c:>7.2f} {pnl_pct:>+6.1f}% '
               f'{trend:>6} ${atr_stop:>7.2f} {sig_str:>8}  {action}')
 
+    cash = CFG.get('CASH_BALANCE', 0.0)
+    net_equity = total_value + cash
+    total_account_cost = total_cost + cash
     total_pnl = total_value - total_cost
     total_pnl_pct = total_pnl / total_cost * 100 if total_cost > 0 else 0
+    risk_per_trade = net_equity * CFG['RISK_PCT']
+
     print(f'\n{"─" * 74}')
-    print(f'Portfolio: Cost ${total_cost:,.0f}  '
-          f'Value ${total_value:,.0f}  '
-          f'PnL ${total_pnl:+,.0f} ({total_pnl_pct:+.1f}%)')
+    print(f'Holdings Value : ${total_value:,.2f}   Cost: ${total_cost:,.2f}   Unrealized PnL: ${total_pnl:+,.2f} ({total_pnl_pct:+.1f}%)')
+    print(f'Cash Balance   : ${cash:,.2f}')
+    print(f'Total Equity   : ${net_equity:,.2f}   (Account Cost: ${total_account_cost:,.2f})')
+    print(f'Single Trade Risk (1%): ${risk_per_trade:,.2f}')
 
     # 產業集中度警告
     semi_tickers = ['AMKR', 'AVGO', 'COHR', 'MU', 'ON', 'TSM']
     semi_value = sum(HOLDINGS[t]['shares'] * float(prepare(t, start=start).iloc[-1]['Close'])
                      for t in semi_tickers if t in HOLDINGS and prepare(t, start=start) is not None)
-    semi_pct = semi_value / total_value * 100 if total_value > 0 else 0
+    semi_pct = semi_value / net_equity * 100 if net_equity > 0 else 0
     if semi_pct > 40:
-        print(f'\n⚠️  Semiconductor concentration: {semi_pct:.0f}% '
-              f'(recommend < 40%)')
+        print(f'\n⚠️  Semiconductor concentration: {semi_pct:.0f}% of total account (recommend < 40%)')
 
 
 # ── CLI ──────────────────────────────────────────────────────────

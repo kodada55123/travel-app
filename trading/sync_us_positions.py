@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
 美股持股同步腳本
-從 us_backtest/config.py 讀取 Firstrade 美股持股，
-並更新 trading/data.js 中的 US_POSITIONS、LAST_UPDATED 與 DATA_TS。
+從 us_backtest/config.py 讀取 Firstrade 美股持股與現金餘額，
+並更新 trading/data.js 中的 US_POSITIONS、US_CASH、LAST_UPDATED 與 DATA_TS。
 """
 import os
 import re
@@ -20,12 +20,14 @@ DATA_JS_PATH = os.path.join(BASE_DIR, 'data.js')
 sys.path.insert(0, os.path.join(GOOGLE_DIR, 'us_backtest'))
 
 try:
-    from config import HOLDINGS
+    from config import HOLDINGS, CFG
 except ImportError:
-    print("❌ 無法從 us_backtest/config.py 載入 HOLDINGS")
+    print("❌ 無法從 us_backtest/config.py 載入 HOLDINGS / CFG")
     sys.exit(1)
 
-print(f"📦 讀取到 {len(HOLDINGS)} 檔美股持股...")
+us_cash = CFG.get('CASH_BALANCE', 1504.81)
+
+print(f"📦 讀取到 {len(HOLDINGS)} 檔美股持股，現金餘額: ${us_cash:,.2f} USD...")
 
 ctx = ssl.create_default_context()
 ctx.check_hostname = False
@@ -73,7 +75,8 @@ for code, info in HOLDINGS.items():
         'currency': 'USD'
     })
 
-print(f"💵 美股持股總市值: ${total_val:,.2f} USD, 總損益: ${total_val - total_cost:+,.2f} USD")
+total_account_us = round(total_val + us_cash, 2)
+print(f"💵 美股持股市值: ${total_val:,.2f} USD | 現金餘額: ${us_cash:,.2f} USD | 帳戶總資產: ${total_account_us:,.2f} USD")
 
 # 讀取現有 data.js
 with open(DATA_JS_PATH, 'r', encoding='utf-8') as f:
@@ -86,6 +89,10 @@ iso_ts = now_utc.isoformat()
 
 content = re.sub(r'const LAST_UPDATED = ".*?";', f'const LAST_UPDATED = "{today_str}";', content)
 content = re.sub(r'const DATA_TS = ".*?";', f'const DATA_TS = "{iso_ts}";', content)
+if 'const US_CASH =' in content:
+    content = re.sub(r'const US_CASH = [\d.]+;', f'const US_CASH = {us_cash};', content)
+else:
+    content = content.replace('const LAST_UPDATED =', f'const US_CASH = {us_cash};\nconst LAST_UPDATED =')
 
 # 格式化 US_POSITIONS JS 程式碼
 js_lines = ["const US_POSITIONS = ["]
@@ -104,4 +111,4 @@ else:
 with open(DATA_JS_PATH, 'w', encoding='utf-8') as f:
     f.write(content)
 
-print(f"✅ 成功更新時間戳 (DATA_TS={iso_ts}) 並將美股持股同步至 trading/data.js！")
+print(f"✅ 成功將美股持股與現金餘額 (${us_cash:,.2f}) 同步至 trading/data.js！")
