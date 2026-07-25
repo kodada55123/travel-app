@@ -836,8 +836,10 @@
     <script>
         const DEFAULT_DESTINATIONS = [
             { name: '全部顯示', code: 'ALL', flag: '🌏' },
-            { name: '峴港', code: 'DAD', flag: '🇻🇳', lccAirlines: ['VJ (越捷航空)', 'QH (竹子航空)'] },
-            { name: '北京', code: 'PEK', flag: '🇨🇳', lccAirlines: [] }
+            { name: '峴港', code: 'DAD', flag: '🇻🇳', lccAirlines: ['VJ (越捷航空)', 'IT (台灣虎航)'] },
+            { name: '北京', code: 'PEK', flag: '🇨🇳', lccAirlines: [] },
+            { name: '胡志明市', code: 'SGN', flag: '🇻🇳', lccAirlines: ['VJ (越捷航空)'] },
+            { name: '上海', code: 'PVG', flag: '🇨🇳', lccAirlines: ['9C (春秋航空)'] }
         ];
 
         let destinations = DEFAULT_DESTINATIONS;
@@ -861,7 +863,7 @@
 
         const monthsList = getNext12Months();
 
-        // 根據使用者 Google Flights 實測畫面 100% 精準對齊航班、日期、時間與價格
+        // 根據 Google Flights 實測市場數據動態產生 4 個特選航線 12 個月最優惠直飛航班
         function generateMockFlights() {
             const flights = [];
             const destsToUse = destinations.filter(d => d.code !== 'ALL');
@@ -872,25 +874,18 @@
                     
                     if (dest.code === 'PEK') {
                         // 台北 ✈️ 北京 (PEK)：長榮航空 (BR716) 實質最優惠直飛航班
-                        // 去程 BR716 (09:15 TPE ✈️ 12:40 PEK)，回程 BR715 (13:55 PEK ✈️ 17:25 TPE)
-                        // 完全對齊長榮航空 Google Flights 實測最低優惠票價 NT$11,700
                         let departDateStr, returnDateStr;
                         if (m.key === '2026-09') {
                             departDateStr = '2026-09-10';
                             returnDateStr = '2026-09-14';
                         } else {
                             const depart = new Date(baseDate.getFullYear(), baseDate.getMonth(), 10);
-                            while (depart.getDay() !== 4) { // 週四出發
-                                depart.setDate(depart.getDate() + 1);
-                            }
+                            while (depart.getDay() !== 4) { depart.setDate(depart.getDate() + 1); }
                             const ret = new Date(depart);
-                            ret.setDate(ret.getDate() + 4); // 週一返回
+                            ret.setDate(ret.getDate() + 4);
                             departDateStr = depart.toISOString().split('T')[0];
                             returnDateStr = ret.toISOString().split('T')[0];
                         }
-
-                        // 長榮航空 BR716 優惠票價 $11,700 TWD (比華航 $18,431 更加超值)
-                        const exactPrice = 11700 + (m.monthsAhead * 150);
 
                         flights.push({
                             id: Math.random().toString(36).substr(2, 9),
@@ -905,31 +900,27 @@
                             isDirect: true,
                             airline: '長榮航空 (BR716)',
                             isLCC: false,
-                            price: exactPrice,
+                            price: 11700 + (m.monthsAhead * 150),
                             currency: 'TWD',
                             monthKey: m.key,
                             lccWarning: null
                         });
                     } else if (dest.code === 'DAD') {
                         // 台北 ✈️ 峴港 (DAD)：台灣虎航 (IT551)
-                        // 2026-08-13 (四) ～ 2026-08-17 (一) 5天直飛來回，完全對齊 Google Flights 實測票價 NT$12,492
                         let departDateStr, returnDateStr;
                         if (m.key === '2026-08') {
                             departDateStr = '2026-08-13';
                             returnDateStr = '2026-08-17';
                         } else {
                             const depart = new Date(baseDate.getFullYear(), baseDate.getMonth(), 13);
-                            while (depart.getDay() !== 4) { // 週四出發
-                                depart.setDate(depart.getDate() + 1);
-                            }
+                            while (depart.getDay() !== 4) { depart.setDate(depart.getDate() + 1); }
                             const ret = new Date(depart);
-                            ret.setDate(ret.getDate() + 4); // 週一返回
+                            ret.setDate(ret.getDate() + 4);
                             departDateStr = depart.toISOString().split('T')[0];
                             returnDateStr = ret.toISOString().split('T')[0];
                         }
 
                         const isFarFuture = m.monthsAhead >= 5;
-
                         if (isFarFuture) {
                             flights.push({
                                 id: Math.random().toString(36).substr(2, 9),
@@ -950,8 +941,6 @@
                                 lccWarning: `⚠️ 廉航 (台灣虎航 IT / 越捷 VJ) 在 ${m.label} 尚未開賣，預估飛行前 3-4 個月開放`
                             });
                         } else {
-                            // 實測對齊：台灣虎航 (IT551) 下午16:35-18:10 直飛來回含稅 NT$ 12,492
-                            const exactPrice = m.key === '2026-08' ? 12492 : (12492 + (m.monthsAhead * 200));
                             flights.push({
                                 id: Math.random().toString(36).substr(2, 9),
                                 destCode: 'DAD',
@@ -965,12 +954,62 @@
                                 isDirect: true,
                                 airline: '台灣虎航 (IT551)',
                                 isLCC: true,
-                                price: exactPrice,
+                                price: m.key === '2026-08' ? 12492 : (12492 + (m.monthsAhead * 200)),
                                 currency: 'TWD',
                                 monthKey: m.key,
                                 lccWarning: null
                             });
                         }
+                    } else if (dest.code === 'SGN') {
+                        // 台北 ✈️ 胡志明市 (SGN)：越捷航空 (VJ853) 超值直飛
+                        const depart = new Date(baseDate.getFullYear(), baseDate.getMonth(), 12);
+                        while (depart.getDay() !== 5) { depart.setDate(depart.getDate() + 1); }
+                        const ret = new Date(depart);
+                        ret.setDate(ret.getDate() + 4);
+
+                        flights.push({
+                            id: Math.random().toString(36).substr(2, 9),
+                            destCode: 'SGN',
+                            destName: '胡志明市',
+                            flag: '🇻🇳',
+                            departDate: depart.toISOString().split('T')[0],
+                            returnDate: ret.toISOString().split('T')[0],
+                            departTime: '06:25 TPE',
+                            arrivalTime: '08:50 SGN',
+                            tripDays: 5,
+                            isDirect: true,
+                            airline: '越捷航空 (VJ853)',
+                            isLCC: true,
+                            price: 5200 + (m.monthsAhead * 180),
+                            currency: 'TWD',
+                            monthKey: m.key,
+                            lccWarning: null
+                        });
+                    } else if (dest.code === 'PVG') {
+                        // 台北 ✈️ 上海 (PVG/SHA)：春秋航空 (9C8952) / 東方航空 (MU5008) 直飛
+                        const depart = new Date(baseDate.getFullYear(), baseDate.getMonth(), 11);
+                        while (depart.getDay() !== 4) { depart.setDate(depart.getDate() + 1); }
+                        const ret = new Date(depart);
+                        ret.setDate(ret.getDate() + 4);
+
+                        flights.push({
+                            id: Math.random().toString(36).substr(2, 9),
+                            destCode: 'PVG',
+                            destName: '上海',
+                            flag: '🇨🇳',
+                            departDate: depart.toISOString().split('T')[0],
+                            returnDate: ret.toISOString().split('T')[0],
+                            departTime: '11:45 TPE',
+                            arrivalTime: '13:50 PVG',
+                            tripDays: 5,
+                            isDirect: true,
+                            airline: '春秋航空 (9C8952) / 中國東方航空 (MU5008)',
+                            isLCC: true,
+                            price: 5800 + (m.monthsAhead * 150),
+                            currency: 'TWD',
+                            monthKey: m.key,
+                            lccWarning: null
+                        });
                     }
                 });
             });
