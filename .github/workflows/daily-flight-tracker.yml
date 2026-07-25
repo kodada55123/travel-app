@@ -1,32 +1,39 @@
 name: ✈️ Daily Flight Tracker & GitHub Pages Auto-Deploy
 
 on:
+  push:
+    branches: ["master"]
   schedule:
-    # 每日 09:00 (Asia/Taipei = UTC 01:00) 啟動
     - cron: '0 1 * * *'
-  workflow_dispatch: # 支援手動觸發
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
 
 jobs:
-  build-and-deploy:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
       - name: 📥 Checkout Repository
         uses: actions/checkout@v4
 
-      - name: ⚙️ Setup Node.js
-        uses: actions/setup-node@v4
+      - name: ⚙️ Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: 📤 Upload Artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          node-version: '20'
+          path: '.'
 
-      - name: ✈️ Run Flight Data Updater & Generate HTML
-        run: |
-          echo "🚀 Starting daily flight search at $(date)..."
-          # 執行資料編譯並重新生成 index.html (若有外部 API 密鑰可帶入 env)
-          node -e "console.log('✅ Daily 09:00 Flight Deals Report successfully updated.')"
-
-      - name: 📤 Auto Commit & Push to GitHub Pages
-        run: |
-          git config --global user.name 'github-actions[bot]'
-          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          git add index.html
-          git diff --quiet && git diff --staged --quiet || (git commit -m "chore(auto): 每日 09:00 更新機票追蹤靜態報表 [skip ci]" && git push)
+      - name: 🚀 Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
