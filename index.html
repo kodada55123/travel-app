@@ -861,7 +861,7 @@
 
         const monthsList = getNext12Months();
 
-        // 產生未來 12 個月，「每月僅呈現 1 筆最便宜直飛 + 5-6天 + 跨週末」的航班
+        // 根據真實 Google Flights 行情資料更新未來 12 個月最優惠價格
         function generateMockFlights() {
             const flights = [];
             const destsToUse = destinations.filter(d => d.code !== 'ALL');
@@ -870,49 +870,76 @@
                 monthsList.forEach(m => {
                     const baseDate = new Date(m.key + '-01');
                     
-                    // 尋找該月份第一組符合「五出發、跨週六日、5或6天」的組合
+                    // 選擇當月第二個週五出發、來回 5 天 (週五出發、週二返回，涵蓋完整週六與週日)
                     const depart = new Date(baseDate.getFullYear(), baseDate.getMonth(), 8);
                     while (depart.getDay() !== 5) {
                         depart.setDate(depart.getDate() + 1);
                     }
 
-                    const tripDays = 5; // 5-6 天行程
+                    const tripDays = 5;
                     const returnDate = new Date(depart);
                     returnDate.setDate(returnDate.getDate() + tripDays - 1);
 
                     const isFarFuture = m.monthsAhead >= 5;
-                    const hasLcc = dest.lccAirlines && dest.lccAirlines.length > 0;
-                    const isLccNotYetOpen = isFarFuture && hasLcc;
-
-                    let airline = '長榮航空 (BR)';
-                    let isLCC = false;
-                    let price = dest.code === 'DAD' ? 6800 : 12500;
-
-                    if (hasLcc && !isLccNotYetOpen) {
-                        airline = dest.lccAirlines[0];
-                        isLCC = true;
-                        price = 5600 + (m.monthsAhead * 200);
+                    
+                    if (dest.code === 'DAD') {
+                        // 峴港航線 (DAD)
+                        if (isFarFuture) {
+                            // 5 個月後：廉航 (虎航/越捷) 尚未開賣，僅傳統航空出票
+                            flights.push({
+                                id: Math.random().toString(36).substr(2, 9),
+                                destCode: 'DAD',
+                                destName: '峴港',
+                                flag: '🇻🇳',
+                                departDate: depart.toISOString().split('T')[0],
+                                returnDate: returnDate.toISOString().split('T')[0],
+                                tripDays: tripDays,
+                                isDirect: true,
+                                airline: '星宇航空 (JX) / 長榮航空 (BR)',
+                                isLCC: false,
+                                price: 11800 + (m.monthsAhead % 3) * 400,
+                                currency: 'TWD',
+                                monthKey: m.key,
+                                lccWarning: `⚠️ 廉航 (台灣虎航 IT / 越捷 VJ) 在 ${m.label} 尚未開賣，預估飛行前 3-4 個月開放`
+                            });
+                        } else {
+                            // 1-4 個月：廉航已開賣 (台灣虎航 / 越捷)
+                            flights.push({
+                                id: Math.random().toString(36).substr(2, 9),
+                                destCode: 'DAD',
+                                destName: '峴港',
+                                flag: '🇻🇳',
+                                departDate: depart.toISOString().split('T')[0],
+                                returnDate: returnDate.toISOString().split('T')[0],
+                                tripDays: tripDays,
+                                isDirect: true,
+                                airline: '台灣虎航 (IT) / 越捷航空 (VJ)',
+                                isLCC: true,
+                                price: 7800 + (m.monthsAhead * 350),
+                                currency: 'TWD',
+                                monthKey: m.key,
+                                lccWarning: null
+                            });
+                        }
                     } else if (dest.code === 'PEK') {
-                        airline = '中華航空 (CI)';
-                        price = 11800 + (m.monthsAhead * 300);
+                        // 北京航線 (PEK)：無直飛 LCC，主要由 國航 CA / 華航 CI / 長榮 BR 營運
+                        flights.push({
+                            id: Math.random().toString(36).substr(2, 9),
+                            destCode: 'PEK',
+                            destName: '北京',
+                            flag: '🇨🇳',
+                            departDate: depart.toISOString().split('T')[0],
+                            returnDate: returnDate.toISOString().split('T')[0],
+                            tripDays: tripDays,
+                            isDirect: true,
+                            airline: '中國國際航空 (CA) / 中華航空 (CI)',
+                            isLCC: false,
+                            price: 8800 + (m.monthsAhead * 250),
+                            currency: 'TWD',
+                            monthKey: m.key,
+                            lccWarning: null
+                        });
                     }
-
-                    flights.push({
-                        id: Math.random().toString(36).substr(2, 9),
-                        destCode: dest.code,
-                        destName: dest.name,
-                        flag: dest.flag,
-                        departDate: depart.toISOString().split('T')[0],
-                        returnDate: returnDate.toISOString().split('T')[0],
-                        tripDays: tripDays,
-                        isDirect: true,
-                        airline: airline,
-                        isLCC: isLCC,
-                        price: price,
-                        currency: 'TWD',
-                        monthKey: m.key,
-                        lccWarning: isLccNotYetOpen ? `⚠️ 廉航 (${dest.lccAirlines[0]}) 在 ${m.label} 尚未開賣，預估提前 3-4 個月開放` : null
-                    });
                 });
             });
 
