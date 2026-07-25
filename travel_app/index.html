@@ -961,7 +961,7 @@
                             });
                         }
                     } else if (dest.code === 'SGN') {
-                        // 台北 ✈️ 胡志明市 (SGN)：越捷航空 (VJ853) 超值直飛
+                        // 台北 ✈️ 胡志明市 (SGN)：越捷航空 (VJ853) / 越南航空 (VN571)
                         const depart = new Date(baseDate.getFullYear(), baseDate.getMonth(), 12);
                         while (depart.getDay() !== 5) { depart.setDate(depart.getDate() + 1); }
                         const ret = new Date(depart);
@@ -978,15 +978,17 @@
                             arrivalTime: '08:50 SGN',
                             tripDays: 5,
                             isDirect: true,
-                            airline: '越捷航空 (VJ853)',
+                            airline: '越捷航空 (VJ853) 廉航 / 越南航空 (VN571)',
                             isLCC: true,
-                            price: 5200 + (m.monthsAhead * 180),
+                            price: 6500 + (m.monthsAhead * 180),
                             currency: 'TWD',
                             monthKey: m.key,
                             lccWarning: null
                         });
                     } else if (dest.code === 'PVG') {
-                        // 台北 ✈️ 上海 (PVG/SHA)：春秋航空 (9C8952) / 東方航空 (MU5008) 直飛
+                        // 台北 ✈️ 上海 (PVG/SHA)：
+                        // 1. 春秋航空 (9C8952) 廉航來回底價約 NT$6,800
+                        // 2. 中國東方航空 (MU5008) / 長榮 (BR712) 傳統航空 (含行李) 來回約 NT$9,800
                         const depart = new Date(baseDate.getFullYear(), baseDate.getMonth(), 11);
                         while (depart.getDay() !== 4) { depart.setDate(depart.getDate() + 1); }
                         const ret = new Date(depart);
@@ -1003,9 +1005,9 @@
                             arrivalTime: '13:50 PVG',
                             tripDays: 5,
                             isDirect: true,
-                            airline: '春秋航空 (9C8952) / 中國東方航空 (MU5008)',
-                            isLCC: true,
-                            price: 5800 + (m.monthsAhead * 150),
+                            airline: '中國東方航空 (MU5008) / 春秋航空 (9C8952)',
+                            isLCC: false,
+                            price: 9800 + (m.monthsAhead * 150),
                             currency: 'TWD',
                             monthKey: m.key,
                             lccWarning: null
