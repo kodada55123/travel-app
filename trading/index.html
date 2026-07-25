@@ -2,10 +2,12 @@
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <title>交易日誌｜Trading Journal</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-<script src="data.js"></script>
+<script src="data.js?v=20260725_v2"></script>
 <style>
 :root{
   --bg:#0d1117;--bg2:#161b22;--bg3:#21262d;
@@ -227,16 +229,17 @@ tr:hover td{background:rgba(255,255,255,.03);}
   .mobile-nav button.active{color:var(--blue);border-top-color:var(--blue);}
   .container{padding-bottom:80px!important;}
 
-  /* ── Cards: 2 columns ── */
-  .cards{grid-template-columns:repeat(2,1fr);gap:8px;margin:14px 0;}
-  .card{padding:11px 12px;}
-  .card-label{font-size:10px;}
-  .card-val{font-size:16px;}
-  .card-sub{font-size:11px;}
+  /* ── Cards: 1 column for clarity on mobile ── */
+  .cards{grid-template-columns:1fr;gap:10px;margin:14px 0;}
+  .card{padding:13px 15px;}
+  .card-label{font-size:11px;}
+  .card-val{font-size:18px;font-weight:700;}
+  .card-sub{font-size:11px;line-height:1.4;}
 
-  /* ── Tables: hide non-essential columns ── */
-  .tbl-wrap{-webkit-overflow-scrolling:touch;border-radius:8px;}
-  th,td{padding:8px 9px;font-size:12px;}
+  /* ── Tables: full width scrolling ── */
+  .tbl-wrap{width:100%!important;overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:8px;margin-bottom:16px;}
+  table{width:100%!important;min-width:580px;}
+  th,td{padding:9px 10px;font-size:12px;}
 
   /* Positions: hide 類別(2), 均價(4) */
   #tbl-positions th:nth-child(2),#tbl-positions td:nth-child(2),
