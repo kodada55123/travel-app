@@ -861,7 +861,7 @@
 
         const monthsList = getNext12Months();
 
-        // 根據真實 Google Flights 實時查詢數據完全對齊價格與航班資訊
+        // 根據使用者 Google Flights 實測畫面 100% 精準對齊航班、日期、時間與價格
         function generateMockFlights() {
             const flights = [];
             const destsToUse = destinations.filter(d => d.code !== 'ALL');
@@ -871,8 +871,8 @@
                     const baseDate = new Date(m.key + '-01');
                     
                     if (dest.code === 'PEK') {
-                        // 台北 ✈️ 北京 (PEK)：中華航空 (CI) / 中國國際航空 (CA) / 長榮航空 (BR)
-                        // 2026-09-10 (週四) ～ 2026-09-14 (週一) 5天直飛來回，完全對齊 Google Flights 真實票價 NT$18,431
+                        // 台北 ✈️ 北京 (PEK)：中華航空 (CI517)
+                        // 2026-09-10 (四) ～ 2026-09-14 (一) 5天直飛來回，完全對齊 Google Flights 實測票價 NT$18,431
                         let departDateStr, returnDateStr;
                         if (m.key === '2026-09') {
                             departDateStr = '2026-09-10';
@@ -888,7 +888,6 @@
                             returnDateStr = ret.toISOString().split('T')[0];
                         }
 
-                        // 真實行情：中華航空 TPE-PEK 直飛來回 $18,431 TWD
                         const exactPrice = m.key === '2026-09' ? 18431 : (17800 + (m.monthsAhead * 200));
 
                         flights.push({
@@ -898,9 +897,11 @@
                             flag: '🇨🇳',
                             departDate: departDateStr,
                             returnDate: returnDateStr,
+                            departTime: '15:25 TPE',
+                            arrivalTime: '18:50 PEK',
                             tripDays: 5,
                             isDirect: true,
-                            airline: '中華航空 (CI)',
+                            airline: '中華航空 (CI517)',
                             isLCC: false,
                             price: exactPrice,
                             currency: 'TWD',
@@ -908,15 +909,22 @@
                             lccWarning: null
                         });
                     } else if (dest.code === 'DAD') {
-                        // 台北 ✈️ 峴港 (DAD)：台灣虎航 (IT) / 越捷航空 (VJ) / 星宇航空 (JX)
-                        const depart = new Date(baseDate.getFullYear(), baseDate.getMonth(), 14);
-                        while (depart.getDay() !== 5) { // 週五出發
-                            depart.setDate(depart.getDate() + 1);
+                        // 台北 ✈️ 峴港 (DAD)：台灣虎航 (IT551)
+                        // 2026-08-13 (四) ～ 2026-08-17 (一) 5天直飛來回，完全對齊 Google Flights 實測票價 NT$12,492
+                        let departDateStr, returnDateStr;
+                        if (m.key === '2026-08') {
+                            departDateStr = '2026-08-13';
+                            returnDateStr = '2026-08-17';
+                        } else {
+                            const depart = new Date(baseDate.getFullYear(), baseDate.getMonth(), 13);
+                            while (depart.getDay() !== 4) { // 週四出發
+                                depart.setDate(depart.getDate() + 1);
+                            }
+                            const ret = new Date(depart);
+                            ret.setDate(ret.getDate() + 4); // 週一返回
+                            departDateStr = depart.toISOString().split('T')[0];
+                            returnDateStr = ret.toISOString().split('T')[0];
                         }
-                        const ret = new Date(depart);
-                        ret.setDate(ret.getDate() + 4); // 週二返回
-                        const departDateStr = depart.toISOString().split('T')[0];
-                        const returnDateStr = ret.toISOString().split('T')[0];
 
                         const isFarFuture = m.monthsAhead >= 5;
 
@@ -928,17 +936,20 @@
                                 flag: '🇻🇳',
                                 departDate: departDateStr,
                                 returnDate: returnDateStr,
+                                departTime: '09:45 TPE',
+                                arrivalTime: '11:35 DAD',
                                 tripDays: 5,
                                 isDirect: true,
-                                airline: '星宇航空 (JX) / 長榮航空 (BR)',
+                                airline: '長榮航空 (BR383) / 星宇航空 (JX703)',
                                 isLCC: false,
-                                price: 14800 + (m.monthsAhead % 3) * 500,
+                                price: 15857,
                                 currency: 'TWD',
                                 monthKey: m.key,
                                 lccWarning: `⚠️ 廉航 (台灣虎航 IT / 越捷 VJ) 在 ${m.label} 尚未開賣，預估飛行前 3-4 個月開放`
                             });
                         } else {
-                            // 實時行情：越捷/虎航 直飛來回含稅 NT$ 11,800
+                            // 實測對齊：台灣虎航 (IT551) 下午16:35-18:10 直飛來回含稅 NT$ 12,492
+                            const exactPrice = m.key === '2026-08' ? 12492 : (12492 + (m.monthsAhead * 200));
                             flights.push({
                                 id: Math.random().toString(36).substr(2, 9),
                                 destCode: 'DAD',
@@ -946,11 +957,13 @@
                                 flag: '🇻🇳',
                                 departDate: departDateStr,
                                 returnDate: returnDateStr,
+                                departTime: '16:35 TPE',
+                                arrivalTime: '18:10 DAD',
                                 tripDays: 5,
                                 isDirect: true,
-                                airline: '越捷航空 (VJ) / 台灣虎航 (IT)',
+                                airline: '台灣虎航 (IT551)',
                                 isLCC: true,
-                                price: 11800 + (m.monthsAhead * 300),
+                                price: exactPrice,
                                 currency: 'TWD',
                                 monthKey: m.key,
                                 lccWarning: null
@@ -1038,7 +1051,7 @@
 
                     <div class="card-middle">
                         <div class="time-box">
-                            <h4>08:45 TPE</h4>
+                            <h4>${f.departTime || '08:45 TPE'}</h4>
                             <p>桃園國際機場 T1</p>
                         </div>
                         <div class="flight-path">
@@ -1049,7 +1062,7 @@
                             <span class="duration-tag">包含完整週六日</span>
                         </div>
                         <div class="time-box" style="text-align: right;">
-                            <h4>12:15 ${f.destCode}</h4>
+                            <h4>${f.arrivalTime || ('12:15 ' + f.destCode)}</h4>
                             <p>${f.destName}國際機場</p>
                         </div>
                     </div>
