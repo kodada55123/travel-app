@@ -12,6 +12,20 @@ const INSURANCE_POSITIONS = [
   { name:"投資型保單 B", startDate:"2024-12-28", premium:1000000, value:1109741, distribution:133223, currency:"TWD" },
 ];
 
+// ── 現金存款與流動資金 ──────────────────────────────────────────
+const CASH_ACCOUNTS = [
+  { bank: "國泰世華銀行", account: "活期存款", amount: 35275, type: "銀行活存", currency: "TWD" },
+  { bank: "LINE Bank", account: "主帳戶 (111-0025-95533)", amount: 49407, type: "網購/日常", currency: "TWD" },
+  { bank: "LINE Bank", account: "口袋帳戶", amount: 500000, type: "高利活存", currency: "TWD" },
+  { bank: "國泰證券戶", account: "證券活期儲蓄存款 (204530005121)", amount: 798540, type: "交割交割備用", currency: "TWD" },
+  { bank: "國泰世華", account: "活期儲蓄存款 (237506068282)", amount: 112, type: "銀行備用", currency: "TWD" },
+];
+
+// ── 負債貸款 ──────────────────────────────────────────────────
+const LIABILITIES = [
+  { bank: "國泰世華銀行", type: "房貸", name: "房屋抵押貸款", amount: 7568916, currency: "TWD" }
+];
+
 // ── 未實現持倉 ────────────────────────────────────────────────
 const US_POSITIONS = [
   { stock:"Amkor Technology", code:"AMKR", type:"股票", shares:30, avgCost:72.46, price:64.96, value:1948.8, pnl:-225.0, pct:-10.35, currency:"USD" },

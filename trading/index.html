@@ -345,6 +345,12 @@ tr:hover td{background:rgba(255,255,255,.03);}
 
     <h2 style="margin-top:32px;">🛡️ 投資型保單</h2>
     <div class="tbl-wrap"><table id="tbl-insurance"></table></div>
+
+    <h2 style="margin-top:32px;">💵 台幣現金存款與流動資金</h2>
+    <div class="tbl-wrap"><table id="tbl-cash"></table></div>
+
+    <h2 style="margin-top:32px;">🏠 負債與房屋抵押貸款</h2>
+    <div class="tbl-wrap"><table id="tbl-liabilities"></table></div>
   </div>
 
   <!-- ═══════════ REALIZED ═══════════ -->
@@ -774,27 +780,57 @@ function renderAll() {
   const _US_POSITIONS = (typeof US_POSITIONS !== 'undefined') ? US_POSITIONS : [];
   const _US_CASH = (typeof US_CASH !== 'undefined') ? US_CASH : 0;
   const _INSURANCE = (typeof INSURANCE_POSITIONS !== 'undefined') ? INSURANCE_POSITIONS : [];
+  const _CASH_ACCOUNTS = (typeof CASH_ACCOUNTS !== 'undefined') ? CASH_ACCOUNTS : [];
+  const _LIABILITIES = (typeof LIABILITIES !== 'undefined') ? LIABILITIES : [];
+
   const insuranceTotal = _INSURANCE.reduce((s,p) => s + p.value, 0);
   const insurancePremium = _INSURANCE.reduce((s,p) => s + p.premium, 0);
   const insurancePnl = insuranceTotal - insurancePremium;
+  const cashTotal = _CASH_ACCOUNTS.reduce((s,c) => s + c.amount, 0);
+  const liabilitiesTotal = _LIABILITIES.reduce((s,l) => s + l.amount, 0);
 
-  if (_US_POSITIONS.length > 0 || _US_CASH > 0 || _INSURANCE.length > 0) {
+  if (_US_POSITIONS.length > 0 || _US_CASH > 0 || _INSURANCE.length > 0 || cashTotal > 0) {
     const usVal = _US_POSITIONS.reduce((s,p) => s + p.value, 0);
     const usCost = _US_POSITIONS.reduce((s,p) => s + (p.shares * p.avgCost), 0);
     const usPnl = usVal - usCost;
     const usPct = usCost ? (usPnl / usCost * 100) : 0;
     const usTotalAsset = usVal + _US_CASH;
     const usTotalTWD = Math.round(usTotalAsset * _USD_TWD);
-    const globalTotalTWD = totalValue + usTotalTWD + insuranceTotal;
+    const investmentTotal = Math.round(totalValue) + usTotalTWD + insuranceTotal;
+    const grossAssets = investmentTotal + cashTotal;
+    const netWorth = grossAssets - liabilitiesTotal;
 
     cards.unshift({
-      label: "🌐 全球總資產 (總台幣價值)",
-      val: "NT$ " + globalTotalTWD.toLocaleString('zh-TW') + " 元",
-      sub: "台股 $" + Math.round(totalValue).toLocaleString() + " ＋ 美股 NT$ " + usTotalTWD.toLocaleString() + " ＋ 保單 NT$ " + insuranceTotal.toLocaleString(),
+      label: "👑 個人淨資產 (扣除房貸)",
+      val: "NT$ " + netWorth.toLocaleString('zh-TW') + " 元",
+      sub: "總資產 $" + grossAssets.toLocaleString() + " ── 房貸 $" + liabilitiesTotal.toLocaleString(),
+      color: netWorth >= 0 ? "up" : "dn"
+    });
+
+    cards.splice(1, 0, {
+      label: "🌐 個人總資產 (總台幣價值)",
+      val: "NT$ " + grossAssets.toLocaleString('zh-TW') + " 元",
+      sub: "投資 $" + investmentTotal.toLocaleString() + " ＋ 現金存款 $" + cashTotal.toLocaleString(),
       color: "neu"
     });
 
     cards.splice(2, 0, {
+      label: "💵 台幣現金與流動資金",
+      val: "NT$ " + cashTotal.toLocaleString('zh-TW') + " 元",
+      sub: "包含 LINE Bank 口袋帳戶 $50萬 ＋ 證券活存 $79.8萬 等 5 個帳戶",
+      color: "neu"
+    });
+
+    if (liabilitiesTotal > 0) {
+      cards.splice(3, 0, {
+        label: "🏠 房屋抵押貸款 (房貸負債)",
+        val: "NT$ " + liabilitiesTotal.toLocaleString('zh-TW') + " 元",
+        sub: "國泰世華房貸本金餘額",
+        color: "dn"
+      });
+    }
+
+    cards.splice(4, 0, {
       label: "🇺🇸 美股總資產 (含現金)",
       val: "$" + usTotalAsset.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2}) + " USD",
       sub: "約 NT$ " + usTotalTWD.toLocaleString() + " 元 (股票 $" + usVal.toLocaleString('en-US', {minimumFractionDigits:2}) + " ＋ 現金 $" + _US_CASH.toLocaleString('en-US', {minimumFractionDigits:2}) + ")",
@@ -802,7 +838,7 @@ function renderAll() {
     });
 
     if (_INSURANCE.length > 0) {
-      cards.splice(3, 0, {
+      cards.splice(5, 0, {
         label: "🛡️ 投資型保單現價值",
         val: "NT$ " + insuranceTotal.toLocaleString('zh-TW') + " 元",
         sub: "投入 $" + insurancePremium.toLocaleString() + " ＋ 收益分配 $" + _INSURANCE.reduce((s,p)=>s+p.distribution,0).toLocaleString(),
@@ -923,6 +959,48 @@ function renderAll() {
           <td style="color:var(--green);">+$${_INSURANCE.reduce((s,p)=>s+p.distribution,0).toLocaleString('zh-TW')}</td>
           <td class="${cls(insurancePnl)}">${sign(insurancePnl)}$${Math.abs(insurancePnl).toLocaleString('zh-TW')}</td>
           <td class="${cls(insurancePnl)}">${sign(insurancePnl/insurancePremium*100)}${Math.abs(insurancePnl/insurancePremium*100).toFixed(2)}%</td>
+        </tr></tbody>`;
+    }
+  }
+
+  // Cash Accounts Table
+  if (_CASH_ACCOUNTS.length > 0) {
+    const cashHead = `<thead><tr>
+      <th>金融機構</th><th>帳戶名稱 / 代號</th><th>用途 / 屬性</th><th>存款餘額 (TWD)</th>
+    </tr></thead>`;
+    const cashRows = _CASH_ACCOUNTS.map(c => `<tr>
+      <td><strong>${c.bank}</strong></td>
+      <td>${c.account}</td>
+      <td><span class="badge b-etf">${c.type}</span></td>
+      <td>NT$ ${c.amount.toLocaleString('zh-TW')}</td>
+    </tr>`).join("");
+    const cashElem = document.getElementById("tbl-cash");
+    if (cashElem) {
+      cashElem.innerHTML = cashHead + "<tbody>" + cashRows +
+        `<tr style="font-weight:600;background:var(--bg3);">
+          <td colspan="3">現金與流動資金總計</td>
+          <td>NT$ ${cashTotal.toLocaleString('zh-TW')}</td>
+        </tr></tbody>`;
+    }
+  }
+
+  // Liabilities Table
+  if (_LIABILITIES.length > 0) {
+    const liaHead = `<thead><tr>
+      <th>貸款機構</th><th>貸款類別</th><th>項目名稱</th><th>剩餘貸款本金 (TWD)</th>
+    </tr></thead>`;
+    const liaRows = _LIABILITIES.map(l => `<tr>
+      <td><strong>${l.bank}</strong></td>
+      <td><span class="badge b-stock" style="background:#ef4444;">${l.type}</span></td>
+      <td>${l.name}</td>
+      <td style="color:#ef4444;font-weight:600;">NT$ ${l.amount.toLocaleString('zh-TW')}</td>
+    </tr>`).join("");
+    const liaElem = document.getElementById("tbl-liabilities");
+    if (liaElem) {
+      liaElem.innerHTML = liaHead + "<tbody>" + liaRows +
+        `<tr style="font-weight:600;background:var(--bg3);">
+          <td colspan="3">負債總計</td>
+          <td style="color:#ef4444;">NT$ ${liabilitiesTotal.toLocaleString('zh-TW')}</td>
         </tr></tbody>`;
     }
   }
