@@ -837,14 +837,10 @@
         const DEFAULT_DESTINATIONS = [
             { name: '全部顯示', code: 'ALL', flag: '🌏' },
             { name: '峴港', code: 'DAD', flag: '🇻🇳', lccAirlines: ['VJ (越捷航空)', 'QH (竹子航空)'] },
-            { name: '北京', code: 'PEK', flag: '🇨🇳', lccAirlines: [] },
-            { name: '東京成田', code: 'NRT', flag: '🇯🇵', lccAirlines: ['MM (樂桃航空)', 'IT (台灣虎航)', '7C (濟州航空)'] },
-            { name: '大阪關西', code: 'KIX', flag: '🇯🇵', lccAirlines: ['MM (樂桃航空)', 'IT (台灣虎航)'] },
-            { name: '曼谷', code: 'BKK', flag: '🇹🇭', lccAirlines: ['FD (泰亞航)', 'IT (台灣虎航)'] },
-            { name: '首爾仁川', code: 'ICN', flag: '🇰🇷', lccAirlines: ['7C (濟州航空)', 'TW (德威航空)'] }
+            { name: '北京', code: 'PEK', flag: '🇨🇳', lccAirlines: [] }
         ];
 
-        let destinations = JSON.parse(localStorage.getItem('tracked_dests')) || DEFAULT_DESTINATIONS;
+        let destinations = DEFAULT_DESTINATIONS;
         let currentTab = 'ALL';
 
         function getNext12Months() {
@@ -865,6 +861,7 @@
 
         const monthsList = getNext12Months();
 
+        // 產生未來 12 個月，「每月僅呈現 1 筆最便宜直飛 + 5-6天 + 跨週末」的航班
         function generateMockFlights() {
             const flights = [];
             const destsToUse = destinations.filter(d => d.code !== 'ALL');
@@ -873,51 +870,49 @@
                 monthsList.forEach(m => {
                     const baseDate = new Date(m.key + '-01');
                     
-                    for (let day = 1; day <= 24; day += 7) {
-                        const depart = new Date(baseDate.getFullYear(), baseDate.getMonth(), day);
-                        while (depart.getDay() !== 5) {
-                            depart.setDate(depart.getDate() + 1);
-                        }
-
-                        [5, 6].forEach(tripDays => {
-                            const returnDate = new Date(depart);
-                            returnDate.setDate(returnDate.getDate() + tripDays - 1);
-
-                            const isFarFuture = m.monthsAhead >= 5;
-                            const hasLcc = dest.lccAirlines && dest.lccAirlines.length > 0;
-                            const isLccNotYetOpen = isFarFuture && hasLcc && (day % 2 === 0);
-
-                            let airline = '長榮航空 (BR)';
-                            let isLCC = false;
-                            let price = Math.floor(Math.random() * 4000) + 11000;
-
-                            if (hasLcc && !isLccNotYetOpen && (day % 3 === 0)) {
-                                airline = dest.lccAirlines[0];
-                                isLCC = true;
-                                price = Math.floor(Math.random() * 3000) + 5800;
-                            } else if (dest.code === 'PEK') {
-                                airline = '中華航空 (CI)';
-                                price = Math.floor(Math.random() * 3500) + 12500;
-                            }
-
-                            flights.push({
-                                id: Math.random().toString(36).substr(2, 9),
-                                destCode: dest.code,
-                                destName: dest.name,
-                                flag: dest.flag,
-                                departDate: depart.toISOString().split('T')[0],
-                                returnDate: returnDate.toISOString().split('T')[0],
-                                tripDays: tripDays,
-                                isDirect: true,
-                                airline: airline,
-                                isLCC: isLCC,
-                                price: price,
-                                currency: 'TWD',
-                                monthKey: m.key,
-                                lccWarning: isLccNotYetOpen ? `⚠️ 廉航 (${dest.lccAirlines[0]}) 在 ${m.label} 尚未開賣，預估提前 3-4 個月開放` : null
-                            });
-                        });
+                    // 尋找該月份第一組符合「五出發、跨週六日、5或6天」的組合
+                    const depart = new Date(baseDate.getFullYear(), baseDate.getMonth(), 8);
+                    while (depart.getDay() !== 5) {
+                        depart.setDate(depart.getDate() + 1);
                     }
+
+                    const tripDays = 5; // 5-6 天行程
+                    const returnDate = new Date(depart);
+                    returnDate.setDate(returnDate.getDate() + tripDays - 1);
+
+                    const isFarFuture = m.monthsAhead >= 5;
+                    const hasLcc = dest.lccAirlines && dest.lccAirlines.length > 0;
+                    const isLccNotYetOpen = isFarFuture && hasLcc;
+
+                    let airline = '長榮航空 (BR)';
+                    let isLCC = false;
+                    let price = dest.code === 'DAD' ? 6800 : 12500;
+
+                    if (hasLcc && !isLccNotYetOpen) {
+                        airline = dest.lccAirlines[0];
+                        isLCC = true;
+                        price = 5600 + (m.monthsAhead * 200);
+                    } else if (dest.code === 'PEK') {
+                        airline = '中華航空 (CI)';
+                        price = 11800 + (m.monthsAhead * 300);
+                    }
+
+                    flights.push({
+                        id: Math.random().toString(36).substr(2, 9),
+                        destCode: dest.code,
+                        destName: dest.name,
+                        flag: dest.flag,
+                        departDate: depart.toISOString().split('T')[0],
+                        returnDate: returnDate.toISOString().split('T')[0],
+                        tripDays: tripDays,
+                        isDirect: true,
+                        airline: airline,
+                        isLCC: isLCC,
+                        price: price,
+                        currency: 'TWD',
+                        monthKey: m.key,
+                        lccWarning: isLccNotYetOpen ? `⚠️ 廉航 (${dest.lccAirlines[0]}) 在 ${m.label} 尚未開賣，預估提前 3-4 個月開放` : null
+                    });
                 });
             });
 
