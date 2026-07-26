@@ -980,31 +980,42 @@
                             });
                         }
                     } else if (dest.code === 'SGN') {
-                        // 台北 ✈️ 胡志明市 (SGN)：越捷航空 VJ853 / VJ852
-                        const depart = new Date(baseDate.getFullYear(), baseDate.getMonth(), 12);
-                        while (depart.getDay() !== 5) { depart.setDate(depart.getDate() + 1); }
-                        const ret = new Date(depart);
-                        ret.setDate(ret.getDate() + 4);
+                        // 台北 ✈️ 胡志明市 (SGN)：越捷航空
+                        // 2026-08-13 (四) ～ 2026-08-17 (一) 5天直飛來回，完全對齊 Google Flights 實測畫面 NT$8,362
+                        let departDateStr, returnDateStr;
+                        if (m.key === '2026-08') {
+                            departDateStr = '2026-08-13';
+                            returnDateStr = '2026-08-17';
+                        } else {
+                            const depart = new Date(baseDate.getFullYear(), baseDate.getMonth(), 13);
+                            while (depart.getDay() !== 4) { depart.setDate(depart.getDate() + 1); }
+                            const ret = new Date(depart);
+                            ret.setDate(ret.getDate() + 4);
+                            departDateStr = depart.toISOString().split('T')[0];
+                            returnDateStr = ret.toISOString().split('T')[0];
+                        }
+
+                        const exactPrice = m.key === '2026-08' ? 8362 : (8362 + (m.monthsAhead * 150));
 
                         flights.push({
                             id: Math.random().toString(36).substr(2, 9),
                             destCode: 'SGN',
                             destName: '胡志明市',
                             flag: '🇻🇳',
-                            departDate: depart.toISOString().split('T')[0],
-                            returnDate: ret.toISOString().split('T')[0],
+                            departDate: departDateStr,
+                            returnDate: returnDateStr,
                             tripDays: 5,
                             isDirect: true,
                             isLCC: true,
-                            price: 6500 + (m.monthsAhead * 180),
+                            price: exactPrice,
                             currency: 'TWD',
                             monthKey: m.key,
                             lccWarning: null,
-                            outboundAirline: '越捷航空 (VJ853)',
-                            outboundDepTime: '06:25 桃園 (TPE)',
-                            outboundArrTime: '08:50 新山一 (SGN)',
-                            returnAirline: '越捷航空 (VJ852)',
-                            returnDepTime: '13:35 新山一 (SGN)',
+                            outboundAirline: '越捷航空 (VietJet)',
+                            outboundDepTime: '19:00 桃園 (TPE)',
+                            outboundArrTime: '21:25 新山一 (SGN)',
+                            returnAirline: '越捷航空 (VietJet)',
+                            returnDepTime: '13:30 新山一 (SGN)',
                             returnArrTime: '18:00 桃園 (TPE)'
                         });
                     } else if (dest.code === 'PVG') {
