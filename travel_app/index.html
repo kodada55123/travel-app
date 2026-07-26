@@ -694,7 +694,7 @@
                 </div>
                 <div class="brand-text">
                     <h1>自動化便宜機票追蹤系統</h1>
-                    <p>GitHub Pages 每日靜態報表 ‧ 12個月直飛比價 ‧ 廉航開賣預警</p>
+                    <p>GitHub Pages 靜態報表 ‧ 12個月直飛日期篩選 ‧ Google Flights 即時查價</p>
                 </div>
             </div>
 
@@ -714,12 +714,12 @@
             <div class="alert-content">
                 <i class="ph-fill ph-bell-ringing"></i>
                 <div class="alert-text">
-                    <strong>今日 09:00 最新報表已成功產出並更新！</strong>
-                    <p>已自動為您比對未來 12 個月內所有符合「來回 5~6 天 + 橫跨週六與週日 + 直飛」的航班組合與廉航開賣狀態。</p>
+                    <strong>已產生符合條件的直飛候選日期</strong>
+                    <p>系統會列出未來 12 個月內符合「來回 5~6 天 + 橫跨週六與週日 + 直飛」的日期組合；票價以 Google Flights 即時查價為準。</p>
                 </div>
             </div>
             <button class="btn btn-secondary" onclick="refreshData()">
-                <i class="ph-bold ph-arrows-clockwise"></i> 手動重新抓取
+                <i class="ph-bold ph-arrows-clockwise"></i> 重新產生日期
             </button>
         </div>
 
@@ -734,7 +734,7 @@
                     <option value="all">🗓️ 所有 12 個月</option>
                 </select>
                 <select class="select-input" id="sortFilter" onchange="applyFilters()">
-                    <option value="price-asc">💰 價格：低至高</option>
+                    <option value="price-asc">💰 已驗證價格：低至高</option>
                     <option value="date-asc">📅 出發日期：近至遠</option>
                 </select>
             </div>
@@ -760,17 +760,17 @@
                 <div class="widget-card" style="border-color: rgba(16, 185, 129, 0.3); background: rgba(16, 185, 129, 0.05);">
                     <div class="widget-title" style="color: var(--accent-green);">
                         <i class="ph-fill ph-check-circle"></i>
-                        <span>每日 09:00 自動更新記錄</span>
+                        <span>候選日期產生記錄</span>
                     </div>
                     <div style="font-size: 14px; font-weight: 700; color: var(--accent-green); margin: 6px 0;" id="lastUpdatedTag">2026-07-26 18:59 (TST)</div>
-                    <p style="font-size: 11px; color: var(--text-muted); margin: 0;">✅ 已完成本日 4 大航線 12 個月機票重新計算與全量刷新</p>
+                    <p style="font-size: 11px; color: var(--text-muted); margin: 0;">✅ 已移除推估票價；未驗證價格一律顯示待查價</p>
                 </div>
 
                 <!-- 12-Month Price Heatmap -->
                 <div class="widget-card">
                     <div class="widget-title">
                         <i class="ph-fill ph-calendar"></i>
-                        <span>12 個月最低價熱力圖</span>
+                        <span>12 個月查價狀態</span>
                     </div>
                     <div class="month-grid" id="monthGrid">
                         <!-- Dynamic Month Cells -->
@@ -795,11 +795,11 @@
                         <span>系統自動化說明</span>
                     </div>
                     <ul style="font-size: 12px; color: var(--text-secondary); line-height: 1.7; padding-left: 16px;">
-                        <li><strong>GitHub Actions</strong>：每日 09:00 觸發 Workflow。</li>
+                        <li><strong>價格來源</strong>：未連接即時票價 API 前，不顯示推估價格。</li>
                         <li><strong>追蹤區間</strong>：當前月份起推算未來 12 個月。</li>
                         <li><strong>天數與週末</strong>：來回 5~6 天且必須橫跨六、日。</li>
                         <li><strong>直飛限制</strong>：過濾掉需轉機航班。</li>
-                        <li><strong>廉航預警</strong>：若 5 個月後廉航尚未釋出機位，會自動標註「尚未開賣」預警。</li>
+                        <li><strong>查價方式</strong>：點擊 Google Flights 連結，直接帶入目的地與日期。</li>
                     </ul>
                 </div>
             </div>
@@ -873,205 +873,148 @@
 
         const monthsList = getNext12Months();
 
-        // 根據即時 Google Flights 全量審核數據更新 4 大航線 12 個月最優惠直飛航班
+        const DIRECT_ROUTE_INFO = {
+            PEK: {
+                outboundAirline: '長榮航空 / 中華航空直飛',
+                outboundDepTime: 'TPE 直飛',
+                outboundArrTime: '北京首都 (PEK)',
+                returnAirline: '長榮航空 / 中華航空直飛',
+                returnDepTime: 'PEK 直飛',
+                returnArrTime: '桃園 (TPE)',
+                isLCC: false,
+                lccWarning: null
+            },
+            DAD: {
+                outboundAirline: '台灣虎航 / 越捷 / 長榮直飛',
+                outboundDepTime: 'TPE 直飛',
+                outboundArrTime: '峴港 (DAD)',
+                returnAirline: '台灣虎航 / 越捷 / 長榮直飛',
+                returnDepTime: 'DAD 直飛',
+                returnArrTime: '桃園 (TPE)',
+                isLCC: true,
+                lccWarning: null
+            },
+            SGN: {
+                outboundAirline: '越捷 / 星宇 / 長榮直飛',
+                outboundDepTime: 'TPE 直飛',
+                outboundArrTime: '胡志明市 (SGN)',
+                returnAirline: '越捷 / 星宇 / 長榮直飛',
+                returnDepTime: 'SGN 直飛',
+                returnArrTime: '桃園 (TPE)',
+                isLCC: true,
+                lccWarning: null
+            },
+            PVG: {
+                outboundAirline: '中國東方 / 中華 / 長榮直飛',
+                outboundDepTime: 'TPE 直飛',
+                outboundArrTime: '上海浦東 (PVG)',
+                returnAirline: '中國東方 / 中華 / 長榮直飛',
+                returnDepTime: 'PVG 直飛',
+                returnArrTime: '桃園 (TPE)',
+                isLCC: false,
+                lccWarning: null
+            }
+        };
+
+        const VERIFIED_FARES = JSON.parse(localStorage.getItem('verified_fares') || '{}');
+
+        function formatDate(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        function crossesWeekend(departDate, returnDate) {
+            const day = new Date(departDate);
+            const end = new Date(returnDate);
+            let hasSaturday = false;
+            let hasSunday = false;
+
+            while (day <= end) {
+                hasSaturday = hasSaturday || day.getDay() === 6;
+                hasSunday = hasSunday || day.getDay() === 0;
+                day.setDate(day.getDate() + 1);
+            }
+
+            return hasSaturday && hasSunday;
+        }
+
+        function getTripDays(departDate, returnDate) {
+            const oneDay = 24 * 60 * 60 * 1000;
+            return Math.round((new Date(returnDate) - new Date(departDate)) / oneDay) + 1;
+        }
+
+        function getWeekendTripsForMonth(monthKey) {
+            const [year, month] = monthKey.split('-').map(Number);
+            const trips = [];
+            const firstDay = new Date(year, month - 1, 1);
+            const lastDay = new Date(year, month, 0);
+
+            for (let day = new Date(firstDay); day <= lastDay; day.setDate(day.getDate() + 1)) {
+                [4, 5].forEach(nights => {
+                    const depart = new Date(day);
+                    const ret = new Date(day);
+                    ret.setDate(ret.getDate() + nights);
+
+                    if (ret.getMonth() !== month - 1) return;
+
+                    const departDate = formatDate(depart);
+                    const returnDate = formatDate(ret);
+                    const tripDays = getTripDays(departDate, returnDate);
+
+                    if (tripDays >= 5 && tripDays <= 6 && crossesWeekend(departDate, returnDate)) {
+                        trips.push({ departDate, returnDate, tripDays });
+                    }
+                });
+            }
+
+            return trips;
+        }
+
+        function getVerifiedFare(destCode, departDate, returnDate) {
+            const fare = VERIFIED_FARES[`${destCode}:${departDate}:${returnDate}`];
+            return Number.isFinite(fare) ? fare : null;
+        }
+
         function generateMockFlights() {
             const flights = [];
             const destsToUse = destinations.filter(d => d.code !== 'ALL');
             
             destsToUse.forEach(dest => {
                 monthsList.forEach(m => {
-                    const baseDate = new Date(m.key + '-01');
-                    
-                    if (dest.code === 'PEK') {
-                        // 1. 台北 ✈️ 北京 (PEK)：長榮航空 (BR716 / BR715)
-                        let departDateStr, returnDateStr;
-                        let outboundDep, outboundArr, returnDep, returnArr;
-                        let exactPrice;
+                    const routeInfo = DIRECT_ROUTE_INFO[dest.code] || {
+                        outboundAirline: '直飛航班',
+                        outboundDepTime: 'TPE 直飛',
+                        outboundArrTime: `${dest.name} (${dest.code})`,
+                        returnAirline: '直飛航班',
+                        returnDepTime: `${dest.code} 直飛`,
+                        returnArrTime: '桃園 (TPE)',
+                        isLCC: Boolean(dest.lccAirlines && dest.lccAirlines.length),
+                        lccWarning: null
+                    };
 
-                        if (m.key === '2026-12') {
-                            departDateStr = '2026-12-09';
-                            returnDateStr = '2026-12-13';
-                            outboundDep = '15:00 桃園 (TPE)';
-                            outboundArr = '18:40 北京首都 (PEK)';
-                            returnDep = '19:55 北京首都 (PEK)';
-                            returnArr = '23:00 桃園 (TPE)';
-                            exactPrice = 11084;
-                        } else if (m.key === '2027-04') {
-                            departDateStr = '2027-04-14';
-                            returnDateStr = '2027-04-18';
-                            outboundDep = '07:30 桃園 (TPE)';
-                            outboundArr = '10:55 北京首都 (PEK)';
-                            returnDep = '20:20 北京首都 (PEK)';
-                            returnArr = '23:40 桃園 (TPE)';
-                            exactPrice = 14760;
-                        } else {
-                            const depart = new Date(baseDate.getFullYear(), baseDate.getMonth(), 10);
-                            while (depart.getDay() !== 3) { depart.setDate(depart.getDate() + 1); }
-                            const ret = new Date(depart);
-                            ret.setDate(ret.getDate() + 4);
-                            departDateStr = depart.toISOString().split('T')[0];
-                            returnDateStr = ret.toISOString().split('T')[0];
-                            outboundDep = '15:00 桃園 (TPE)';
-                            outboundArr = '18:40 北京首都 (PEK)';
-                            returnDep = '19:55 北京首都 (PEK)';
-                            returnArr = '23:00 桃園 (TPE)';
-                            exactPrice = 11084;
-                        }
+                    getWeekendTripsForMonth(m.key).forEach(trip => {
+                        const price = getVerifiedFare(dest.code, trip.departDate, trip.returnDate);
 
                         flights.push({
-                            id: Math.random().toString(36).substr(2, 9),
-                            destCode: 'PEK',
-                            destName: '北京',
-                            flag: '🇨🇳',
-                            departDate: departDateStr,
-                            returnDate: returnDateStr,
-                            tripDays: 5,
+                            id: `${dest.code}-${trip.departDate}-${trip.returnDate}`,
+                            destCode: dest.code,
+                            destName: dest.name,
+                            flag: dest.flag,
+                            departDate: trip.departDate,
+                            returnDate: trip.returnDate,
+                            tripDays: trip.tripDays,
                             isDirect: true,
-                            isLCC: false,
-                            price: exactPrice,
+                            isLCC: routeInfo.isLCC,
+                            price,
                             currency: 'TWD',
                             monthKey: m.key,
-                            lccWarning: null,
-                            outboundAirline: '長榮航空 (BR716)',
-                            outboundDepTime: outboundDep,
-                            outboundArrTime: outboundArr,
-                            returnAirline: '長榮航空 (BR715)',
-                            returnDepTime: returnDep,
-                            returnArrTime: returnArr
+                            lccWarning: routeInfo.lccWarning,
+                            priceSource: price === null ? 'needs-live-check' : 'verified',
+                            ...routeInfo
                         });
-                    } else if (dest.code === 'DAD') {
-                        // 2. 台北 ✈️ 峴港 (DAD)：台灣虎航 (IT551 / IT552) / 長榮航空 (BR383 / BR384)
-                        let departDateStr = '2026-08-13';
-                        let returnDateStr = '2026-08-17';
-                        if (m.key !== '2026-08') {
-                            const depart = new Date(baseDate.getFullYear(), baseDate.getMonth(), 13);
-                            while (depart.getDay() !== 4) { depart.setDate(depart.getDate() + 1); }
-                            const ret = new Date(depart);
-                            ret.setDate(ret.getDate() + 4);
-                            departDateStr = depart.toISOString().split('T')[0];
-                            returnDateStr = ret.toISOString().split('T')[0];
-                        }
-
-                        const isFarFuture = m.monthsAhead >= 5;
-                        if (isFarFuture) {
-                            flights.push({
-                                id: Math.random().toString(36).substr(2, 9),
-                                destCode: 'DAD',
-                                destName: '峴港',
-                                flag: '🇻🇳',
-                                departDate: departDateStr,
-                                returnDate: returnDateStr,
-                                tripDays: 5,
-                                isDirect: true,
-                                isLCC: false,
-                                price: 15857,
-                                currency: 'TWD',
-                                monthKey: m.key,
-                                lccWarning: `⚠️ 廉航 (台灣虎航 IT / 越捷 VJ) 在 ${m.label} 尚未開賣，預估飛行前 3-4 個月開放`,
-                                outboundAirline: '長榮航空 (BR383)',
-                                outboundDepTime: '09:45 桃園 (TPE)',
-                                outboundArrTime: '11:35 峴港 (DAD)',
-                                returnAirline: '長榮航空 (BR384)',
-                                returnDepTime: '12:35 峴港 (DAD)',
-                                returnArrTime: '16:25 桃園 (TPE)'
-                            });
-                        } else {
-                            const basePrice = 12492 + (m.monthsAhead * 200);
-                            flights.push({
-                                id: Math.random().toString(36).substr(2, 9),
-                                destCode: 'DAD',
-                                destName: '峴港',
-                                flag: '🇻🇳',
-                                departDate: departDateStr,
-                                returnDate: returnDateStr,
-                                tripDays: 5,
-                                isDirect: true,
-                                isLCC: true,
-                                price: m.key === '2026-08' ? 12492 : basePrice,
-                                currency: 'TWD',
-                                monthKey: m.key,
-                                lccWarning: null,
-                                outboundAirline: '台灣虎航 (IT551)',
-                                outboundDepTime: '16:35 桃園 (TPE)',
-                                outboundArrTime: '18:10 峴港 (DAD)',
-                                returnAirline: '台灣虎航 (IT552)',
-                                returnDepTime: '19:10 峴港 (DAD)',
-                                returnArrTime: '22:45 桃園 (TPE)'
-                            });
-                        }
-                    } else if (dest.code === 'SGN') {
-                        // 3. 台北 ✈️ 胡志明市 (SGN)：越捷航空 (VJ841 / VJ840)
-                        let departDateStr = '2026-08-13';
-                        let returnDateStr = '2026-08-17';
-                        if (m.key !== '2026-08') {
-                            const depart = new Date(baseDate.getFullYear(), baseDate.getMonth(), 13);
-                            while (depart.getDay() !== 4) { depart.setDate(depart.getDate() + 1); }
-                            const ret = new Date(depart);
-                            ret.setDate(ret.getDate() + 4);
-                            departDateStr = depart.toISOString().split('T')[0];
-                            returnDateStr = ret.toISOString().split('T')[0];
-                        }
-
-                        const exactPrice = 8362 + (m.monthsAhead * 150);
-
-                        flights.push({
-                            id: Math.random().toString(36).substr(2, 9),
-                            destCode: 'SGN',
-                            destName: '胡志明市',
-                            flag: '🇻🇳',
-                            departDate: departDateStr,
-                            returnDate: returnDateStr,
-                            tripDays: 5,
-                            isDirect: true,
-                            isLCC: true,
-                            price: m.key === '2026-08' ? 8362 : exactPrice,
-                            currency: 'TWD',
-                            monthKey: m.key,
-                            lccWarning: null,
-                            outboundAirline: '越捷航空 (VJ841)',
-                            outboundDepTime: '19:00 桃園 (TPE)',
-                            outboundArrTime: '21:25 新山一 (SGN)',
-                            returnAirline: '越捷航空 (VJ840)',
-                            returnDepTime: '13:30 新山一 (SGN)',
-                            returnArrTime: '18:00 桃園 (TPE)'
-                        });
-                    } else if (dest.code === 'PVG') {
-                        // 4. 台北 ✈️ 上海 (PVG)：中國東方航空 (MU5008 / MU5007)
-                        let departDateStr = '2026-08-13';
-                        let returnDateStr = '2026-08-17';
-                        if (m.key !== '2026-08') {
-                            const depart = new Date(baseDate.getFullYear(), baseDate.getMonth(), 13);
-                            while (depart.getDay() !== 4) { depart.setDate(depart.getDate() + 1); }
-                            const ret = new Date(depart);
-                            ret.setDate(ret.getDate() + 4);
-                            departDateStr = depart.toISOString().split('T')[0];
-                            returnDateStr = ret.toISOString().split('T')[0];
-                        }
-
-                        const exactPrice = 9800 + (m.monthsAhead * 150);
-
-                        flights.push({
-                            id: Math.random().toString(36).substr(2, 9),
-                            destCode: 'PVG',
-                            destName: '上海',
-                            flag: '🇨🇳',
-                            departDate: departDateStr,
-                            returnDate: returnDateStr,
-                            tripDays: 5,
-                            isDirect: true,
-                            isLCC: false,
-                            price: m.key === '2026-08' ? 9800 : exactPrice,
-                            currency: 'TWD',
-                            monthKey: m.key,
-                            lccWarning: null,
-                            outboundAirline: '中國東方航空 (MU5008)',
-                            outboundDepTime: '15:00 桃園 (TPE)',
-                            outboundArrTime: '16:50 浦東 (PVG)',
-                            returnAirline: '中國東方航空 (MU5007)',
-                            returnDepTime: '12:00 浦東 (PVG)',
-                            returnArrTime: '13:50 桃園 (TPE)'
-                        });
-                    }
+                    });
                 });
             });
 
@@ -1094,6 +1037,7 @@
             const monthSelect = document.getElementById('monthFilter');
             monthSelect.innerHTML = '<option value="all">🗓️ 所有 12 個月</option>' + 
                 monthsList.map(m => `<option value="${m.key}">${m.label}</option>`).join('');
+            monthSelect.value = monthsList[0].key;
         }
 
         function switchTab(code) {
@@ -1115,7 +1059,12 @@
             });
 
             if (sortVal === 'price-asc') {
-                filtered.sort((a, b) => a.price - b.price);
+                filtered.sort((a, b) => {
+                    if (a.price === null && b.price === null) return new Date(a.departDate) - new Date(b.departDate);
+                    if (a.price === null) return 1;
+                    if (b.price === null) return -1;
+                    return a.price - b.price;
+                });
             } else {
                 filtered.sort((a, b) => new Date(a.departDate) - new Date(b.departDate));
             }
@@ -1172,17 +1121,17 @@
                     <div class="card-bottom">
                         <div class="airline-info">
                             <i class="ph-fill ph-buildings"></i>
-                            <span>去回程均為直飛 ‧ 含稅來回總價</span>
+                            <span>${f.price === null ? '去回程均為直飛 ‧ 點 Google Flights 取得即時含稅價格' : '去回程均為直飛 ‧ 已驗證含稅來回總價'}</span>
                         </div>
                         <div style="display: flex; align-items: center; gap: 16px;">
                             <a href="https://www.google.com/travel/flights?q=Flights%20from%20TPE%20to%20${f.destCode}%20on%20${f.departDate}%20through%20${f.returnDate}" target="_blank" class="btn btn-primary" style="font-size: 12px; padding: 6px 14px; text-decoration: none;">
-                                <i class="ph-bold ph-arrow-square-out"></i> Google Flights 實時查價/訂票
+                                <i class="ph-bold ph-arrow-square-out"></i> Google Flights 即時查價/訂票
                             </a>
                             <div class="price-tag">
                                 <span class="price-label">含稅總價 / 人</span>
                                 <div>
-                                    <span class="price-value">$${f.price.toLocaleString()}</span>
-                                    <span class="price-unit">${f.currency}</span>
+                                    <span class="price-value">${f.price === null ? '待查價' : '$' + f.price.toLocaleString()}</span>
+                                    <span class="price-unit">${f.price === null ? '' : f.currency}</span>
                                 </div>
                             </div>
                         </div>
@@ -1207,17 +1156,19 @@
                     `;
                 }
 
-                const minPrice = Math.min(...monthFlights.map(f => f.price));
+                const verifiedPrices = monthFlights.map(f => f.price).filter(price => price !== null);
                 const hasLccWarn = monthFlights.some(f => f.lccWarning);
+                const minPrice = verifiedPrices.length ? Math.min(...verifiedPrices) : null;
                 
-                let priceClass = 'status-avg';
-                if (minPrice < 8500) priceClass = 'status-low';
-                else if (minPrice > 14000) priceClass = 'status-high';
+                let priceClass = 'status-notyet';
+                if (minPrice !== null && minPrice < 8500) priceClass = 'status-low';
+                else if (minPrice !== null && minPrice > 14000) priceClass = 'status-high';
+                else if (minPrice !== null) priceClass = 'status-avg';
 
                 return `
                     <div class="month-cell" onclick="filterByMonth('${m.key}')">
                         <div class="month-name">${m.label.replace('2026年','').replace('2027年','')}</div>
-                        <div class="month-price ${priceClass}">$${Math.round(minPrice/1000)}k${hasLccWarn ? ' ⏳' : ''}</div>
+                        <div class="month-price ${priceClass}">${minPrice === null ? '待查價' : '$' + Math.round(minPrice/1000) + 'k'}${hasLccWarn ? ' ⏳' : ''}</div>
                     </div>
                 `;
             }).join('');
@@ -1246,7 +1197,7 @@
                 return `
                     <div style="display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px dashed var(--border-color);">
                         <span>${d.flag} ${d.name} (${d.code})</span>
-                        <span style="color: var(--accent-green); font-weight: 600;">✅ 已開賣 (最遠至 2026.12)</span>
+                        <span style="color: var(--text-muted); font-weight: 600;">需即時查價確認</span>
                     </div>
                 `;
             }).join('');
@@ -1310,7 +1261,7 @@
             allFlights = generateMockFlights();
             applyFilters();
             renderHeatmap();
-            showToast('🔄 已重新抓取最新的 12 個月直飛優惠票價與廉航開賣狀態！');
+            showToast('🔄 已重新產生符合 5-6 天、橫跨六日、直飛的候選日期；請點 Google Flights 即時查價！');
         }
 
         function showToast(msg) {
