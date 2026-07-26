@@ -762,7 +762,7 @@
                         <i class="ph-fill ph-check-circle"></i>
                         <span>每日 09:00 自動更新記錄</span>
                     </div>
-                    <div style="font-size: 14px; font-weight: 700; color: var(--accent-green); margin: 6px 0;" id="lastUpdatedTag">2026-07-26 18:54 (TST)</div>
+                    <div style="font-size: 14px; font-weight: 700; color: var(--accent-green); margin: 6px 0;" id="lastUpdatedTag">2026-07-26 18:56 (TST)</div>
                     <p style="font-size: 11px; color: var(--text-muted); margin: 0;">✅ 已完成本日 4 大航線 12 個月機票重新計算與全量刷新</p>
                 </div>
 
@@ -888,7 +888,15 @@
                         let outboundDep, outboundArr, returnDep, returnArr;
                         let exactPrice;
 
-                        if (m.key === '2027-04') {
+                        if (m.key === '2026-12') {
+                            departDateStr = '2026-12-09';
+                            returnDateStr = '2026-12-13';
+                            outboundDep = '15:00 桃園 (TPE)';
+                            outboundArr = '18:40 北京首都 (PEK)';
+                            returnDep = '19:55 北京首都 (PEK)';
+                            returnArr = '23:00 桃園 (TPE)';
+                            exactPrice = 11084;
+                        } else if (m.key === '2027-04') {
                             departDateStr = '2027-04-14';
                             returnDateStr = '2027-04-18';
                             outboundDep = '07:30 桃園 (TPE)';
@@ -907,7 +915,7 @@
                             outboundArr = '18:40 北京首都 (PEK)';
                             returnDep = '19:55 北京首都 (PEK)';
                             returnArr = '23:00 桃園 (TPE)';
-                            exactPrice = 12564;
+                            exactPrice = 11084;
                         }
 
                         flights.push({
