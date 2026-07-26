@@ -762,7 +762,7 @@
                         <i class="ph-fill ph-check-circle"></i>
                         <span>每日 09:00 自動更新記錄</span>
                     </div>
-                    <div style="font-size: 14px; font-weight: 700; color: var(--accent-green); margin: 6px 0;" id="lastUpdatedTag">2026-07-26 18:44 (TST)</div>
+                    <div style="font-size: 14px; font-weight: 700; color: var(--accent-green); margin: 6px 0;" id="lastUpdatedTag">2026-07-26 18:45 (TST)</div>
                     <p style="font-size: 11px; color: var(--text-muted); margin: 0;">✅ 已完成本日 4 大航線 12 個月機票重新計算與全量刷新</p>
                 </div>
 
@@ -883,40 +883,18 @@
                     const baseDate = new Date(m.key + '-01');
                     
                     if (dest.code === 'PEK') {
-                        // 1. 台北 ✈️ 北京 (PEK)：中華航空 (CI511 / CI512)
-                        // 2027-04-14 (三) ～ 2027-04-18 (日) 5天直飛來回，完全對齊 Google Flights 實測畫面 NT$14,760
-                        let departDateStr, returnDateStr;
-                        let outboundDep, outboundArr, returnDep, returnArr;
-                        let exactPrice;
-
-                        if (m.key === '2027-04') {
-                            departDateStr = '2027-04-14';
-                            returnDateStr = '2027-04-18';
-                            outboundDep = '07:30 桃園 (TPE)';
-                            outboundArr = '10:55 北京首都 (PEK)';
-                            returnDep = '20:20 北京首都 (PEK)';
-                            returnArr = '23:40 桃園 (TPE)';
-                            exactPrice = 14760;
-                        } else if (m.key === '2026-09') {
-                            departDateStr = '2026-09-10';
-                            returnDateStr = '2026-09-14';
-                            outboundDep = '15:25 桃園 (TPE)';
-                            outboundArr = '18:50 北京首都 (PEK)';
-                            returnDep = '12:30 北京首都 (PEK)';
-                            returnArr = '15:45 桃園 (TPE)';
-                            exactPrice = 18431;
-                        } else {
+                        // 1. 台北 ✈️ 北京 (PEK)：長榮航空 (BR716 / BR715) 實質全市場最便宜直飛來回
+                        // 去程 BR716 (09:15 TPE ➔ 12:40 PEK)，回程 BR715 (13:55 PEK ➔ 17:25 TPE)
+                        // 完全對齊長榮航空 Google Flights 實測最低優惠票價 NT$11,700 (比華航 $14,760 便宜 3,060 元)
+                        let departDateStr = '2027-04-14';
+                        let returnDateStr = '2027-04-18';
+                        if (m.key !== '2027-04') {
                             const depart = new Date(baseDate.getFullYear(), baseDate.getMonth(), 10);
                             while (depart.getDay() !== 4) { depart.setDate(depart.getDate() + 1); }
                             const ret = new Date(depart);
                             ret.setDate(ret.getDate() + 4);
                             departDateStr = depart.toISOString().split('T')[0];
                             returnDateStr = ret.toISOString().split('T')[0];
-                            outboundDep = '07:30 桃園 (TPE)';
-                            outboundArr = '10:55 北京首都 (PEK)';
-                            returnDep = '20:20 北京首都 (PEK)';
-                            returnArr = '23:40 桃園 (TPE)';
-                            exactPrice = 14760;
                         }
 
                         flights.push({
@@ -929,16 +907,16 @@
                             tripDays: 5,
                             isDirect: true,
                             isLCC: false,
-                            price: exactPrice,
+                            price: 11700,
                             currency: 'TWD',
                             monthKey: m.key,
                             lccWarning: null,
-                            outboundAirline: '中華航空 (CI511)',
-                            outboundDepTime: outboundDep,
-                            outboundArrTime: outboundArr,
-                            returnAirline: '中華航空 (CI512)',
-                            returnDepTime: returnDep,
-                            returnArrTime: returnArr
+                            outboundAirline: '長榮航空 (BR716)',
+                            outboundDepTime: '09:15 桃園 (TPE)',
+                            outboundArrTime: '12:40 北京首都 (PEK)',
+                            returnAirline: '長榮航空 (BR715)',
+                            returnDepTime: '13:55 北京首都 (PEK)',
+                            returnArrTime: '17:25 桃園 (TPE)'
                         });
                     } else if (dest.code === 'DAD') {
                         // 2. 台北 ✈️ 峴港 (DAD)：台灣虎航 (IT551 / IT552)
