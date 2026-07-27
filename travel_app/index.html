@@ -694,14 +694,14 @@
                 </div>
                 <div class="brand-text">
                     <h1>自動化便宜機票追蹤系統</h1>
-                    <p>GitHub Pages 靜態報表 ‧ 12個月直飛日期篩選 ‧ Google Flights 即時查價</p>
+                    <p>GitHub Pages 靜態報表 ‧ 未來6個月直飛日期篩選 ‧ Google Flights 瀏覽器實查</p>
                 </div>
             </div>
 
             <div class="header-actions">
                 <div class="cron-badge">
                     <div class="cron-dot"></div>
-                    <span>GitHub Actions 每日 09:00 自動推播更新</span>
+                    <span>票價需經 Google Flights 瀏覽器實查</span>
                 </div>
                 <button class="btn btn-primary" onclick="openAddModal()">
                     <i class="ph-bold ph-plus"></i> 新增追蹤地點
@@ -715,7 +715,7 @@
                 <i class="ph-fill ph-bell-ringing"></i>
                 <div class="alert-text">
                     <strong>已產生符合條件的直飛候選日期</strong>
-                    <p>系統會列出未來 12 個月內符合「來回 5~6 天 + 橫跨週六與週日 + 直飛」的日期組合；票價以 Google Flights 即時查價為準。</p>
+                    <p>系統會列出未來 6 個月內符合「來回 5~6 天 + 橫跨週六與週日 + 直飛」的日期組合；只有經 Google Flights 瀏覽器實查的票價才會顯示。</p>
                 </div>
             </div>
             <button class="btn btn-secondary" onclick="refreshData()">
@@ -731,7 +731,7 @@
 
             <div class="filter-options">
                 <select class="select-input" id="monthFilter" onchange="applyFilters()">
-                    <option value="all">🗓️ 所有 12 個月</option>
+                    <option value="all">🗓️ 所有 6 個月</option>
                 </select>
                 <select class="select-input" id="sortFilter" onchange="applyFilters()">
                     <option value="price-asc">💰 已驗證價格：低至高</option>
@@ -762,15 +762,15 @@
                         <i class="ph-fill ph-check-circle"></i>
                         <span>候選日期產生記錄</span>
                     </div>
-                    <div style="font-size: 14px; font-weight: 700; color: var(--accent-green); margin: 6px 0;" id="lastUpdatedTag">2026-07-26 18:59 (TST)</div>
+                    <div style="font-size: 14px; font-weight: 700; color: var(--accent-green); margin: 6px 0;" id="lastUpdatedTag">2026-07-27 已驗證資料 v2</div>
                     <p style="font-size: 11px; color: var(--text-muted); margin: 0;">✅ 已移除推估票價；未驗證價格一律顯示待查價</p>
                 </div>
 
-                <!-- 12-Month Price Heatmap -->
+                <!-- 6-Month Price Heatmap -->
                 <div class="widget-card">
                     <div class="widget-title">
                         <i class="ph-fill ph-calendar"></i>
-                        <span>12 個月查價狀態</span>
+                        <span>未來 6 個月查價狀態</span>
                     </div>
                     <div class="month-grid" id="monthGrid">
                         <!-- Dynamic Month Cells -->
@@ -795,8 +795,8 @@
                         <span>系統自動化說明</span>
                     </div>
                     <ul style="font-size: 12px; color: var(--text-secondary); line-height: 1.7; padding-left: 16px;">
-                        <li><strong>價格來源</strong>：未連接即時票價 API 前，不顯示推估價格。</li>
-                        <li><strong>追蹤區間</strong>：當前月份起推算未來 12 個月。</li>
+                        <li><strong>價格來源</strong>：Google Flights 瀏覽器人工實查，不使用票價 API。</li>
+                        <li><strong>追蹤區間</strong>：當前月份起推算未來 6 個月。</li>
                         <li><strong>天數與週末</strong>：來回 5~6 天且必須橫跨六、日。</li>
                         <li><strong>直飛限制</strong>：過濾掉需轉機航班。</li>
                         <li><strong>查價方式</strong>：點擊 Google Flights 連結，直接帶入目的地與日期。</li>
@@ -855,10 +855,10 @@
         let destinations = DEFAULT_DESTINATIONS;
         let currentTab = 'ALL';
 
-        function getNext12Months() {
+        function getNext6Months() {
             const months = [];
             const now = new Date();
-            for (let i = 0; i < 12; i++) {
+            for (let i = 0; i < 6; i++) {
                 const d = new Date(now.getFullYear(), now.getMonth() + i, 1);
                 const year = d.getFullYear();
                 const month = String(d.getMonth() + 1).padStart(2, '0');
@@ -871,7 +871,7 @@
             return months;
         }
 
-        const monthsList = getNext12Months();
+        const monthsList = getNext6Months();
 
         const DIRECT_ROUTE_INFO = {
             PEK: {
@@ -916,7 +916,43 @@
             }
         };
 
-        const VERIFIED_FARES = JSON.parse(localStorage.getItem('verified_fares') || '{}');
+        const VERIFIED_DATA_VERSION = '2026-07-27-v2';
+        const BUILT_IN_VERIFIED_FLIGHTS = {
+            'DAD:2026-08-13:2026-08-17': {
+                price: 12548,
+                verifiedAt: '2026-07-27',
+                sourceName: 'Google Flights',
+                sourceUrl: 'https://www.google.com/travel/flights?hl=zh-TW&gl=TW#flt=TPE.DAD.2026-08-13*DAD.TPE.2026-08-17;c:TWD;e:1;sd:1;t:f',
+                outboundAirline: '台灣虎航',
+                outboundDepTime: '16:35 桃園 (TPE)',
+                outboundArrTime: '18:10 峴港 (DAD)',
+                returnAirline: '台灣虎航',
+                returnDepTime: '19:00 峴港 (DAD)',
+                returnArrTime: '22:40 桃園 (TPE)',
+                isLCC: true
+            },
+            'PEK:2026-09-15:2026-09-19': {
+                price: 30224,
+                verifiedAt: '2026-07-27',
+                sourceName: 'Google Flights',
+                sourceUrl: 'https://www.google.com/travel/flights?hl=zh-TW&gl=TW#flt=TPE.PEK.2026-09-15*PEK.TPE.2026-09-19;c:TWD;e:1;sd:1;t:f',
+                outboundAirline: '長榮航空 · 中國國際航空',
+                outboundDepTime: '09:10 桃園 (TPE)',
+                outboundArrTime: '12:35 北京首都 (PEK)',
+                returnAirline: '長榮航空 · 中國國際航空',
+                returnDepTime: '13:55 北京首都 (PEK)',
+                returnArrTime: '17:05 桃園 (TPE)',
+                isLCC: false
+            }
+        };
+        const SAVED_VERIFIED_FLIGHTS = JSON.parse(
+            localStorage.getItem(`verified_flights_${VERIFIED_DATA_VERSION}`) || '{}'
+        );
+        const VERIFIED_FLIGHTS = {
+            ...BUILT_IN_VERIFIED_FLIGHTS,
+            ...SAVED_VERIFIED_FLIGHTS
+        };
+        localStorage.removeItem('verified_fares');
 
         function formatDate(date) {
             const year = date.getFullYear();
@@ -950,6 +986,8 @@
             const trips = [];
             const firstDay = new Date(year, month - 1, 1);
             const lastDay = new Date(year, month, 0);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
 
             for (let day = new Date(firstDay); day <= lastDay; day.setDate(day.getDate() + 1)) {
                 [4, 5].forEach(nights => {
@@ -957,6 +995,7 @@
                     const ret = new Date(day);
                     ret.setDate(ret.getDate() + nights);
 
+                    if (depart < today) return;
                     if (ret.getMonth() !== month - 1) return;
 
                     const departDate = formatDate(depart);
@@ -972,12 +1011,12 @@
             return trips;
         }
 
-        function getVerifiedFare(destCode, departDate, returnDate) {
-            const fare = VERIFIED_FARES[`${destCode}:${departDate}:${returnDate}`];
-            return Number.isFinite(fare) ? fare : null;
+        function getVerifiedFlight(destCode, departDate, returnDate) {
+            const verifiedFlight = VERIFIED_FLIGHTS[`${destCode}:${departDate}:${returnDate}`];
+            return Number.isFinite(verifiedFlight?.price) ? verifiedFlight : null;
         }
 
-        function generateMockFlights() {
+        function generateFlightCandidates() {
             const flights = [];
             const destsToUse = destinations.filter(d => d.code !== 'ALL');
             
@@ -995,7 +1034,7 @@
                     };
 
                     getWeekendTripsForMonth(m.key).forEach(trip => {
-                        const price = getVerifiedFare(dest.code, trip.departDate, trip.returnDate);
+                        const verifiedFlight = getVerifiedFlight(dest.code, trip.departDate, trip.returnDate);
 
                         flights.push({
                             id: `${dest.code}-${trip.departDate}-${trip.returnDate}`,
@@ -1007,12 +1046,16 @@
                             tripDays: trip.tripDays,
                             isDirect: true,
                             isLCC: routeInfo.isLCC,
-                            price,
+                            price: verifiedFlight?.price ?? null,
                             currency: 'TWD',
                             monthKey: m.key,
                             lccWarning: routeInfo.lccWarning,
-                            priceSource: price === null ? 'needs-live-check' : 'verified',
-                            ...routeInfo
+                            priceSource: verifiedFlight ? 'verified' : 'needs-live-check',
+                            verifiedAt: verifiedFlight?.verifiedAt ?? null,
+                            sourceName: verifiedFlight?.sourceName ?? null,
+                            sourceUrl: verifiedFlight?.sourceUrl ?? null,
+                            ...routeInfo,
+                            ...(verifiedFlight || {})
                         });
                     });
                 });
@@ -1021,7 +1064,7 @@
             return flights;
         }
 
-        let allFlights = generateMockFlights();
+        let allFlights = generateFlightCandidates();
 
         function renderTabs() {
             const tabsContainer = document.getElementById('destTabs');
@@ -1035,7 +1078,7 @@
 
         function renderMonthFilterOptions() {
             const monthSelect = document.getElementById('monthFilter');
-            monthSelect.innerHTML = '<option value="all">🗓️ 所有 12 個月</option>' + 
+            monthSelect.innerHTML = '<option value="all">🗓️ 所有 6 個月</option>' +
                 monthsList.map(m => `<option value="${m.key}">${m.label}</option>`).join('');
             monthSelect.value = monthsList[0].key;
         }
@@ -1121,10 +1164,10 @@
                     <div class="card-bottom">
                         <div class="airline-info">
                             <i class="ph-fill ph-buildings"></i>
-                            <span>${f.price === null ? '去回程均為直飛 ‧ 點 Google Flights 取得即時含稅價格' : '去回程均為直飛 ‧ 已驗證含稅來回總價'}</span>
+                            <span>${f.price === null ? '尚未完成瀏覽器查價 ‧ 不顯示推估價格' : `Google Flights 已驗證含稅總價 ‧ 查價日 ${f.verifiedAt}`}</span>
                         </div>
                         <div style="display: flex; align-items: center; gap: 16px;">
-                            <a href="https://www.google.com/travel/flights?q=Flights%20from%20TPE%20to%20${f.destCode}%20on%20${f.departDate}%20through%20${f.returnDate}" target="_blank" class="btn btn-primary" style="font-size: 12px; padding: 6px 14px; text-decoration: none;">
+                            <a href="${f.sourceUrl || `https://www.google.com/travel/flights?q=Flights%20from%20TPE%20to%20${f.destCode}%20on%20${f.departDate}%20through%20${f.returnDate}&curr=TWD&hl=zh-TW`}" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="font-size: 12px; padding: 6px 14px; text-decoration: none;">
                                 <i class="ph-bold ph-arrow-square-out"></i> Google Flights 即時查價/訂票
                             </a>
                             <div class="price-tag">
@@ -1168,7 +1211,7 @@
                 return `
                     <div class="month-cell" onclick="filterByMonth('${m.key}')">
                         <div class="month-name">${m.label.replace('2026年','').replace('2027年','')}</div>
-                        <div class="month-price ${priceClass}">${minPrice === null ? '待查價' : '$' + Math.round(minPrice/1000) + 'k'}${hasLccWarn ? ' ⏳' : ''}</div>
+                        <div class="month-price ${priceClass}">${minPrice === null ? '尚未驗證' : '$' + Math.round(minPrice/1000) + 'k'}${hasLccWarn ? ' ⏳' : ''}</div>
                     </div>
                 `;
             }).join('');
@@ -1237,7 +1280,7 @@
             });
 
             localStorage.setItem('tracked_dests', JSON.stringify(destinations));
-            allFlights = generateMockFlights();
+            allFlights = generateFlightCandidates();
             
             renderTabs();
             switchTab(code);
@@ -1249,7 +1292,7 @@
             destinations = destinations.filter(d => d.code !== code);
             localStorage.setItem('tracked_dests', JSON.stringify(destinations));
             currentTab = 'ALL';
-            allFlights = generateMockFlights();
+            allFlights = generateFlightCandidates();
             renderTabs();
             applyFilters();
             renderHeatmap();
@@ -1258,7 +1301,7 @@
         }
 
         function refreshData() {
-            allFlights = generateMockFlights();
+            allFlights = generateFlightCandidates();
             applyFilters();
             renderHeatmap();
             showToast('🔄 已重新產生符合 5-6 天、橫跨六日、直飛的候選日期；請點 Google Flights 即時查價！');
