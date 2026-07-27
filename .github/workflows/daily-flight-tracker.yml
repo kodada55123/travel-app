@@ -1,14 +1,12 @@
-name: ✈️ Daily Flight Tracker & GitHub Pages Auto-Deploy
+name: ✈️ Flight Tracker GitHub Pages Deploy
 
 on:
   push:
     branches: ["master"]
-  schedule:
-    - cron: '0 1 * * *'
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
   pages: write
   id-token: write
 
@@ -26,13 +24,8 @@ jobs:
       - name: 📥 Checkout Repository
         uses: actions/checkout@v4
 
-      - name: 🟢 Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      - name: 🔄 Update Daily Flight Data
-        run: node scripts/update-flights.js
+      - name: 📄 Use Verified Flight App
+        run: cp travel_app/index.html index.html
 
       - name: ⚙️ Setup Pages
         uses: actions/configure-pages@v4
