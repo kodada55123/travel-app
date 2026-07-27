@@ -1080,7 +1080,10 @@
             const monthSelect = document.getElementById('monthFilter');
             monthSelect.innerHTML = '<option value="all">🗓️ 所有 6 個月</option>' +
                 monthsList.map(m => `<option value="${m.key}">${m.label}</option>`).join('');
-            monthSelect.value = monthsList[0].key;
+            const firstAvailableMonth = monthsList.find(month =>
+                allFlights.some(flight => flight.monthKey === month.key)
+            );
+            monthSelect.value = firstAvailableMonth?.key || 'all';
         }
 
         function switchTab(code) {
@@ -1119,7 +1122,7 @@
                 container.innerHTML = `
                     <div style="text-align: center; padding: 60px 20px; color: var(--text-muted);">
                         <i class="ph-fill ph-magnifying-glass" style="font-size: 48px; margin-bottom: 12px; display: block;"></i>
-                        <p>查無符合該月份條件的直飛航班，系統持續監控中。</p>
+                        <p>這個月份沒有剩餘日期可組成「直飛、5–6 天、同時涵蓋週六與週日」的行程，請切換其他月份。</p>
                     </div>
                 `;
                 return;
@@ -1194,7 +1197,7 @@
                     return `
                         <div class="month-cell">
                             <div class="month-name">${m.label.replace('2026年','').replace('2027年','')}</div>
-                            <div class="month-price status-notyet">未開賣</div>
+                            <div class="month-price status-notyet">無可用日期</div>
                         </div>
                     `;
                 }
