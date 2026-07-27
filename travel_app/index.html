@@ -916,8 +916,60 @@
             }
         };
 
-        const VERIFIED_DATA_VERSION = '2026-07-27-v2';
+        const VERIFIED_DATA_VERSION = '2026-07-27-v3';
         const BUILT_IN_VERIFIED_FLIGHTS = {
+            'PEK:2026-07-31:2026-08-05': {
+                price: 9698,
+                verifiedAt: '2026-07-27',
+                sourceName: 'Google Flights',
+                sourceUrl: 'https://www.google.com/travel/flights?q=Flights%20from%20TPE%20to%20PEK%20on%202026-07-31%20through%202026-08-05&curr=TWD&hl=zh-TW&gl=TW',
+                outboundAirline: 'Google Flights 直飛最低價',
+                outboundDepTime: '桃園 (TPE)',
+                outboundArrTime: '北京首都 (PEK)',
+                returnAirline: 'Google Flights 直飛最低價',
+                returnDepTime: '北京首都 (PEK)',
+                returnArrTime: '桃園 (TPE)',
+                isLCC: false
+            },
+            'DAD:2026-07-31:2026-08-05': {
+                price: 11321,
+                verifiedAt: '2026-07-27',
+                sourceName: 'Google Flights',
+                sourceUrl: 'https://www.google.com/travel/flights?q=Flights%20from%20TPE%20to%20DAD%20on%202026-07-31%20through%202026-08-05&curr=TWD&hl=zh-TW&gl=TW',
+                outboundAirline: '台灣虎航',
+                outboundDepTime: '17:15 桃園 (TPE)',
+                outboundArrTime: '18:55 峴港 (DAD)',
+                returnAirline: 'Google Flights 直飛最低價',
+                returnDepTime: '峴港 (DAD)',
+                returnArrTime: '桃園 (TPE)',
+                isLCC: true
+            },
+            'SGN:2026-07-31:2026-08-05': {
+                price: 10525,
+                verifiedAt: '2026-07-27',
+                sourceName: 'Google Flights',
+                sourceUrl: 'https://www.google.com/travel/flights?q=Flights%20from%20TPE%20to%20SGN%20on%202026-07-31%20through%202026-08-05&curr=TWD&hl=zh-TW&gl=TW',
+                outboundAirline: '越捷航空',
+                outboundDepTime: '19:00 桃園 (TPE)',
+                outboundArrTime: '21:25 胡志明市 (SGN)',
+                returnAirline: 'Google Flights 直飛最低價',
+                returnDepTime: '胡志明市 (SGN)',
+                returnArrTime: '桃園 (TPE)',
+                isLCC: true
+            },
+            'PVG:2026-07-31:2026-08-05': {
+                price: 8500,
+                verifiedAt: '2026-07-27',
+                sourceName: 'Google Flights',
+                sourceUrl: 'https://www.google.com/travel/flights?q=Flights%20from%20TPE%20to%20PVG%20on%202026-07-31%20through%202026-08-05&curr=TWD&hl=zh-TW&gl=TW',
+                outboundAirline: '中國南方航空',
+                outboundDepTime: '18:50 桃園 (TPE)',
+                outboundArrTime: '20:55 上海浦東 (PVG)',
+                returnAirline: 'Google Flights 直飛最低價',
+                returnDepTime: '上海浦東 (PVG)',
+                returnArrTime: '桃園 (TPE)',
+                isLCC: false
+            },
             'DAD:2026-08-13:2026-08-17': {
                 price: 12548,
                 verifiedAt: '2026-07-27',
@@ -931,19 +983,6 @@
                 returnArrTime: '22:40 桃園 (TPE)',
                 isLCC: true
             },
-            'PEK:2026-09-15:2026-09-19': {
-                price: 30224,
-                verifiedAt: '2026-07-27',
-                sourceName: 'Google Flights',
-                sourceUrl: 'https://www.google.com/travel/flights?hl=zh-TW&gl=TW#flt=TPE.PEK.2026-09-15*PEK.TPE.2026-09-19;c:TWD;e:1;sd:1;t:f',
-                outboundAirline: '長榮航空 · 中國國際航空',
-                outboundDepTime: '09:10 桃園 (TPE)',
-                outboundArrTime: '12:35 北京首都 (PEK)',
-                returnAirline: '長榮航空 · 中國國際航空',
-                returnDepTime: '13:55 北京首都 (PEK)',
-                returnArrTime: '17:05 桃園 (TPE)',
-                isLCC: false
-            }
         };
         const SAVED_VERIFIED_FLIGHTS = JSON.parse(
             localStorage.getItem(`verified_flights_${VERIFIED_DATA_VERSION}`) || '{}'
@@ -996,8 +1035,6 @@
                     ret.setDate(ret.getDate() + nights);
 
                     if (depart < today) return;
-                    if (ret.getMonth() !== month - 1) return;
-
                     const departDate = formatDate(depart);
                     const returnDate = formatDate(ret);
                     const tripDays = getTripDays(departDate, returnDate);
