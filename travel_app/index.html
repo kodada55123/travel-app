@@ -730,6 +730,10 @@
             </div>
 
             <div class="filter-options">
+                <select class="select-input" id="verificationFilter" onchange="applyFilters()">
+                    <option value="verified">✅ 每月已驗證最低價</option>
+                    <option value="all">🔎 顯示全部待查候選</option>
+                </select>
                 <select class="select-input" id="monthFilter" onchange="applyFilters()">
                     <option value="all">🗓️ 所有 6 個月</option>
                 </select>
@@ -762,7 +766,7 @@
                         <i class="ph-fill ph-check-circle"></i>
                         <span>候選日期產生記錄</span>
                     </div>
-                    <div style="font-size: 14px; font-weight: 700; color: var(--accent-green); margin: 6px 0;" id="lastUpdatedTag">2026-07-27 已驗證資料 v2</div>
+                    <div style="font-size: 14px; font-weight: 700; color: var(--accent-green); margin: 6px 0;" id="lastUpdatedTag">2026-07-27 已驗證資料 v3</div>
                     <p style="font-size: 11px; color: var(--text-muted); margin: 0;">✅ 已移除推估票價；未驗證價格一律顯示待查價</p>
                 </div>
 
@@ -1132,6 +1136,7 @@
         }
 
         function applyFilters() {
+            const verificationVal = document.getElementById('verificationFilter').value;
             const monthVal = document.getElementById('monthFilter').value;
             const sortVal = document.getElementById('sortFilter').value;
 
@@ -1140,6 +1145,21 @@
                 const matchMonth = monthVal === 'all' || f.monthKey === monthVal;
                 return matchTab && matchMonth;
             });
+
+            if (verificationVal === 'verified') {
+                const cheapestByDestinationMonth = new Map();
+
+                filtered.filter(f => f.price !== null).forEach(flight => {
+                    const key = `${flight.destCode}:${flight.monthKey}`;
+                    const currentCheapest = cheapestByDestinationMonth.get(key);
+
+                    if (!currentCheapest || flight.price < currentCheapest.price) {
+                        cheapestByDestinationMonth.set(key, flight);
+                    }
+                });
+
+                filtered = Array.from(cheapestByDestinationMonth.values());
+            }
 
             if (sortVal === 'price-asc') {
                 filtered.sort((a, b) => {
@@ -1156,10 +1176,13 @@
 
             const container = document.getElementById('flightContainer');
             if (filtered.length === 0) {
+                const emptyMessage = verificationVal === 'verified'
+                    ? '這個月份尚未完成瀏覽器查價，請切換其他月份，或選擇「顯示全部待查候選」。'
+                    : '這個月份沒有剩餘日期可組成「直飛、5–6 天、同時涵蓋週六與週日」的行程，請切換其他月份。';
                 container.innerHTML = `
                     <div style="text-align: center; padding: 60px 20px; color: var(--text-muted);">
                         <i class="ph-fill ph-magnifying-glass" style="font-size: 48px; margin-bottom: 12px; display: block;"></i>
-                        <p>這個月份沒有剩餘日期可組成「直飛、5–6 天、同時涵蓋週六與週日」的行程，請切換其他月份。</p>
+                        <p>${emptyMessage}</p>
                     </div>
                 `;
                 return;
