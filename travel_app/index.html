@@ -766,7 +766,7 @@
                         <i class="ph-fill ph-check-circle"></i>
                         <span>候選日期產生記錄</span>
                     </div>
-                    <div style="font-size: 14px; font-weight: 700; color: var(--accent-green); margin: 6px 0;" id="lastUpdatedTag">2026-07-28 已驗證資料 v4</div>
+                    <div style="font-size: 14px; font-weight: 700; color: var(--accent-green); margin: 6px 0;" id="lastUpdatedTag">2026-07-28 已驗證資料 v5</div>
                     <p style="font-size: 11px; color: var(--text-muted); margin: 0;">✅ 已移除推估票價；未驗證價格一律顯示待查價</p>
                 </div>
 
@@ -920,7 +920,7 @@
             }
         };
 
-        const VERIFIED_DATA_VERSION = '2026-07-28-v4';
+        const VERIFIED_DATA_VERSION = '2026-07-28-v5';
         const BUILT_IN_VERIFIED_FLIGHTS = {
             'PEK:2026-07-31:2026-08-05': {
                 price: 10392,
@@ -930,6 +930,71 @@
                 outboundAirline: '海南航空',
                 outboundDepTime: '13:05 桃園 (TPE)',
                 outboundArrTime: '16:35 北京首都 (PEK)',
+                returnAirline: 'Google Flights 直飛最低價',
+                returnDepTime: '北京首都 (PEK)',
+                returnArrTime: '桃園 (TPE)',
+                isLCC: false
+            },
+            'PEK:2026-08-14:2026-08-19': {
+                price: 9698,
+                verifiedAt: '2026-07-28',
+                sourceName: 'Google Flights',
+                sourceUrl: 'https://www.google.com/travel/flights?q=Flights%20from%20TPE%20to%20PEK%20on%202026-08-14%20through%202026-08-19&curr=TWD&hl=zh-TW&gl=TW',
+                outboundAirline: '海南航空',
+                outboundDepTime: '13:05 桃園 (TPE)',
+                outboundArrTime: '16:35 北京首都 (PEK)',
+                returnAirline: 'Google Flights 直飛最低價',
+                returnDepTime: '北京首都 (PEK)',
+                returnArrTime: '桃園 (TPE)',
+                isLCC: false
+            },
+            'PEK:2026-09-11:2026-09-16': {
+                price: 18554,
+                verifiedAt: '2026-07-28',
+                sourceName: 'Google Flights',
+                sourceUrl: 'https://www.google.com/travel/flights?q=Flights%20from%20TPE%20to%20PEK%20on%202026-09-11%20through%202026-09-16&curr=TWD&hl=zh-TW&gl=TW',
+                outboundAirline: '長榮航空',
+                outboundDepTime: '16:05 桃園 (TPE)',
+                outboundArrTime: '19:30 北京首都 (PEK)',
+                returnAirline: 'Google Flights 直飛最低價',
+                returnDepTime: '北京首都 (PEK)',
+                returnArrTime: '桃園 (TPE)',
+                isLCC: false
+            },
+            'PEK:2026-10-09:2026-10-14': {
+                price: 16401,
+                verifiedAt: '2026-07-28',
+                sourceName: 'Google Flights',
+                sourceUrl: 'https://www.google.com/travel/flights?q=Flights%20from%20TPE%20to%20PEK%20on%202026-10-09%20through%202026-10-14&curr=TWD&hl=zh-TW&gl=TW',
+                outboundAirline: '長榮航空',
+                outboundDepTime: '16:05 桃園 (TPE)',
+                outboundArrTime: '19:30 北京首都 (PEK)',
+                returnAirline: 'Google Flights 直飛最低價',
+                returnDepTime: '北京首都 (PEK)',
+                returnArrTime: '桃園 (TPE)',
+                isLCC: false
+            },
+            'PEK:2026-11-13:2026-11-18': {
+                price: 11725,
+                verifiedAt: '2026-07-28',
+                sourceName: 'Google Flights',
+                sourceUrl: 'https://www.google.com/travel/flights?q=Flights%20from%20TPE%20to%20PEK%20on%202026-11-13%20through%202026-11-18&curr=TWD&hl=zh-TW&gl=TW',
+                outboundAirline: '長榮航空',
+                outboundDepTime: '16:00 桃園 (TPE)',
+                outboundArrTime: '19:35 北京首都 (PEK)',
+                returnAirline: 'Google Flights 直飛最低價',
+                returnDepTime: '北京首都 (PEK)',
+                returnArrTime: '桃園 (TPE)',
+                isLCC: false
+            },
+            'PEK:2026-12-11:2026-12-16': {
+                price: 11725,
+                verifiedAt: '2026-07-28',
+                sourceName: 'Google Flights',
+                sourceUrl: 'https://www.google.com/travel/flights?q=Flights%20from%20TPE%20to%20PEK%20on%202026-12-11%20through%202026-12-16&curr=TWD&hl=zh-TW&gl=TW',
+                outboundAirline: '長榮航空',
+                outboundDepTime: '16:00 桃園 (TPE)',
+                outboundArrTime: '19:35 北京首都 (PEK)',
                 returnAirline: 'Google Flights 直飛最低價',
                 returnDepTime: '北京首都 (PEK)',
                 returnArrTime: '桃園 (TPE)',
@@ -1121,10 +1186,7 @@
             const monthSelect = document.getElementById('monthFilter');
             monthSelect.innerHTML = '<option value="all">🗓️ 所有 6 個月</option>' +
                 monthsList.map(m => `<option value="${m.key}">${m.label}</option>`).join('');
-            const firstAvailableMonth = monthsList.find(month =>
-                allFlights.some(flight => flight.monthKey === month.key)
-            );
-            monthSelect.value = firstAvailableMonth?.key || 'all';
+            monthSelect.value = 'all';
         }
 
         function switchTab(code) {
