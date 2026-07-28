@@ -766,7 +766,7 @@
                         <i class="ph-fill ph-check-circle"></i>
                         <span>候選日期產生記錄</span>
                     </div>
-                    <div style="font-size: 14px; font-weight: 700; color: var(--accent-green); margin: 6px 0;" id="lastUpdatedTag">2026-07-28 已驗證資料 v5</div>
+                    <div style="font-size: 14px; font-weight: 700; color: var(--accent-green); margin: 6px 0;" id="lastUpdatedTag">2026-07-28 已驗證資料 v6</div>
                     <p style="font-size: 11px; color: var(--text-muted); margin: 0;">✅ 已移除推估票價；未驗證價格一律顯示待查價</p>
                 </div>
 
@@ -920,7 +920,7 @@
             }
         };
 
-        const VERIFIED_DATA_VERSION = '2026-07-28-v5';
+        const VERIFIED_DATA_VERSION = '2026-07-28-v6';
         const BUILT_IN_VERIFIED_FLIGHTS = {
             'PEK:2026-07-31:2026-08-05': {
                 price: 10392,
@@ -1051,6 +1051,188 @@
                 returnDepTime: '19:00 峴港 (DAD)',
                 returnArrTime: '22:40 桃園 (TPE)',
                 isLCC: true
+            },
+            'DAD:2026-09-11:2026-09-16': {
+                price: 9743,
+                verifiedAt: '2026-07-28',
+                sourceName: 'Google Flights',
+                sourceUrl: 'https://www.google.com/travel/flights?q=Flights%20from%20TPE%20to%20DAD%20on%202026-09-11%20through%202026-09-16&curr=TWD&hl=zh-TW&gl=TW',
+                outboundAirline: '台灣虎航',
+                outboundDepTime: '17:15 桃園 (TPE)',
+                outboundArrTime: '18:55 峴港 (DAD)',
+                returnAirline: 'Google Flights 直飛最低價',
+                returnDepTime: '峴港 (DAD)',
+                returnArrTime: '桃園 (TPE)',
+                isLCC: true
+            },
+            'DAD:2026-10-09:2026-10-14': {
+                price: 10315,
+                verifiedAt: '2026-07-28',
+                sourceName: 'Google Flights',
+                sourceUrl: 'https://www.google.com/travel/flights?q=Flights%20from%20TPE%20to%20DAD%20on%202026-10-09%20through%202026-10-14&curr=TWD&hl=zh-TW&gl=TW',
+                outboundAirline: '台灣虎航',
+                outboundDepTime: '17:15 桃園 (TPE)',
+                outboundArrTime: '18:55 峴港 (DAD)',
+                returnAirline: 'Google Flights 直飛最低價',
+                returnDepTime: '峴港 (DAD)',
+                returnArrTime: '桃園 (TPE)',
+                isLCC: true
+            },
+            'DAD:2026-11-13:2026-11-18': {
+                price: 11103,
+                verifiedAt: '2026-07-28',
+                sourceName: 'Google Flights',
+                sourceUrl: 'https://www.google.com/travel/flights?q=Flights%20from%20TPE%20to%20DAD%20on%202026-11-13%20through%202026-11-18&curr=TWD&hl=zh-TW&gl=TW',
+                outboundAirline: '星宇航空',
+                outboundDepTime: '15:20 桃園 (TPE)',
+                outboundArrTime: '17:15 峴港 (DAD)',
+                returnAirline: 'Google Flights 直飛最低價',
+                returnDepTime: '峴港 (DAD)',
+                returnArrTime: '桃園 (TPE)',
+                isLCC: false
+            },
+            'DAD:2026-12-11:2026-12-16': {
+                price: 11103,
+                verifiedAt: '2026-07-28',
+                sourceName: 'Google Flights',
+                sourceUrl: 'https://www.google.com/travel/flights?q=Flights%20from%20TPE%20to%20DAD%20on%202026-12-11%20through%202026-12-16&curr=TWD&hl=zh-TW&gl=TW',
+                outboundAirline: '星宇航空',
+                outboundDepTime: '15:20 桃園 (TPE)',
+                outboundArrTime: '17:15 峴港 (DAD)',
+                returnAirline: 'Google Flights 直飛最低價',
+                returnDepTime: '峴港 (DAD)',
+                returnArrTime: '桃園 (TPE)',
+                isLCC: false
+            },
+            'SGN:2026-08-14:2026-08-19': {
+                price: 9548,
+                verifiedAt: '2026-07-28',
+                sourceName: 'Google Flights',
+                sourceUrl: 'https://www.google.com/travel/flights?q=Flights%20from%20TPE%20to%20SGN%20on%202026-08-14%20through%202026-08-19&curr=TWD&hl=zh-TW&gl=TW',
+                outboundAirline: '越捷航空',
+                outboundDepTime: '19:00 桃園 (TPE)',
+                outboundArrTime: '21:25 胡志明市 (SGN)',
+                returnAirline: 'Google Flights 直飛最低價',
+                returnDepTime: '胡志明市 (SGN)',
+                returnArrTime: '桃園 (TPE)',
+                isLCC: true
+            },
+            'SGN:2026-09-11:2026-09-16': {
+                price: 6980,
+                verifiedAt: '2026-07-28',
+                sourceName: 'Google Flights',
+                sourceUrl: 'https://www.google.com/travel/flights?q=Flights%20from%20TPE%20to%20SGN%20on%202026-09-11%20through%202026-09-16&curr=TWD&hl=zh-TW&gl=TW',
+                outboundAirline: '越捷航空',
+                outboundDepTime: '19:00 桃園 (TPE)',
+                outboundArrTime: '21:25 胡志明市 (SGN)',
+                returnAirline: 'Google Flights 直飛最低價',
+                returnDepTime: '胡志明市 (SGN)',
+                returnArrTime: '桃園 (TPE)',
+                isLCC: true
+            },
+            'SGN:2026-10-09:2026-10-14': {
+                price: 7176,
+                verifiedAt: '2026-07-28',
+                sourceName: 'Google Flights',
+                sourceUrl: 'https://www.google.com/travel/flights?q=Flights%20from%20TPE%20to%20SGN%20on%202026-10-09%20through%202026-10-14&curr=TWD&hl=zh-TW&gl=TW',
+                outboundAirline: '越捷航空',
+                outboundDepTime: '19:00 桃園 (TPE)',
+                outboundArrTime: '21:25 胡志明市 (SGN)',
+                returnAirline: 'Google Flights 直飛最低價',
+                returnDepTime: '胡志明市 (SGN)',
+                returnArrTime: '桃園 (TPE)',
+                isLCC: true
+            },
+            'SGN:2026-11-13:2026-11-18': {
+                price: 6406,
+                verifiedAt: '2026-07-28',
+                sourceName: 'Google Flights',
+                sourceUrl: 'https://www.google.com/travel/flights?q=Flights%20from%20TPE%20to%20SGN%20on%202026-11-13%20through%202026-11-18&curr=TWD&hl=zh-TW&gl=TW',
+                outboundAirline: '越捷航空',
+                outboundDepTime: '19:00 桃園 (TPE)',
+                outboundArrTime: '21:25 胡志明市 (SGN)',
+                returnAirline: 'Google Flights 直飛最低價',
+                returnDepTime: '胡志明市 (SGN)',
+                returnArrTime: '桃園 (TPE)',
+                isLCC: true
+            },
+            'SGN:2026-12-11:2026-12-16': {
+                price: 5636,
+                verifiedAt: '2026-07-28',
+                sourceName: 'Google Flights',
+                sourceUrl: 'https://www.google.com/travel/flights?q=Flights%20from%20TPE%20to%20SGN%20on%202026-12-11%20through%202026-12-16&curr=TWD&hl=zh-TW&gl=TW',
+                outboundAirline: '越捷航空',
+                outboundDepTime: '19:00 桃園 (TPE)',
+                outboundArrTime: '21:25 胡志明市 (SGN)',
+                returnAirline: 'Google Flights 直飛最低價',
+                returnDepTime: '胡志明市 (SGN)',
+                returnArrTime: '桃園 (TPE)',
+                isLCC: true
+            },
+            'PVG:2026-08-14:2026-08-19': {
+                price: 8500,
+                verifiedAt: '2026-07-28',
+                sourceName: 'Google Flights',
+                sourceUrl: 'https://www.google.com/travel/flights?q=Flights%20from%20TPE%20to%20PVG%20on%202026-08-14%20through%202026-08-19&curr=TWD&hl=zh-TW&gl=TW',
+                outboundAirline: '中國南方航空',
+                outboundDepTime: '18:50 桃園 (TPE)',
+                outboundArrTime: '20:55 上海浦東 (PVG)',
+                returnAirline: 'Google Flights 直飛最低價',
+                returnDepTime: '上海浦東 (PVG)',
+                returnArrTime: '桃園 (TPE)',
+                isLCC: false
+            },
+            'PVG:2026-09-11:2026-09-16': {
+                price: 8962,
+                verifiedAt: '2026-07-28',
+                sourceName: 'Google Flights',
+                sourceUrl: 'https://www.google.com/travel/flights?q=Flights%20from%20TPE%20to%20PVG%20on%202026-09-11%20through%202026-09-16&curr=TWD&hl=zh-TW&gl=TW',
+                outboundAirline: '中華航空',
+                outboundDepTime: '17:30 桃園 (TPE)',
+                outboundArrTime: '19:35 上海浦東 (PVG)',
+                returnAirline: 'Google Flights 直飛最低價',
+                returnDepTime: '上海浦東 (PVG)',
+                returnArrTime: '桃園 (TPE)',
+                isLCC: false
+            },
+            'PVG:2026-10-09:2026-10-14': {
+                price: 11374,
+                verifiedAt: '2026-07-28',
+                sourceName: 'Google Flights',
+                sourceUrl: 'https://www.google.com/travel/flights?q=Flights%20from%20TPE%20to%20PVG%20on%202026-10-09%20through%202026-10-14&curr=TWD&hl=zh-TW&gl=TW',
+                outboundAirline: '中華航空',
+                outboundDepTime: '17:30 桃園 (TPE)',
+                outboundArrTime: '19:35 上海浦東 (PVG)',
+                returnAirline: 'Google Flights 直飛最低價',
+                returnDepTime: '上海浦東 (PVG)',
+                returnArrTime: '桃園 (TPE)',
+                isLCC: false
+            },
+            'PVG:2026-11-13:2026-11-18': {
+                price: 9136,
+                verifiedAt: '2026-07-28',
+                sourceName: 'Google Flights',
+                sourceUrl: 'https://www.google.com/travel/flights?q=Flights%20from%20TPE%20to%20PVG%20on%202026-11-13%20through%202026-11-18&curr=TWD&hl=zh-TW&gl=TW',
+                outboundAirline: '中華航空',
+                outboundDepTime: '17:35 桃園 (TPE)',
+                outboundArrTime: '19:35 上海浦東 (PVG)',
+                returnAirline: 'Google Flights 直飛最低價',
+                returnDepTime: '上海浦東 (PVG)',
+                returnArrTime: '桃園 (TPE)',
+                isLCC: false
+            },
+            'PVG:2026-12-11:2026-12-16': {
+                price: 8962,
+                verifiedAt: '2026-07-28',
+                sourceName: 'Google Flights',
+                sourceUrl: 'https://www.google.com/travel/flights?q=Flights%20from%20TPE%20to%20PVG%20on%202026-12-11%20through%202026-12-16&curr=TWD&hl=zh-TW&gl=TW',
+                outboundAirline: '中華航空',
+                outboundDepTime: '17:35 桃園 (TPE)',
+                outboundArrTime: '19:35 上海浦東 (PVG)',
+                returnAirline: 'Google Flights 直飛最低價',
+                returnDepTime: '上海浦東 (PVG)',
+                returnArrTime: '桃園 (TPE)',
+                isLCC: false
             },
         };
         const SAVED_VERIFIED_FLIGHTS = JSON.parse(
