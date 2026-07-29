@@ -694,14 +694,14 @@
                 </div>
                 <div class="brand-text">
                     <h1>自動化便宜機票追蹤系統</h1>
-                    <p>GitHub Pages 靜態報表 ‧ 未來9個月直飛日期篩選 ‧ Google Flights 瀏覽器實查</p>
+                    <p>GitHub Pages 靜態報表 ‧ 未來9個月直飛日期篩選 ‧ Skyscanner 初篩＋Google Flights 實查</p>
                 </div>
             </div>
 
             <div class="header-actions">
                 <div class="cron-badge">
                     <div class="cron-dot"></div>
-                    <span>票價需經 Google Flights 瀏覽器實查</span>
+                    <span>Skyscanner 最新候選價＋Google Flights 實查</span>
                 </div>
                 <button class="btn btn-primary" onclick="openAddModal()">
                     <i class="ph-bold ph-plus"></i> 新增追蹤地點
@@ -715,7 +715,7 @@
                 <i class="ph-fill ph-bell-ringing"></i>
                 <div class="alert-text">
                     <strong>已產生符合條件的直飛候選日期</strong>
-                    <p>系統會列出 2026/08 至 2027/04 符合「來回 5~6 天 + 橫跨週六與週日 + 直飛」的日期組合；只有經 Google Flights 瀏覽器實查的票價才會顯示。</p>
+                    <p>系統會列出 2026/08 至 2027/04 符合「來回 5~6 天 + 橫跨週六與週日 + 直飛」的日期組合；Skyscanner 月度價會標示為參考價，Google Flights 瀏覽器實查價則標示為已驗證。</p>
                 </div>
             </div>
             <button class="btn btn-secondary" onclick="refreshData()">
@@ -731,14 +731,14 @@
 
             <div class="filter-options">
                 <select class="select-input" id="verificationFilter" onchange="applyFilters()">
-                    <option value="verified">✅ 每月已驗證最低價</option>
+                    <option value="verified">✅ 每月最新最低價</option>
                     <option value="all">🔎 顯示全部待查候選</option>
                 </select>
                 <select class="select-input" id="monthFilter" onchange="applyFilters()">
                     <option value="all">🗓️ 所有 9 個月</option>
                 </select>
                 <select class="select-input" id="sortFilter" onchange="applyFilters()">
-                    <option value="price-asc">💰 已驗證價格：低至高</option>
+                    <option value="price-asc">💰 最新價格：低至高</option>
                     <option value="date-asc">📅 出發日期：近至遠</option>
                 </select>
             </div>
@@ -766,8 +766,8 @@
                         <i class="ph-fill ph-check-circle"></i>
                         <span>候選日期產生記錄</span>
                     </div>
-                    <div style="font-size: 14px; font-weight: 700; color: var(--accent-green); margin: 6px 0;" id="lastUpdatedTag">2026-07-28 已驗證資料 v7</div>
-                    <p style="font-size: 11px; color: var(--text-muted); margin: 0;">✅ 已移除推估票價；未驗證價格一律顯示待查價</p>
+                    <div style="font-size: 14px; font-weight: 700; color: var(--accent-green); margin: 6px 0;" id="lastUpdatedTag">2026-07-29 混合來源資料 v8</div>
+                    <p style="font-size: 11px; color: var(--text-muted); margin: 0;">✅ Skyscanner 參考價與 Google Flights 已驗證價分開標示</p>
                 </div>
 
                 <!-- 6-Month Price Heatmap -->
@@ -799,11 +799,11 @@
                         <span>系統自動化說明</span>
                     </div>
                     <ul style="font-size: 12px; color: var(--text-secondary); line-height: 1.7; padding-left: 16px;">
-                        <li><strong>價格來源</strong>：Google Flights 瀏覽器人工實查，不使用票價 API。</li>
+                        <li><strong>價格來源</strong>：Skyscanner 外掛月度初篩＋Google Flights 瀏覽器人工實查。</li>
                         <li><strong>追蹤區間</strong>：2026/08 至 2027/04，共 9 個月。</li>
                         <li><strong>天數與週末</strong>：來回 5~6 天且必須橫跨六、日。</li>
                         <li><strong>直飛限制</strong>：過濾掉需轉機航班。</li>
-                        <li><strong>查價方式</strong>：點擊 Google Flights 連結，直接帶入目的地與日期。</li>
+                        <li><strong>查價方式</strong>：每張卡片會連到對應的 Skyscanner 或 Google Flights 日期頁。</li>
                     </ul>
                 </div>
             </div>
@@ -920,7 +920,7 @@
             }
         };
 
-        const VERIFIED_DATA_VERSION = '2026-07-28-v7';
+        const VERIFIED_DATA_VERSION = '2026-07-29-v8';
         const BUILT_IN_VERIFIED_FLIGHTS = {
             'PEK:2026-07-31:2026-08-05': {
                 price: 10392,
@@ -1443,6 +1443,120 @@
                 isLCC: false
             },
         };
+        const BUILT_IN_REFERENCE_FLIGHTS = {
+            'DAD:2026-10-17:2026-10-22': {
+                price: 6053,
+                verifiedAt: '2026-07-29',
+                sourceName: 'Skyscanner 月度參考價',
+                sourceUrl: 'https://skyscanner.net/g/referrals/v1/flights/day-view?mediaPartnerId=2850210&utm_term=skyscanner_chatgpt_mcp_app&origin=TPE&destination=DAD&outboundDate=2026-10-17&cabinclass=economy&inboundDate=2026-10-22&locale=zh-TW&currency=TWD&market=TW',
+                outboundAirline: '台灣虎航',
+                outboundDepTime: '桃園 (TPE)',
+                outboundArrTime: '峴港 (DAD)',
+                returnAirline: '台灣虎航',
+                returnDepTime: '峴港 (DAD)',
+                returnArrTime: '桃園 (TPE)',
+                isLCC: true,
+                priceSource: 'skyscanner-indicative'
+            },
+            'DAD:2027-02-13:2027-02-18': {
+                price: 7892,
+                verifiedAt: '2026-07-29',
+                sourceName: 'Skyscanner 月度參考價',
+                sourceUrl: 'https://skyscanner.net/g/referrals/v1/flights/day-view?mediaPartnerId=2850210&utm_term=skyscanner_chatgpt_mcp_app&origin=TPE&destination=DAD&outboundDate=2027-02-13&cabinclass=economy&inboundDate=2027-02-18&locale=zh-TW&currency=TWD&market=TW',
+                outboundAirline: '台灣虎航',
+                outboundDepTime: '桃園 (TPE)',
+                outboundArrTime: '峴港 (DAD)',
+                returnAirline: '台灣虎航',
+                returnDepTime: '峴港 (DAD)',
+                returnArrTime: '桃園 (TPE)',
+                isLCC: true,
+                priceSource: 'skyscanner-indicative'
+            },
+            'SGN:2027-01-07:2027-01-12': {
+                price: 6022,
+                verifiedAt: '2026-07-29',
+                sourceName: 'Skyscanner 月度參考價',
+                sourceUrl: 'https://skyscanner.net/g/referrals/v1/flights/day-view?mediaPartnerId=2850210&utm_term=skyscanner_chatgpt_mcp_app&origin=TPE&destination=SGN&outboundDate=2027-01-07&cabinclass=economy&inboundDate=2027-01-12&locale=zh-TW&currency=TWD&market=TW',
+                outboundAirline: '越捷航空',
+                outboundDepTime: '桃園 (TPE)',
+                outboundArrTime: '胡志明市 (SGN)',
+                returnAirline: '越捷航空',
+                returnDepTime: '胡志明市 (SGN)',
+                returnArrTime: '桃園 (TPE)',
+                isLCC: true,
+                priceSource: 'skyscanner-indicative'
+            },
+            'SGN:2027-04-09:2027-04-13': {
+                price: 5677,
+                verifiedAt: '2026-07-29',
+                sourceName: 'Skyscanner 月度參考價',
+                sourceUrl: 'https://skyscanner.net/g/referrals/v1/flights/day-view?mediaPartnerId=2850210&utm_term=skyscanner_chatgpt_mcp_app&origin=TPE&destination=SGN&outboundDate=2027-04-09&cabinclass=economy&inboundDate=2027-04-13&locale=zh-TW&currency=TWD&market=TW',
+                outboundAirline: '越捷航空',
+                outboundDepTime: '桃園 (TPE)',
+                outboundArrTime: '胡志明市 (SGN)',
+                returnAirline: '越捷航空',
+                returnDepTime: '胡志明市 (SGN)',
+                returnArrTime: '桃園 (TPE)',
+                isLCC: true,
+                priceSource: 'skyscanner-indicative'
+            },
+            'PVG:2026-09-03:2026-09-08': {
+                price: 6350,
+                verifiedAt: '2026-07-29',
+                sourceName: 'Skyscanner 月度參考價',
+                sourceUrl: 'https://skyscanner.net/g/referrals/v1/flights/day-view?mediaPartnerId=2850210&utm_term=skyscanner_chatgpt_mcp_app&origin=TPE&destination=PVG&outboundDate=2026-09-03&cabinclass=economy&inboundDate=2026-09-08&locale=zh-TW&currency=TWD&market=TW',
+                outboundAirline: '春秋航空',
+                outboundDepTime: '桃園 (TPE)',
+                outboundArrTime: '上海浦東 (PVG)',
+                returnAirline: '春秋航空',
+                returnDepTime: '上海浦東 (PVG)',
+                returnArrTime: '桃園 (TPE)',
+                isLCC: true,
+                priceSource: 'skyscanner-indicative'
+            },
+            'PVG:2026-11-26:2026-11-30': {
+                price: 6826,
+                verifiedAt: '2026-07-29',
+                sourceName: 'Skyscanner 月度參考價',
+                sourceUrl: 'https://skyscanner.net/g/referrals/v1/flights/day-view?mediaPartnerId=2850210&utm_term=skyscanner_chatgpt_mcp_app&origin=TPE&destination=PVG&outboundDate=2026-11-26&cabinclass=economy&inboundDate=2026-11-30&locale=zh-TW&currency=TWD&market=TW',
+                outboundAirline: '春秋航空',
+                outboundDepTime: '桃園 (TPE)',
+                outboundArrTime: '上海浦東 (PVG)',
+                returnAirline: '春秋航空',
+                returnDepTime: '上海浦東 (PVG)',
+                returnArrTime: '桃園 (TPE)',
+                isLCC: true,
+                priceSource: 'skyscanner-indicative'
+            },
+            'PVG:2027-01-07:2027-01-12': {
+                price: 6350,
+                verifiedAt: '2026-07-29',
+                sourceName: 'Skyscanner 月度參考價',
+                sourceUrl: 'https://skyscanner.net/g/referrals/v1/flights/day-view?mediaPartnerId=2850210&utm_term=skyscanner_chatgpt_mcp_app&origin=TPE&destination=PVG&outboundDate=2027-01-07&cabinclass=economy&inboundDate=2027-01-12&locale=zh-TW&currency=TWD&market=TW',
+                outboundAirline: '春秋航空',
+                outboundDepTime: '桃園 (TPE)',
+                outboundArrTime: '上海浦東 (PVG)',
+                returnAirline: '春秋航空',
+                returnDepTime: '上海浦東 (PVG)',
+                returnArrTime: '桃園 (TPE)',
+                isLCC: true,
+                priceSource: 'skyscanner-indicative'
+            },
+            'PVG:2027-03-11:2027-03-16': {
+                price: 6826,
+                verifiedAt: '2026-07-29',
+                sourceName: 'Skyscanner 月度參考價',
+                sourceUrl: 'https://skyscanner.net/g/referrals/v1/flights/day-view?mediaPartnerId=2850210&utm_term=skyscanner_chatgpt_mcp_app&origin=TPE&destination=PVG&outboundDate=2027-03-11&cabinclass=economy&inboundDate=2027-03-16&locale=zh-TW&currency=TWD&market=TW',
+                outboundAirline: '春秋航空',
+                outboundDepTime: '桃園 (TPE)',
+                outboundArrTime: '上海浦東 (PVG)',
+                returnAirline: '春秋航空',
+                returnDepTime: '上海浦東 (PVG)',
+                returnArrTime: '桃園 (TPE)',
+                isLCC: true,
+                priceSource: 'skyscanner-indicative'
+            }
+        };
         const SAVED_VERIFIED_FLIGHTS = JSON.parse(
             localStorage.getItem(`verified_flights_${VERIFIED_DATA_VERSION}`) || '{}'
         );
@@ -1507,9 +1621,10 @@
             return trips;
         }
 
-        function getVerifiedFlight(destCode, departDate, returnDate) {
-            const verifiedFlight = VERIFIED_FLIGHTS[`${destCode}:${departDate}:${returnDate}`];
-            return Number.isFinite(verifiedFlight?.price) ? verifiedFlight : null;
+        function getPricedFlight(destCode, departDate, returnDate) {
+            const key = `${destCode}:${departDate}:${returnDate}`;
+            const pricedFlight = BUILT_IN_REFERENCE_FLIGHTS[key] || VERIFIED_FLIGHTS[key];
+            return Number.isFinite(pricedFlight?.price) ? pricedFlight : null;
         }
 
         function generateFlightCandidates() {
@@ -1530,7 +1645,7 @@
                     };
 
                     getWeekendTripsForMonth(m.key).forEach(trip => {
-                        const verifiedFlight = getVerifiedFlight(dest.code, trip.departDate, trip.returnDate);
+                        const verifiedFlight = getPricedFlight(dest.code, trip.departDate, trip.returnDate);
 
                         flights.push({
                             id: `${dest.code}-${trip.departDate}-${trip.returnDate}`,
@@ -1546,7 +1661,7 @@
                             currency: 'TWD',
                             monthKey: m.key,
                             lccWarning: routeInfo.lccWarning,
-                            priceSource: verifiedFlight ? 'verified' : 'needs-live-check',
+                            priceSource: verifiedFlight?.priceSource || (verifiedFlight ? 'verified' : 'needs-live-check'),
                             verifiedAt: verifiedFlight?.verifiedAt ?? null,
                             sourceName: verifiedFlight?.sourceName ?? null,
                             sourceUrl: verifiedFlight?.sourceUrl ?? null,
@@ -1629,7 +1744,7 @@
             const container = document.getElementById('flightContainer');
             if (filtered.length === 0) {
                 const emptyMessage = verificationVal === 'verified'
-                    ? '這個月份尚未完成瀏覽器查價，請切換其他月份，或選擇「顯示全部待查候選」。'
+                    ? '這個月份尚未取得可顯示價格，請切換其他月份，或選擇「顯示全部待查候選」。'
                     : '這個月份沒有剩餘日期可組成「直飛、5–6 天、同時涵蓋週六與週日」的行程，請切換其他月份。';
                 container.innerHTML = `
                     <div style="text-align: center; padding: 60px 20px; color: var(--text-muted);">
@@ -1679,11 +1794,11 @@
                     <div class="card-bottom">
                         <div class="airline-info">
                             <i class="ph-fill ph-buildings"></i>
-                            <span>${f.price === null ? '尚未完成瀏覽器查價 ‧ 不顯示推估價格' : `Google Flights 已驗證含稅總價 ‧ 查價日 ${f.verifiedAt}`}</span>
+                            <span>${f.price === null ? '尚未完成查價 ‧ 不顯示推估價格' : (f.priceSource === 'skyscanner-indicative' ? `Skyscanner 月度參考價 ‧ 查價日 ${f.verifiedAt} ‧ 點擊確認即時價格` : `Google Flights 已驗證含稅總價 ‧ 查價日 ${f.verifiedAt}`)}</span>
                         </div>
                         <div style="display: flex; align-items: center; gap: 16px;">
                             <a href="${f.sourceUrl || `https://www.google.com/travel/flights?q=Flights%20from%20TPE%20to%20${f.destCode}%20on%20${f.departDate}%20through%20${f.returnDate}&curr=TWD&hl=zh-TW`}" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="font-size: 12px; padding: 6px 14px; text-decoration: none;">
-                                <i class="ph-bold ph-arrow-square-out"></i> Google Flights 即時查價/訂票
+                                <i class="ph-bold ph-arrow-square-out"></i> ${f.priceSource === 'skyscanner-indicative' ? 'Skyscanner 確認即時價格' : 'Google Flights 即時查價/訂票'}
                             </a>
                             <div class="price-tag">
                                 <span class="price-label">含稅總價 / 人</span>
@@ -1726,7 +1841,7 @@
                 return `
                     <div class="month-cell" onclick="filterByMonth('${m.key}')">
                         <div class="month-name">${m.label.replace('2026年','').replace('2027年','')}</div>
-                        <div class="month-price ${priceClass}">${minPrice === null ? '尚未驗證' : '$' + Math.round(minPrice/1000) + 'k'}${hasLccWarn ? ' ⏳' : ''}</div>
+                        <div class="month-price ${priceClass}">${minPrice === null ? '尚未查價' : '$' + Math.round(minPrice/1000) + 'k'}${hasLccWarn ? ' ⏳' : ''}</div>
                     </div>
                 `;
             }).join('');
@@ -1819,7 +1934,7 @@
             allFlights = generateFlightCandidates();
             applyFilters();
             renderHeatmap();
-            showToast('🔄 已重新產生符合 5-6 天、橫跨六日、直飛的候選日期；請點 Google Flights 即時查價！');
+            showToast('🔄 已重新產生符合 5-6 天、橫跨六日、直飛的候選日期；請點來源連結確認即時價格！');
         }
 
         function showToast(msg) {
