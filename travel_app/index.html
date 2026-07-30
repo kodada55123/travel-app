@@ -766,7 +766,7 @@
                         <i class="ph-fill ph-check-circle"></i>
                         <span>候選日期產生記錄</span>
                     </div>
-                    <div style="font-size: 14px; font-weight: 700; color: var(--accent-green); margin: 6px 0;" id="lastUpdatedTag">2026-07-30 Skyscanner 連結版 v9</div>
+                    <div style="font-size: 14px; font-weight: 700; color: var(--accent-green); margin: 6px 0;" id="lastUpdatedTag">2026-07-30 Skyscanner 來回版 v10</div>
                     <p style="font-size: 11px; color: var(--text-muted); margin: 0;">✅ Skyscanner 參考價與 Google Flights 已驗證價分開標示</p>
                 </div>
 
@@ -920,7 +920,7 @@
             }
         };
 
-        const VERIFIED_DATA_VERSION = '2026-07-30-v9';
+        const VERIFIED_DATA_VERSION = '2026-07-30-v10';
         const BUILT_IN_VERIFIED_FLIGHTS = {
             'PEK:2026-07-31:2026-08-05': {
                 price: 10392,
@@ -936,17 +936,18 @@
                 isLCC: false
             },
             'PEK:2026-08-14:2026-08-19': {
-                price: 9698,
-                verifiedAt: '2026-07-28',
-                sourceName: 'Google Flights',
-                sourceUrl: 'https://www.google.com/travel/flights?q=Flights%20from%20TPE%20to%20PEK%20on%202026-08-14%20through%202026-08-19&curr=TWD&hl=zh-TW&gl=TW',
-                outboundAirline: '海南航空',
+                price: 10221,
+                verifiedAt: '2026-07-30',
+                sourceName: 'Skyscanner 即時來回價',
+                sourceUrl: 'https://skyscanner.net/g/referrals/v1/flights/day-view?mediaPartnerId=2850210&utm_term=skyscanner_chatgpt_mcp_app&origin=TPE&destination=PEK&outboundDate=2026-08-14&cabinclass=economy&inboundDate=2026-08-19&locale=zh-TW&currency=TWD&market=TW',
+                outboundAirline: '海南航空 HU7988',
                 outboundDepTime: '13:05 桃園 (TPE)',
                 outboundArrTime: '16:35 北京首都 (PEK)',
-                returnAirline: 'Google Flights 直飛最低價',
-                returnDepTime: '北京首都 (PEK)',
-                returnArrTime: '桃園 (TPE)',
-                isLCC: false
+                returnAirline: '海南航空 HU7987',
+                returnDepTime: '07:55 北京首都 (PEK)',
+                returnArrTime: '11:25 桃園 (TPE)',
+                isLCC: false,
+                priceSource: 'skyscanner-live'
             },
             'PEK:2026-09-11:2026-09-16': {
                 price: 18554,
@@ -1779,7 +1780,7 @@
                             <span style="color: var(--accent-blue); font-weight: 600;">${f.outboundDepTime} ➔ ${f.outboundArrTime}</span>
                         </div>
                         <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 8px;">
-                            <span>🛬 <b>回程直飛</b> ‧ ${f.returnAirline}</span>
+                            <span>🛬 <b>回程直飛</b> ‧ ${f.returnAirline === 'Google Flights 直飛最低價' ? 'Skyscanner 同日期回程航班（點下方確認班號）' : f.returnAirline}</span>
                             <span style="color: var(--accent-green); font-weight: 600;">${f.returnDepTime} ➔ ${f.returnArrTime}</span>
                         </div>
                     </div>
@@ -1794,7 +1795,7 @@
                     <div class="card-bottom">
                         <div class="airline-info">
                             <i class="ph-fill ph-buildings"></i>
-                            <span>${f.price === null ? '尚未完成查價 ‧ 不顯示推估價格' : (f.priceSource === 'skyscanner-indicative' ? `Skyscanner 月度參考價 ‧ 查價日 ${f.verifiedAt} ‧ 點擊確認即時價格` : `Google Flights 已驗證含稅總價 ‧ 查價日 ${f.verifiedAt}`)}</span>
+                            <span>${f.price === null ? '尚未完成查價 ‧ 不顯示推估價格' : (f.priceSource === 'skyscanner-live' ? `Skyscanner 即時來回含稅總價 ‧ 查價日 ${f.verifiedAt}` : (f.priceSource === 'skyscanner-indicative' ? `Skyscanner 月度參考價 ‧ 查價日 ${f.verifiedAt} ‧ 點擊確認即時價格` : `歷史已驗證價格 ‧ 請以 Skyscanner 即時頁為準 ‧ 查價日 ${f.verifiedAt}`))}</span>
                         </div>
                         <div style="display: flex; align-items: center; gap: 16px;">
                             <a href="https://skyscanner.net/g/referrals/v1/flights/day-view?mediaPartnerId=2850210&utm_term=skyscanner_chatgpt_mcp_app&origin=TPE&destination=${f.destCode}&outboundDate=${f.departDate}&cabinclass=economy&inboundDate=${f.returnDate}&locale=zh-TW&currency=TWD&market=TW" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="font-size: 12px; padding: 6px 14px; text-decoration: none;">
