@@ -766,7 +766,7 @@
                         <i class="ph-fill ph-check-circle"></i>
                         <span>候選日期產生記錄</span>
                     </div>
-                    <div style="font-size: 14px; font-weight: 700; color: var(--accent-green); margin: 6px 0;" id="lastUpdatedTag">2026-07-29 混合來源資料 v8</div>
+                    <div style="font-size: 14px; font-weight: 700; color: var(--accent-green); margin: 6px 0;" id="lastUpdatedTag">2026-07-30 Skyscanner 連結版 v9</div>
                     <p style="font-size: 11px; color: var(--text-muted); margin: 0;">✅ Skyscanner 參考價與 Google Flights 已驗證價分開標示</p>
                 </div>
 
@@ -803,7 +803,7 @@
                         <li><strong>追蹤區間</strong>：2026/08 至 2027/04，共 9 個月。</li>
                         <li><strong>天數與週末</strong>：來回 5~6 天且必須橫跨六、日。</li>
                         <li><strong>直飛限制</strong>：過濾掉需轉機航班。</li>
-                        <li><strong>查價方式</strong>：每張卡片會連到對應的 Skyscanner 或 Google Flights 日期頁。</li>
+                        <li><strong>查價方式</strong>：每張卡片統一連到對應航線與日期的 Skyscanner 航班頁。</li>
                     </ul>
                 </div>
             </div>
@@ -920,7 +920,7 @@
             }
         };
 
-        const VERIFIED_DATA_VERSION = '2026-07-29-v8';
+        const VERIFIED_DATA_VERSION = '2026-07-30-v9';
         const BUILT_IN_VERIFIED_FLIGHTS = {
             'PEK:2026-07-31:2026-08-05': {
                 price: 10392,
@@ -1797,8 +1797,8 @@
                             <span>${f.price === null ? '尚未完成查價 ‧ 不顯示推估價格' : (f.priceSource === 'skyscanner-indicative' ? `Skyscanner 月度參考價 ‧ 查價日 ${f.verifiedAt} ‧ 點擊確認即時價格` : `Google Flights 已驗證含稅總價 ‧ 查價日 ${f.verifiedAt}`)}</span>
                         </div>
                         <div style="display: flex; align-items: center; gap: 16px;">
-                            <a href="${f.sourceUrl || `https://www.google.com/travel/flights?q=Flights%20from%20TPE%20to%20${f.destCode}%20on%20${f.departDate}%20through%20${f.returnDate}&curr=TWD&hl=zh-TW`}" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="font-size: 12px; padding: 6px 14px; text-decoration: none;">
-                                <i class="ph-bold ph-arrow-square-out"></i> ${f.priceSource === 'skyscanner-indicative' ? 'Skyscanner 確認即時價格' : 'Google Flights 即時查價/訂票'}
+                            <a href="https://skyscanner.net/g/referrals/v1/flights/day-view?mediaPartnerId=2850210&utm_term=skyscanner_chatgpt_mcp_app&origin=TPE&destination=${f.destCode}&outboundDate=${f.departDate}&cabinclass=economy&inboundDate=${f.returnDate}&locale=zh-TW&currency=TWD&market=TW" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="font-size: 12px; padding: 6px 14px; text-decoration: none;">
+                                <i class="ph-bold ph-arrow-square-out"></i> Skyscanner 查看同日期航班
                             </a>
                             <div class="price-tag">
                                 <span class="price-label">含稅總價 / 人</span>
