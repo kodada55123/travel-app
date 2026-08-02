@@ -832,6 +832,7 @@
                     <span class="pill" onclick="selectQuick('首爾仁川 (ICN)')">🇰🇷 首爾 ICN</span>
                     <span class="pill" onclick="selectQuick('宿霧 (CEB)')">🇵🇭 宿霧 CEB</span>
                     <span class="pill" onclick="selectQuick('福岡 (FUK)')">🇯🇵 福岡 FUK</span>
+                    <span class="pill" onclick="selectQuick('香港 (HKG)')">🇭🇰 香港 HKG</span>
                 </div>
             </div>
             <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 24px;">
@@ -853,7 +854,8 @@
             { name: '峴港', code: 'DAD', flag: '🇻🇳', lccAirlines: ['VJ (越捷航空)', 'IT (台灣虎航)'] },
             { name: '北京', code: 'PEK', flag: '🇨🇳', lccAirlines: [] },
             { name: '胡志明市', code: 'SGN', flag: '🇻🇳', lccAirlines: ['VJ (越捷航空)'] },
-            { name: '上海', code: 'PVG', flag: '🇨🇳', lccAirlines: ['9C (春秋航空)'] }
+            { name: '上海', code: 'PVG', flag: '🇨🇳', lccAirlines: ['9C (春秋航空)'] },
+            { name: '香港', code: 'HKG', flag: '🇭🇰', lccAirlines: ['UO (香港快運)'] }
         ];
 
         let destinations = DEFAULT_DESTINATIONS;
@@ -862,14 +864,14 @@
         function getNext9Months() {
             const months = [];
             const now = new Date();
-            for (let i = 1; i <= 9; i++) {
+            for (let i = 0; i < 9; i++) {
                 const d = new Date(now.getFullYear(), now.getMonth() + i, 1);
                 const year = d.getFullYear();
                 const month = String(d.getMonth() + 1).padStart(2, '0');
                 months.push({
                     key: `${year}-${month}`,
                     label: `${year}年${month}月`,
-                    monthsAhead: i - 1
+                    monthsAhead: i
                 });
             }
             return months;
@@ -917,10 +919,20 @@
                 returnArrTime: '桃園 (TPE)',
                 isLCC: false,
                 lccWarning: null
+            },
+            HKG: {
+                outboundAirline: '香港快運直飛',
+                outboundDepTime: 'TPE 直飛',
+                outboundArrTime: '香港 (HKG)',
+                returnAirline: '香港快運直飛',
+                returnDepTime: 'HKG 直飛',
+                returnArrTime: '桃園 (TPE)',
+                isLCC: true,
+                lccWarning: null
             }
         };
 
-        const VERIFIED_DATA_VERSION = '2026-07-30-v10';
+        const VERIFIED_DATA_VERSION = '2026-08-02-v11';
         const BUILT_IN_VERIFIED_FLIGHTS = {
             'PEK:2026-07-31:2026-08-05': {
                 price: 10392,
@@ -1445,6 +1457,20 @@
             },
         };
         const BUILT_IN_REFERENCE_FLIGHTS = {
+            'HKG:2026-08-26:2026-08-30': {
+                price: 4916,
+                verifiedAt: '2026-08-02',
+                sourceName: 'Skyscanner 即時來回價',
+                sourceUrl: 'https://skyscanner.net/g/referrals/v1/flights/booking-panel?mediaPartnerId=2850210&utm_term=skyscanner_chatgpt_mcp_app&origin=TPE&destination=HKG&outboundDate=2026-08-26&itinerary_id=17075-2608261340--32228-0-12191-2608261535%7C12191-2608301235--32228-0-17075-2608301425&cabinclass=economy&inboundDate=2026-08-30&locale=zh-TW&currency=TWD&market=TW',
+                outboundAirline: '香港快運 UO111',
+                outboundDepTime: '13:40 桃園 (TPE)',
+                outboundArrTime: '15:35 香港 (HKG)',
+                returnAirline: '香港快運 UO112',
+                returnDepTime: '12:35 香港 (HKG)',
+                returnArrTime: '14:25 桃園 (TPE)',
+                isLCC: true,
+                priceSource: 'skyscanner-live'
+            },
             'DAD:2026-10-17:2026-10-22': {
                 price: 6053,
                 verifiedAt: '2026-07-29',
