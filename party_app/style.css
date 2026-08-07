@@ -68,6 +68,7 @@ select:focus, input:focus { border-color: var(--aqua); box-shadow: 0 0 0 3px rgb
 .btn:active { transform: scale(.97); }
 .btn-primary { background: linear-gradient(135deg, var(--coral), var(--coral-deep)); color: #fff; box-shadow: 0 6px 18px rgba(244,96,47,.35); }
 .btn-primary:disabled { filter: grayscale(.7) brightness(.7); box-shadow: none; }
+.btn-secondary { background: rgba(62,230,216,.14); color: var(--aqua); border: 1px solid var(--aqua); box-shadow: none; }
 .btn-ig { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); color: #fff; }
 .btn-ghost { background: none; border: 1px solid rgba(255,255,255,.3); color: var(--ink-dim); border-radius: 10px; padding: 6px 12px; font-size: .85rem; }
 .fine-print { margin-top: 12px; font-size: .8rem; color: var(--ink-dim); text-align: center; }
@@ -96,6 +97,18 @@ select:focus, input:focus { border-color: var(--aqua); box-shadow: 0 0 0 3px rgb
 .card-hint { font-size: .82rem; color: #4b7f8d; margin-top: 10px; }
 .status-chip { margin: 16px auto 0; width: fit-content; padding: 8px 18px; border-radius: 999px; font-weight: 700; font-size: .9rem; background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.2); }
 .status-chip.ok { background: rgba(62,230,216,.16); border-color: var(--aqua); color: var(--aqua); }
+
+/* ── 床位與車位 ── */
+.logistics-result { display: grid; gap: 14px; margin-top: 16px; }
+.logistics-card {
+  background: rgba(255,255,255,.07); border: 1px solid rgba(62,230,216,.25);
+  border-radius: var(--radius); padding: 18px;
+}
+.logistics-card h3 { color: var(--aqua); font-size: 1.05rem; margin-bottom: 10px; }
+.logistics-main { font-size: 1.28rem; font-weight: 900; margin-bottom: 6px; }
+.logistics-meta { color: var(--ink-dim); line-height: 1.55; font-size: .9rem; }
+.logistics-note { color: #ffd166; font-weight: 700; margin-top: 8px; }
+.logistics-mini { display: grid; gap: 14px; margin-top: 16px; }
 
 /* ── 猜謎 ── */
 .quest-label { font-weight: 700; margin-bottom: 10px; }

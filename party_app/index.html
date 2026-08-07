@@ -30,8 +30,23 @@
         <option value="" disabled selected>— 選擇你的暱稱 —</option>
       </select>
       <button id="btn-login" class="btn btn-primary" disabled>開始任務 🍻</button>
+      <button id="btn-logistics" class="btn btn-secondary">查看床位與車位 🛏️🚗</button>
       <p class="fine-print">登入後身分會記在這支手機，斷線也不會消失。</p>
     </div>
+  </section>
+
+  <!-- ═══ 住宿與交通查詢（包含不在遊戲名單的新成員） ═══ -->
+  <section id="screen-logistics" class="screen hidden">
+    <header class="topbar">
+      <span class="topbar-title">床位與車位</span>
+      <button id="btn-logistics-back" class="btn-ghost">返回</button>
+    </header>
+    <div class="panel">
+      <label class="field-label" for="logistics-who">查詢人員</label>
+      <select id="logistics-who"><option value="" disabled selected>— 選擇暱稱 —</option></select>
+      <p id="logistics-date" class="fine-print"></p>
+    </div>
+    <div id="logistics-result" class="logistics-result"></div>
   </section>
 
   <!-- ═══ 個人名片頁 ═══ -->
@@ -206,6 +221,7 @@
 
 <script src="qrcode.js"></script>
 <script src="data.js"></script>
+<script src="logistics.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

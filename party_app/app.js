@@ -95,10 +95,10 @@ setInterval(flushQueue, 30_000);
 
 // ═══ 畫面切換 ═══
 const $ = (sel) => document.querySelector(sel);
-const screens = ["login", "card", "quest", "done", "bingo", "fun", "board"];
+const screens = ["login", "card", "quest", "done", "bingo", "fun", "board", "logistics"];
 function show(name) {
   screens.forEach((s) => $("#screen-" + s).classList.toggle("hidden", s !== name));
-  $("#tabbar").classList.toggle("hidden", name === "login");
+  $("#tabbar").classList.toggle("hidden", name === "login" || name === "logistics");
   document.querySelectorAll(".tab").forEach((t) =>
     t.classList.toggle("active", t.dataset.nav === name || (t.dataset.nav === "quest" && name === "done")));
   window.scrollTo(0, 0);
@@ -113,6 +113,60 @@ document.querySelectorAll(".tab").forEach((t) =>
   }));
 
 function me() { return PEOPLE.find((p) => p.name === state.me); }
+
+// ═══ 住宿與交通（來源：人事資料表） ═══
+const LOGISTICS = window.PARTY_LOGISTICS || { rooms: [], cars: [] };
+const LOGISTICS_ALIASES = {
+  "NortonWu （翊羣/小祥）": "小祥",
+  "ShihChe 陳世哲": "世哲",
+  "島國小王子-Alston": "小王子",
+  "William(水豚BO)": "水豚BO",
+  "Darren任(大大)": "大大",
+  "黃世輝wayne": "黃世輝",
+};
+function logisticsBaseName(raw) {
+  return String(raw || "").replace(/-睡墊$|-中壢$|-台中$|-竹南$|-林口$|-台中高鐵$|-嘉義交流道$/, "");
+}
+function logisticsName(raw) { return LOGISTICS_ALIASES[raw] || logisticsBaseName(raw); }
+function logisticsPeople() {
+  const names = new Set();
+  LOGISTICS.rooms.forEach((r) => r.beds.forEach((n) => names.add(logisticsBaseName(n))));
+  LOGISTICS.cars.forEach((c) => { names.add(c.driver); c.passengers.forEach((n) => names.add(logisticsBaseName(n))); });
+  return [...names].sort((a, b) => a.localeCompare(b, "zh-Hant"));
+}
+function findLogistics(name) {
+  const wanted = logisticsName(name);
+  const room = LOGISTICS.rooms.find((r) => r.beds.some((n) => logisticsBaseName(n) === wanted));
+  const car = LOGISTICS.cars.find((c) => c.driver === wanted || c.passengers.some((n) => logisticsBaseName(n) === wanted));
+  const bedLabel = room && room.beds.find((n) => logisticsBaseName(n) === wanted);
+  const passengerLabel = car && car.passengers.find((n) => logisticsBaseName(n) === wanted);
+  return { wanted, room, car, bedLabel, passengerLabel, isDriver: !!car && car.driver === wanted };
+}
+function logisticsMarkup(name, compact = false) {
+  const x = findLogistics(name);
+  if (!x.room && !x.car) return `<div class="logistics-card"><p class="logistics-meta">目前查不到 ${esc(name)} 的配置，請向主辦確認。</p></div>`;
+  const room = x.room ? `<div class="logistics-card"><h3>🛏️ 床位</h3><p class="logistics-main">${esc(x.room.room)} 房</p><p class="logistics-meta">${esc(x.room.type)}｜床位：${esc(x.bedLabel)}</p>${/-睡墊$/.test(x.bedLabel) ? '<p class="logistics-note">本床位為睡墊</p>' : ''}</div>` : `<div class="logistics-card"><h3>🛏️ 床位</h3><p class="logistics-meta">尚未安排</p></div>`;
+  const car = x.car ? `<div class="logistics-card"><h3>🚗 車位</h3><p class="logistics-main">${x.isDriver ? '你是司機' : `搭乘 ${esc(x.car.driver)} 的車`}</p><p class="logistics-meta">集合／出發：${esc(x.car.from)}${x.passengerLabel && x.passengerLabel !== x.wanted ? `<br>備註：${esc(x.passengerLabel)}` : ''}</p></div>` : `<div class="logistics-card"><h3>🚗 車位</h3><p class="logistics-meta">尚未安排</p></div>`;
+  return `<div class="${compact ? 'logistics-mini' : 'logistics-result'}">${room}${car}</div>`;
+}
+function renderLogistics(name) {
+  const box = $("#logistics-result");
+  box.innerHTML = name ? logisticsMarkup(name) : "";
+}
+function initLogistics() {
+  const sel = $("#logistics-who");
+  logisticsPeople().forEach((name) => {
+    const o = document.createElement("option"); o.value = name; o.textContent = name; sel.appendChild(o);
+  });
+  $("#logistics-date").textContent = `配置更新：${LOGISTICS.updated || "未標示"}`;
+  sel.addEventListener("change", () => renderLogistics(sel.value));
+  $("#btn-logistics").addEventListener("click", () => {
+    if (state.me) sel.value = logisticsName(state.me);
+    renderLogistics(sel.value);
+    show("logistics");
+  });
+  $("#btn-logistics-back").addEventListener("click", () => state.me && me() ? show("card") : show("login"));
+}
 
 // ═══ 登入頁 ═══
 function initLogin() {
@@ -182,6 +236,12 @@ function renderCard() {
   chip.textContent = state.done ? "✅ 配對任務已完成" : "🧩 配對任務進行中";
   chip.classList.toggle("ok", state.done);
   renderMeets();
+  let box = $("#card-logistics");
+  if (!box) {
+    box = document.createElement("div"); box.id = "card-logistics";
+    $("#card-status").insertAdjacentElement("afterend", box);
+  }
+  box.innerHTML = logisticsMarkup(p.name, true);
 }
 
 // ═══ 名片冊：認識 3 位新朋友（新朋友本人則是認識任 3 位）═══
@@ -829,6 +889,7 @@ function enter() {
 }
 initLogin();
 initQuest();
+initLogistics();
 if (state.me && me()) enter();
 else show("login");
 

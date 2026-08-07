@@ -1,6 +1,6 @@
 /* 離線快取：進過一次網頁後，民宿收訊再差也能開 */
-const CACHE = "party-v1";
-const ASSETS = ["./", "index.html", "style.css", "app.js", "data.js", "qrcode.js",
+const CACHE = "party-v2-logistics";
+const ASSETS = ["./", "index.html", "style.css", "app.js", "data.js", "logistics.js", "qrcode.js",
   "manifest.webmanifest", "assets/poster.png"];
 
 self.addEventListener("install", (e) => {
