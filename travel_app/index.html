@@ -6,6 +6,7 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
+    <meta name="theme-color" content="#07111f">
     <title>自動化便宜機票追蹤系統 - GitHub Pages 每日靜態報表</title>
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -681,6 +682,291 @@
             transform: translateY(0);
             opacity: 1;
         }
+
+        /* 2026 visual refresh */
+        :root {
+            --bg-primary: #07111f;
+            --bg-card: rgba(12, 27, 47, 0.78);
+            --bg-card-hover: rgba(17, 38, 65, 0.92);
+            --border-color: rgba(148, 163, 184, 0.15);
+            --border-highlight: rgba(56, 189, 248, 0.55);
+            --text-secondary: #a9b9cf;
+            --text-muted: #72839a;
+            --radius-lg: 24px;
+            --radius-md: 16px;
+            --shadow-glow: 0 22px 60px rgba(2, 132, 199, 0.16);
+        }
+
+        body {
+            background-image:
+                radial-gradient(circle at 12% 5%, rgba(14, 165, 233, 0.16), transparent 30%),
+                radial-gradient(circle at 88% 18%, rgba(139, 92, 246, 0.1), transparent 27%),
+                linear-gradient(180deg, #07111f 0%, #091423 45%, #070d18 100%);
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            opacity: 0.22;
+            background-image: linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
+            background-size: 42px 42px;
+            mask-image: linear-gradient(to bottom, #000, transparent 70%);
+        }
+
+        .app-container {
+            max-width: 1440px;
+            padding: 28px clamp(18px, 3vw, 42px) 64px;
+        }
+
+        .app-header {
+            padding: 18px 22px;
+            background: rgba(7, 17, 31, 0.72);
+            border-color: rgba(125, 211, 252, 0.18);
+            box-shadow: 0 18px 60px rgba(0, 0, 0, 0.22);
+        }
+
+        .brand-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 17px;
+            background: linear-gradient(145deg, #38bdf8, #0369a1);
+        }
+
+        .brand-text h1 { font-size: clamp(20px, 2vw, 26px); }
+        .brand-text p { max-width: 680px; }
+
+        .dashboard-hero {
+            display: grid;
+            grid-template-columns: minmax(0, 1.45fr) minmax(320px, .85fr);
+            gap: 24px;
+            padding: clamp(26px, 4vw, 48px);
+            margin-bottom: 20px;
+            border: 1px solid rgba(125, 211, 252, 0.18);
+            border-radius: 28px;
+            background:
+                linear-gradient(135deg, rgba(14, 165, 233, .17), rgba(12, 27, 47, .86) 45%, rgba(139, 92, 246, .12)),
+                rgba(12, 27, 47, .76);
+            box-shadow: 0 28px 90px rgba(0, 0, 0, .28);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dashboard-hero::after {
+            content: '✈';
+            position: absolute;
+            right: 5%;
+            top: -42px;
+            font-size: 180px;
+            color: rgba(255,255,255,.035);
+            transform: rotate(-12deg);
+        }
+
+        .hero-copy, .hero-metrics { position: relative; z-index: 1; }
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #7dd3fc;
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: .16em;
+            text-transform: uppercase;
+            margin-bottom: 14px;
+        }
+
+        .hero-copy h2 {
+            max-width: 760px;
+            font-size: clamp(30px, 4.5vw, 54px);
+            line-height: 1.08;
+            letter-spacing: -.04em;
+            margin-bottom: 16px;
+        }
+
+        .hero-copy h2 span {
+            color: #7dd3fc;
+            background: linear-gradient(90deg, #7dd3fc, #c4b5fd);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-copy p {
+            max-width: 760px;
+            color: var(--text-secondary);
+            font-size: 15px;
+        }
+
+        .hero-metrics {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+            align-self: stretch;
+        }
+
+        .hero-metric {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            min-height: 112px;
+            padding: 18px;
+            border: 1px solid rgba(255,255,255,.09);
+            border-radius: 18px;
+            background: rgba(5, 14, 27, .54);
+        }
+
+        .hero-metric i { color: #7dd3fc; font-size: 22px; margin-bottom: auto; }
+        .hero-metric strong { font-size: 22px; letter-spacing: -.02em; }
+        .hero-metric span { color: var(--text-muted); font-size: 11px; }
+
+        .daily-alert-banner {
+            border-radius: 18px;
+            border-color: rgba(251, 146, 60, .25);
+            background: linear-gradient(90deg, rgba(249, 115, 22, .12), rgba(14, 165, 233, .08));
+        }
+
+        .filter-bar {
+            position: sticky;
+            top: 12px;
+            z-index: 30;
+            padding: 14px;
+            border: 1px solid rgba(148, 163, 184, .14);
+            border-radius: 18px;
+            background: rgba(7, 17, 31, .84);
+            backdrop-filter: blur(18px);
+            box-shadow: 0 18px 50px rgba(0,0,0,.22);
+        }
+
+        .dest-tabs { scrollbar-width: none; }
+        .dest-tabs::-webkit-scrollbar { display: none; }
+        .dest-tab { padding: 9px 16px; border-radius: 999px; }
+        .dest-tab.active { background: linear-gradient(135deg, #38bdf8, #0ea5e9); box-shadow: 0 8px 28px rgba(14,165,233,.24); }
+
+        .select-input {
+            min-height: 40px;
+            border-radius: 11px;
+            background: rgba(15, 31, 52, .95);
+        }
+
+        .grid-layout { grid-template-columns: minmax(0, 1fr) 330px; gap: 22px; }
+        .section-title { padding: 0 4px; }
+        .flight-cards-container { gap: 18px; }
+
+        .flight-card {
+            padding: 24px;
+            border-radius: 22px;
+            border-color: rgba(148, 163, 184, .15);
+            background: linear-gradient(145deg, rgba(16, 33, 55, .9), rgba(8, 20, 36, .88));
+            box-shadow: 0 16px 50px rgba(0,0,0,.18);
+        }
+
+        .flight-card::before {
+            content: '';
+            position: absolute;
+            inset: 0 auto 0 0;
+            width: 3px;
+            background: linear-gradient(#38bdf8, #8b5cf6, #10b981);
+            opacity: .75;
+        }
+
+        .route-text h3 { font-size: clamp(18px, 2vw, 22px); letter-spacing: -.02em; }
+        .route-text p { margin-top: 3px; }
+        .badge { padding: 5px 10px; letter-spacing: .03em; }
+
+        .flight-segments {
+            display: grid;
+            gap: 2px;
+            padding: 8px 16px;
+            margin: 4px 0;
+            border: 1px solid rgba(148, 163, 184, .1);
+            border-radius: 14px;
+            background: rgba(3, 12, 24, .42);
+        }
+
+        .segment-row {
+            display: grid;
+            grid-template-columns: minmax(220px, 1fr) minmax(250px, auto);
+            align-items: center;
+            gap: 18px;
+            padding: 11px 2px;
+        }
+
+        .segment-row + .segment-row { border-top: 1px dashed rgba(148, 163, 184, .16); }
+        .segment-time { font-weight: 700; text-align: right; }
+        .segment-time.outbound { color: var(--accent-blue); }
+        .segment-time.return { color: var(--accent-green); }
+
+        .card-bottom {
+            gap: 18px;
+            padding-top: 2px;
+        }
+
+        .airline-info { max-width: 50%; line-height: 1.55; }
+        .booking-cluster { display: flex; align-items: center; gap: 18px; }
+        .booking-link { white-space: nowrap; text-decoration: none; font-size: 12px; padding: 8px 15px; }
+        .price-value { font-size: clamp(26px, 3vw, 34px); }
+
+        .widget-card {
+            border-radius: 18px;
+            background: linear-gradient(145deg, rgba(16, 33, 55, .82), rgba(8, 20, 36, .82));
+            box-shadow: 0 14px 40px rgba(0,0,0,.14);
+        }
+
+        .month-cell { padding: 12px 6px; border-radius: 11px; }
+        .month-cell:hover { transform: translateY(-2px); }
+        .btn:focus-visible, .dest-tab:focus-visible, .select-input:focus-visible, .month-cell:focus-visible {
+            outline: 3px solid rgba(125, 211, 252, .4);
+            outline-offset: 2px;
+        }
+
+        @media (max-width: 1100px) {
+            .dashboard-hero { grid-template-columns: 1fr; }
+            .hero-metrics { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+            .hero-metric { min-height: 96px; }
+            .grid-layout { grid-template-columns: 1fr; }
+            .sidebar { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        }
+
+        @media (max-width: 760px) {
+            .app-container { padding: 14px 12px 40px; }
+            .app-header, .daily-alert-banner, .card-top, .card-bottom { align-items: flex-start; }
+            .app-header, .daily-alert-banner, .card-top, .card-bottom { flex-direction: column; }
+            .app-header { gap: 16px; padding: 17px; }
+            .brand { align-items: flex-start; }
+            .brand-icon { width: 46px; height: 46px; flex: 0 0 46px; }
+            .brand-text p { margin-top: 4px; line-height: 1.55; }
+            .header-actions { width: 100%; flex-direction: column; align-items: stretch; gap: 10px; }
+            .cron-badge { justify-content: center; text-align: center; }
+            .header-actions .btn { justify-content: center; }
+            .dashboard-hero { padding: 24px 18px; border-radius: 22px; }
+            .hero-copy h2 { font-size: clamp(30px, 10vw, 42px); }
+            .hero-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .hero-metric { min-height: 104px; padding: 14px; }
+            .daily-alert-banner { gap: 16px; padding: 18px; }
+            .daily-alert-banner .btn { width: 100%; justify-content: center; }
+            .filter-bar { position: static; padding: 12px; }
+            .dest-tabs { width: 100%; }
+            .filter-options { width: 100%; display: grid; grid-template-columns: 1fr; }
+            .select-input { width: 100%; }
+            .section-title { align-items: flex-start; flex-direction: column; gap: 6px; }
+            .flight-card { padding: 18px 16px 18px 19px; }
+            .card-top { gap: 14px; }
+            .badges { width: 100%; }
+            .segment-row { grid-template-columns: 1fr; gap: 4px; }
+            .segment-time { text-align: left; padding-left: 24px; }
+            .card-bottom { gap: 16px; }
+            .airline-info { max-width: none; }
+            .booking-cluster { width: 100%; align-items: stretch; flex-direction: column-reverse; gap: 12px; }
+            .booking-link { justify-content: center; }
+            .price-tag { text-align: left; }
+            .sidebar { grid-template-columns: 1fr; }
+            .modal-box { width: calc(100% - 24px); padding: 22px 18px; }
+            .toast { left: 12px; right: 12px; bottom: 12px; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; }
+        }
     </style>
 </head>
 <body>
@@ -693,7 +979,7 @@
                     <i class="ph-fill ph-airplane-tilt"></i>
                 </div>
                 <div class="brand-text">
-                    <h1>自動化便宜機票追蹤系統</h1>
+                    <h1>便宜機票雷達</h1>
                     <p>GitHub Pages 靜態報表 ‧ 未來11個月直飛日期篩選 ‧ Google Flights 瀏覽器實查＋Skyscanner 同日期比價</p>
                 </div>
             </div>
@@ -708,6 +994,20 @@
                 </button>
             </div>
         </header>
+
+        <section class="dashboard-hero" aria-labelledby="hero-title">
+            <div class="hero-copy">
+                <div class="eyebrow"><i class="ph-fill ph-radar"></i> Smart Fare Watch</div>
+                <h2 id="hero-title">把複雜條件，變成<span>每月一張最低價機票</span>。</h2>
+                <p>自動整理從台北出發、直飛、來回 5–6 天且同時涵蓋週六與週日的日期；已驗證價格會清楚標示來源與查價日。</p>
+            </div>
+            <div class="hero-metrics" aria-label="搜尋條件摘要">
+                <div class="hero-metric"><i class="ph-bold ph-calendar-dots"></i><strong>11 個月</strong><span>持續追蹤範圍</span></div>
+                <div class="hero-metric"><i class="ph-bold ph-airplane-takeoff"></i><strong>直飛限定</strong><span>排除轉機航班</span></div>
+                <div class="hero-metric"><i class="ph-bold ph-clock-countdown"></i><strong>5–6 天</strong><span>適合短期旅行</span></div>
+                <div class="hero-metric"><i class="ph-bold ph-sun-horizon"></i><strong>六日皆含</strong><span>完整跨越週末</span></div>
+            </div>
+        </section>
 
         <!-- Daily Summary Alert Banner -->
         <div class="daily-alert-banner">
@@ -1914,14 +2214,14 @@
                         </div>
                     </div>
 
-                    <div style="background: rgba(255,255,255,0.03); border-radius: 8px; padding: 12px 16px; margin: 12px 0; font-size: 13px;">
-                        <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 8px; border-bottom: 1px dashed rgba(255,255,255,0.1);">
+                    <div class="flight-segments">
+                        <div class="segment-row">
                             <span>🛫 <b>去程直飛</b> ‧ ${f.outboundAirline}</span>
-                            <span style="color: var(--accent-blue); font-weight: 600;">${f.outboundDepTime} ➔ ${f.outboundArrTime}</span>
+                            <span class="segment-time outbound">${f.outboundDepTime} ➔ ${f.outboundArrTime}</span>
                         </div>
-                        <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 8px;">
+                        <div class="segment-row">
                             <span>🛬 <b>回程直飛</b> ‧ ${f.returnAirline === 'Google Flights 直飛最低價' ? 'Skyscanner 同日期回程航班（點下方確認班號）' : f.returnAirline}</span>
-                            <span style="color: var(--accent-green); font-weight: 600;">${f.returnDepTime} ➔ ${f.returnArrTime}</span>
+                            <span class="segment-time return">${f.returnDepTime} ➔ ${f.returnArrTime}</span>
                         </div>
                     </div>
 
@@ -1937,8 +2237,8 @@
                             <i class="ph-fill ph-buildings"></i>
                             <span>${f.price === null ? '尚未完成查價 ‧ 不顯示推估價格' : (f.priceSource === 'google-flights-browser' ? `Google Flights 瀏覽器實查含稅總價 ‧ 查價日 ${f.verifiedAt} ‧ Skyscanner 按鈕為同日期比價` : (f.priceSource === 'skyscanner-live' ? `Skyscanner 即時來回含稅總價 ‧ 查價日 ${f.verifiedAt}` : (f.priceSource === 'skyscanner-indicative' ? `Skyscanner 月度參考價 ‧ 查價日 ${f.verifiedAt} ‧ 點擊確認即時價格` : `歷史已驗證價格 ‧ 請以 Skyscanner 即時頁為準 ‧ 查價日 ${f.verifiedAt}`)))}</span>
                         </div>
-                        <div style="display: flex; align-items: center; gap: 16px;">
-                            <a href="https://skyscanner.net/g/referrals/v1/flights/day-view?mediaPartnerId=2850210&utm_term=skyscanner_chatgpt_mcp_app&origin=TPE&destination=${f.destCode}&outboundDate=${f.departDate}&cabinclass=economy&inboundDate=${f.returnDate}&locale=zh-TW&currency=TWD&market=TW" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="font-size: 12px; padding: 6px 14px; text-decoration: none;">
+                        <div class="booking-cluster">
+                            <a href="https://skyscanner.net/g/referrals/v1/flights/day-view?mediaPartnerId=2850210&utm_term=skyscanner_chatgpt_mcp_app&origin=TPE&destination=${f.destCode}&outboundDate=${f.departDate}&cabinclass=economy&inboundDate=${f.returnDate}&locale=zh-TW&currency=TWD&market=TW" target="_blank" rel="noopener noreferrer" class="btn btn-primary booking-link">
                                 <i class="ph-bold ph-arrow-square-out"></i> Skyscanner 查看同日期航班
                             </a>
                             <div class="price-tag">
